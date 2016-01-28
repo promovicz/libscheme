@@ -63,7 +63,7 @@ static Scheme_Object *lcm (int argc, Scheme_Object *argv[]);
 static Scheme_Object *floor_prim (int argc, Scheme_Object *argv[]);
 static Scheme_Object *ceiling (int argc, Scheme_Object *argv[]);
 static Scheme_Object *truncate (int argc, Scheme_Object *argv[]);
-static Scheme_Object *round (int argc, Scheme_Object *argv[]);
+static Scheme_Object *scheme_round (int argc, Scheme_Object *argv[]);
 static Scheme_Object *exp_prim (int argc, Scheme_Object *argv[]);
 static Scheme_Object *log_prim (int argc, Scheme_Object *argv[]);
 static Scheme_Object *sin_prim (int argc, Scheme_Object *argv[]);
@@ -117,7 +117,7 @@ scheme_init_number (Scheme_Env *env)
   scheme_add_global ("floor", scheme_make_prim (floor_prim), env);
   scheme_add_global ("ceiling", scheme_make_prim (ceiling), env);
   scheme_add_global ("truncate", scheme_make_prim (truncate), env);
-  scheme_add_global ("round", scheme_make_prim (round), env);
+  scheme_add_global ("round", scheme_make_prim (scheme_round), env);
   scheme_add_global ("exp", scheme_make_prim (exp_prim), env);
   scheme_add_global ("log", scheme_make_prim (log_prim), env);
   scheme_add_global ("sin", scheme_make_prim (sin_prim), env);
@@ -673,7 +673,7 @@ truncate (int argc, Scheme_Object *argv[])
 }
 
 static Scheme_Object *
-round (int argc, Scheme_Object *argv[])
+scheme_round (int argc, Scheme_Object *argv[])
 {
   SCHEME_ASSERT ((argc == 1), "round: wrong number of args");
   if (SCHEME_INTP (argv[0]))
