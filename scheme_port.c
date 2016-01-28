@@ -25,7 +25,7 @@
 #include "scheme.h"
 #include <stdio.h>
 
-#define HAS_STANDARD_IOB 1
+/* #define HAS_STANDARD_IOB 1 */
 /* #define HAS_GNU_IOB 1 */
 
 struct Scheme_Indexed_String
@@ -249,7 +249,11 @@ static void
 file_close_input (Scheme_Input_Port *port)
 {
   FILE *fp = (FILE *) port->port_data;
-  fclose (fp);
+  if (fp)
+    {
+	  fclose (fp);
+	  port->port_data = NULL;
+	}
 }
 
 Scheme_Object *
