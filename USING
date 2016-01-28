@@ -1,0 +1,11 @@
+The doc directory contains a paper about libscheme that has examples
+of using libscheme as an interface to a set of library functions.  It
+may be somewhat out-of-date compared to the current libscheme.
+
+The posix directory contains a libscheme interface that extends the
+libscheme interpreter with bindings to the POSIX file system
+interface, and several bindings to the POSIX process interface.
+
+Most of libscheme is implemented with the same interface that
+libscheme users use to extend libscheme.
+

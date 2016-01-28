@@ -1,0 +1,19 @@
+Projects:
+
+* Implement some basic windowing primitives as a library to allow
+libscheme to be used as a UI prototyping tool.
+
+* Implement rest of POSIX library.
+
+* Implement a regexp library.
+
+* Add string ports by abstracting the lower level level pieces of
+scheme_read.c.
+
+* Further reduce consing on function application.
+
+Completed:
+
+* POSIX file library.
+* Generic input and output ports.
+* Reduced consing on function application.

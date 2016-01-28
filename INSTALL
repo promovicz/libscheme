@@ -1,0 +1,44 @@
+libscheme should work on the following systems with little or no
+modification if you have an ANSI C compiler: 
+
+	    Sun 3
+	    Sun 4 under SunOS 4.X or Solaris2.X
+	    Vax under 4.3BSD, Ultrix
+	    Intel 386 or 486 under many operating systems, but not MSDOS.
+	    Sequent Symmetry  (single threaded)
+	    Encore Multimax   (single threaded)
+	    MIPS M/120 (and presumably M/2000) (RISC/os 4.0 with BSD libraries)
+	    IBM PC/RT  (Berkeley UNIX)
+	    IBM RS/6000
+	    HP9000/300
+	    HP9000/700
+	    DECstations under Ultrix
+	    DEC Alpha running OSF/1
+	    SGI workstations under IRIX
+	    Sony News
+	    Apple MacIntosh under A/UX
+	    Commodore Amiga (see README.amiga)
+	    NeXT machines
+            Harris Nighthawk
+
+To compile libscheme:
+
+	1) Edit the Makefile changing the C compiler, compiler flags,
+	and ranlib processor if necessary.
+
+	2) Type `make depend' 
+
+	3) Type `make'
+
+	4) To test the system, type `make test', then run the
+	executable ./test and (load "test.scm").  You may also test
+	R4RS and inexact number features by typing `(test-sc4)' and
+	`(test-inexact)'. In each case you should see a message to the
+	effect of `All tests passed'.  Note that the (test-cont) will
+	always fail because libscheme does not provide upward
+	continuations. 
+	
+	5) For documentation on the architecture of the system and
+	information on extending libscheme, see the doc/ directory.
+
+Send bug reports to Brent.Benson@mail.csd.harris.com.

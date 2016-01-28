@@ -1,0 +1,5 @@
+This directory contains the source and a PostScript version of the
+paper "libscheme: Scheme as a C Library" that will appear in the
+proceedings of the 1994 USENIX Symposium on Very High Level Languages
+(VHLL).  Some of the interfaces may be out of date with the current
+version of libscheme.

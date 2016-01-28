@@ -1,0 +1,887 @@
+\documentstyle{article}
+
+% for final draft
+\pagestyle{empty}
+\oddsidemargin 0.375in
+\evensidemargin 0.375in
+\textwidth 5.875in
+\topmargin 0in
+\textheight 9in
+\headheight 0in
+\footheight 0in
+\headsep 0in
+\footskip 0in
+\flushbottom
+
+\title{\bf libscheme: Scheme as a C Library}
+\author{Brent W. Benson Jr.\\
+{\em Harris Computer Systems\/}\\
+\verb+Brent.Benson@mail.csd.harris.com+}
+\date{}
+
+\begin{document}
+
+\vspace*{0.4in}
+
+\begin{center}
+{\Large\bf libscheme: Scheme as a C Library}\\
+\vspace{0.2in}
+{\large Brent W. Benson Jr.}\\
+{\large\em Harris Computer Systems}\\
+{\large\tt Brent.Benson@mail.csd.harris.com}
+\end{center}
+
+\vspace{0.05in}
+
+\begin{abstract}
+  Because of its small size and simplicity, Scheme is often seen as an
+  ideal extension or scripting language.  While there are many Scheme
+  implementations available, their interfaces are often complex and
+  can get in the way of using the implementation as part of a larger
+  software product.  The \verb+libscheme+ library makes the Scheme
+  language available as a C library.  Its interface is through a
+  single C header file and it is easily extended with new primitive
+  procedures, new primitive types, and new syntax.  It is portable to
+  any system that has an ANSI C compiler and to which Hans Boehm's
+  popular conservative garbage collector~\cite{bib:boehm} has been
+  ported.  It has been used to build a variety of special purpose data
+  manipulation tools, and as an extension language for an ethernet
+  monitor.
+\end{abstract}
+
+\section{Introduction}
+
+% Give an example of why you want a scripting/extension language
+
+There is a long tradition of scripting languages in the Unix
+community, the canonical example being
+\verb+/bin/sh+~\cite{bib:bourne}.  Scripting languages allow the
+programmer to express programming ideas at a high level, and can also
+be designed in such a way that the language interpreter can be
+included as an extension language inside of other programs.  When a
+program provides a powerful extension language to end users, it often
+increases the utility of the program by orders of magnitude (consider
+GNU Emacs and GNU Emacs Lisp as an example).  While in recent years
+there has been an explosion of general purpose extension and scripting
+languages (e.g., Python~\cite{bib:python} and Elk~\cite{bib:elk}), one
+language has had a dramatic increase in popularity and seems to have
+become the de facto extension language.  That language is
+Tcl~\cite{bib:tcl}.
+
+It is the author's opinion that the popularity of Tcl is primarily due
+to the ease with which it can be embedded into C applications (its
+interface is through a single C header file and a standard C library
+archive file) and the ease with which it can be extended with new
+primitive commands.  The \verb+libscheme+ library attempts to learn
+from Tcl's success by making Scheme~\cite{bib:scheme} available as a C
+library and by providing simple ways to extend the language with new
+procedures and syntax.  While Scheme is not as convenient as Tcl in
+the role of an interactive shell program, it has several advantages
+over Tcl with respect to writing scripts:
+
+\begin{enumerate}
+\item Lexical Scope
+\item Nested procedures
+\item A richer set of data types
+\item Extensible syntax
+\end{enumerate}
+
+In addition, \verb+libscheme+ allows the application writer to extend
+the interpreter with new data types that have the same standing as
+built in types.  It also provides a conservative garbage collector
+that can be used by application and extension writers.
+
+\section{Scheme}
+
+Scheme is a small, lexically scoped dialect of Lisp that is based on
+the principle that a programming language should not include
+everything but the kitchen sink, but rather it should provide a
+framework in which it is easy to build the kitchen sink.
+
+\begin{quotation}
+  Programming languages should be designed not by piling feature on
+  top of feature, but by removing the weaknesses and restrictions that
+  make additional features appear necessary.  Scheme demonstrates that
+  a very small number of rules for forming expressions, with no
+  restrictions on how they are composed, suffice to form a practical
+  and efficient programming language that is flexible enough to
+  support most of the major programming paradigms in use
+  today.~\cite{bib:scheme} 
+\end{quotation}
+
+These properties make Scheme a good general purpose programming
+language and also an ideal extension language.  Its conceptual
+simplicity allows it to be implemented with a relatively small number
+of lines of code, while providing powerful high level programming
+constructs such as procedures that can be nested and used as first
+class values, and high-level data structures like lists, vectors and
+strings.  It also removes the burden of memory management from the
+programmer, usually through some sort of garbage collector.  
+
+Scheme supports all major programming paradigms in use today including
+functional, procedural, and object oriented.  It scales well from
+small applications to large software systems.
+
+\subsection{An Example Procedure}
+
+Let us examine a small Scheme procedure to get a feel for the
+language.  The procedure in figure~\ref{fig:split} splits a string of
+characters into a list of strings based on a delimiter character.
+
+\begin{figure}[htbp]
+\begin{center}
+\begin{verbatim}
+(define (split-string string delimiter)
+  (let ((len (string-length string)))
+
+    ; Collect characters until we reach a delimiter character, 
+    ; at which time we extract a field and start looking for
+    ; the next delimiter.
+    ;
+    (define (collect start end)
+      (cond
+       ((= end len)
+        (list (substring string start end)))
+       ((char=? (string-ref string end) delimiter)
+        (cons (substring string start end)
+              (collect (+ end 1) (+ end 1))))
+       (else (collect start (+ end 1)))))
+
+    ; Start at the beginning of the string.
+    ;
+    (collect 0 0)))
+
+\end{verbatim}
+\end{center}  
+  \caption{A sample Scheme function}
+  \label{fig:split}
+\end{figure}
+
+In this example we have a top-level definition of the
+\verb+split-string+ function and an {\em internal definition\/} of the
+\verb+collect+ function.  An internal, or {\em nested\/} function like
+\verb+collect+ has access to all lexical variables in the scope of its
+definition.  More specifically, \verb+collect+ has access to the
+lexical variables \verb+string+, \verb+delimiter+ and \verb+len+.  The
+\verb+let+ special form establishes a series of local variables and
+initial bindings.  In \verb+split-string+ the \verb+let+ establishes
+only the binding of \verb+len+.  The \verb+cond+ special form
+evaluates the test in each of its clauses, performing the clauses
+action(s) when it finds the first test to succeed.  The \verb+else+
+clause of a \verb+cond+ form is executed if no other clause succeeds.
+Scheme also has other standard control constructs like \verb+if+ and
+\verb+case+.
+
+\begin{verbatim}
+> (split-string "brent:WgG6SfAUnX5lQ:5359:100:Brent Benson" #\:)
+("brent" "WgG6SfAUnX5lQ" "5359" "100" "Brent Benson")
+> 
+\end{verbatim}
+
+\subsection{Closures}
+
+Procedures are first class in Scheme, meaning that procedures can be
+assigned to variables, passed as arguments to other procedures, be
+returned from procedures, and be applied to arbitrary arguments.  When
+they are created, procedures ``capture'' variables that are free in
+their bodies.\footnote{A variable is free in a procedure if it is not
+  contained in the parameter list.} Because of this ``closing over,''
+procedures are also known as {\em closures\/} in Scheme.
+
+Closures can be used for a wide variety of purposes.  They can be used
+to represent objects in an object-oriented framework, to model actors,
+to represent partially computed solutions, etc.
+
+Unnamed procedures are created with the \verb+lambda+ special form.
+The existence of unnamed procedures frees the programmer from making
+up names for simple helper functions.  For example, many Scheme
+implementations have a \verb+sort+ procedure that accepts a list or
+vector of elements, and a comparison procedure that is used to
+establish an ordering on the elements.  It is often useful to use an
+unnamed procedure as the comparison function:
+
+\begin{verbatim}
+> (sort '(1 6 3 4) (lambda (n1 n2) (< n1 n2)))
+(1 3 4 6)
+> (sort #("jim" "brent" "jason" "todd") 
+        (lambda (s1 s2) (string<? s1 s2)))
+#("brent" "jason" "jim" "todd")
+\end{verbatim}
+
+Note that \verb+(1 2 3 4)+ is a list of numbers and 
+\verb+#("jim" ...)+ is a vector of strings.
+
+The next example shows the definition of a procedure
+\verb+make-counter+ that returns another procedure created with
+\verb+lambda+ that closes over the \verb+count+ variable.  
+
+\begin{verbatim}
+> (define (make-counter)
+    (let ((count 0))
+      (lambda ()
+        (set! count (+ count 1))
+        count)))
+make-counter
+> (define c1 (make-counter))
+c1
+> (c1)
+1
+> (c1)
+2
+\end{verbatim}
+
+Since no one else has access to \verb+count+ it becomes private to the
+closure and can be modified and used within its context.  In this
+particular case, \verb+count+ is incremented and its value returned
+when the procedure returned from \verb+make-counter+ is called.
+
+\subsection{Syntax}
+
+As you have probably already noticed, Scheme's syntax is Lisp-like.
+All function applications are in fully-parenthesized prefix form.
+While some find this sort of syntax unwieldy, it has the advantage
+that Scheme forms are actually lists which can be easily manipulated
+with standard list primitives.  The \verb+libscheme+ library supports
+the \verb+defmacro+ special form that can be used by end users to
+create new special forms.  A special form is a form that is evaluated
+by special rules.  For example, the \verb+if+ special form only
+evaluates its ``then'' condition if its test expression evaluates to
+true, otherwise it evalutes its ``else'' expression.
+
+These macros are much more powerful than the simple token-based
+substitution macros provided by languages like C.
+
+\section{An Application that Uses {\tt libdwarf}}
+
+The \verb+libscheme+ library makes Scheme available as a C library.
+Its interface is through a single C header file.  Scheme expressions
+can be read from an arbitrary input stream, evaluated with respect to
+a particular environment, and printed to an arbitrary output stream.
+The user can extend the interpreter by adding bindings to the global
+environment.  Each binding can provide a new primitive written in C, a
+new syntax form, a new type, a constant, etc.
+
+\subsection{An Example}
+
+DWARF is a full-featured and complex debugging information
+format~\cite{bib:dwarf}.  Our example program, \verb+dwarfscheme+, is
+an interface that allows the user to browse DWARF information in an
+object file by providing stubs to the
+\verb+libdwarf+~\cite{bib:libdwarf} library.
+Figure~\ref{fig:dialogue} shows a sample \verb+dwarfscheme+ dialogue.
+
+\begin{figure}[htbp]
+\begin{center}
+\begin{verbatim}
+$ ./dwarfscheme
+> (define dbg (dwarf-init "a.out"))
+dbg
+> (define die1 (dwarf-first-die dbg))
+die1
+> (define (dwarf-print-die die)
+    (display (dwarf-tag-string (dwarf-tag die)))
+    (newline)
+    (for-each 
+      (lambda (attr)
+        (display "  ")
+        (display (dwarf-attr-name-string (dwarf-attr-name attr)))
+        (display " ")
+        (write (dwarf-attr-value attr))
+        (newline))
+      (dwarf-attributes die)))
+dwarf-print-die
+> (dwarf-print-die die1)
+DW_TAG_compile_unit
+  DW_AT_comp_dir "CX/UX:/jade2/ccg/brent/misc/package/dwarf"
+  DW_AT_identifier_case 0
+  DW_AT_low_pc 198304
+  DW_AT_high_pc 198344
+  DW_AT_language 2
+  DW_AT_name "t.c"
+  DW_AT_producer "Harris C Compiler - Version build_c_7.1p1_03"
+  DW_AT_stmt_list 0
+#t
+> (exit)
+$ 
+\end{verbatim}
+\end{center}
+  \caption{{\tt dwarfscheme} dialogue}
+  \label{fig:dialogue}
+\end{figure}
+
+In this example the user invokes \verb+dwarfscheme+, opens the file
+\verb+"a.out"+ for DWARF reading, defines a function for printing out
+debugging information entries (DIEs), and prints out the first DIE.
+This example shows how \verb+dwarfscheme+ would be used by an end
+user.  Next, we will examine the way that the \verb+dwarfscheme+
+executable was created using \verb+libscheme+ and the \verb+libdwarf+
+libraries.
+
+The program \verb+dwarfscheme+ is an executable that was produced by
+linking \verb+libscheme+ with a set of DWARF manipulating primitives,
+a read-eval-print loop that initializes the primitives, and the
+\verb+libdwarf+ library that is provided as a system library.  The
+main routine for \verb+dwarfscheme+ appears in
+figure~\ref{fig:simple}.
+
+\begin{figure}[htbp]
+\begin{center}
+\begin{verbatim}
+#include <stdio.h>
+#include "scheme.h"
+#include "dwarfscheme.h"
+
+main()
+{
+  Scheme_Env *env;
+  Scheme_Object *obj;
+
+  env = scheme_basic_env ();
+  init_dwarf (env);
+  scheme_default_handler ();
+  do
+    {
+      printf ("> ");
+      obj = scheme_read (stdin);
+      if (obj == scheme_eof)
+        {
+          printf ("\n; done\n");
+          exit (0);
+        }
+      obj = scheme_eval (obj, env);
+      scheme_write (stdout, obj);
+      printf ("\n");
+    }
+  while ( 1 );
+}
+\end{verbatim}
+\end{center}  
+  \caption{{\tt dwarfscheme} read-eval-print loop}
+  \label{fig:simple}
+\end{figure}
+
+This main routine is a boiler-plate routine that is used when the
+application writer wants to make the application a Scheme
+read-eval-print loop.  The thing that differentiates the main routines
+in different applications is the initializations that are done on the
+environment.  In this case, we create a basic environment containing
+the standard \verb+libscheme+ bindings, and then add the DWARF
+specific bindings to it by calling \verb+init_dwarf()+.  The rest of
+the routine takes care of the business of establishing an error
+handler, printing out a prompt, reading an expression, evaluating the
+expression, and printing out the result.
+
+The application writer can also embed \verb+libscheme+ in an
+application that is not structured as a read-eval-print loop.  For
+example, at program startup a windowing application might initialize a
+\verb+libscheme+ environment, read and evaluate Scheme expressions
+representing configuration information from a user configuration file,
+and then enter its event loop.  The user might bring up a dialog box
+in which she can evaluate Scheme expressions to further configure and
+query the system's state.
+
+The major part of the DWARF initialization routine,
+\verb+init_dwarf()+ appears in figure~\ref{fig:init}.  It consists of
+calls to \verb+scheme_make_type()+ to establish new data types, and
+then several calls to \verb+scheme_add_global()+ to add new global
+bindings to the environment provided as an argument.  Each call to
+\verb+scheme_add_global()+ provides the Scheme name for the global,
+the initial value for the variable (in this case a new primitive that
+points to its C implementation), and an environment to which the
+global should be added.  All routines and variables that are part of
+the \verb+dwarfscheme+ interface begin with a \verb+dw+ prefix, while
+routines and variables from the system-supplied \verb+libdwarf+
+library begin with a \verb+dwarf+ prefix.
+
+\begin{figure}[htbp]
+\begin{center}
+\begin{verbatim}
+static Scheme_Object *dw_debug_type;
+static Scheme_Object *dw_die_type;
+static Scheme_Object *dw_first_die (int argc, Scheme_Object *argv[]);
+...
+void
+init_dw (Scheme_Env *env)
+{
+  dw_debug_type = scheme_make_type ("<debug>");
+  dw_die_type = scheme_make_type ("<die>");
+  dw_attribute_type = scheme_make_type ("<attribute>");
+  scheme_add_global ("dwarf-init", 
+                     scheme_make_prim (dw_init), env);
+  scheme_add_global ("dwarf-first-die", 
+                     scheme_make_prim (dw_first_die), env);
+  scheme_add_global ("dwarf-next-die", 
+                     scheme_make_prim (dw_next_die), env);
+  scheme_add_global ("dwarf-tag", 
+                     scheme_make_prim (dw_tag), env);
+  ...
+}
+\end{verbatim}
+\end{center}  
+  \caption{The DWARF primitive initialization routine}
+  \label{fig:init}
+\end{figure}
+
+This practice of calling an initialization routine with the
+environment for each logical piece of code is only a convention, but
+is a helpful way of organizing \verb+libscheme+ code.  The
+\verb+libscheme+ library itself is organized this way.  Each file
+contains an initialization function that establishes that file's
+primitives.
+
+A sample primitive is shown in figure~\ref{fig:prim}.  Each
+\verb+libscheme+ primitive accepts an argument count and a vector of
+evaluated arguments.  Each primitive procedure is responsible for
+checking the number and type of its arguments.  All Scheme objects are
+represented by the C type \verb+Scheme_Object+ (see
+section~\ref{sec:object}).  The types \verb+Dwarf_Debug+ and
+\verb+Dwarf_Die+ are foreign to \verb+libscheme+ and are provided by
+the \verb+libdwarf+ library.  
+
+\begin{figure}[htbp]
+\begin{center}
+\begin{verbatim}
+static Scheme_Object *
+dw_first_die (int argc, Scheme_Object *argv[])
+{
+  Dwarf_Debug dbg;
+  Dwarf_Die die;
+
+  SCHEME_ASSERT ((argc == 1), 
+                 "dwarf-first-die: wrong number of args");
+  SCHEME_ASSERT (DWARF_DEBUGP (argv[0]), 
+                 "dwarf-first-die: arg must be a debug object");
+  dbg = (Dwarf_Debug) SCHEME_PTR_VAL (argv[0]);
+  die = dwarf_nextdie (dbg, NULL, NULL);
+  if (! die)
+    {
+      return (scheme_false);
+    }
+  else
+    {
+      return (dw_make_die (die));
+    }
+}
+\end{verbatim}
+\end{center}  
+  \caption{A {\tt dwarfscheme} primitive}
+  \label{fig:prim}
+\end{figure}
+
+The \verb+SCHEME_ASSERT()+ macro asserts that a particular form
+evaluates to true, and signals an error otherwise.  The
+\verb+dw_first_die()+ routine first checks for the correct number
+of arguments, then it checks that the first argument is an object with
+type \verb+dw_debug_type+.  Next, it extracts the pointer value
+representing the DWARF information in the file from the first
+argument, a \verb+Scheme_Object+.  It then calls a \verb+libdwarf+
+function, \verb+dwarf_nextdie()+ and returns an appropriate value---a
+new \verb+dw_die_type+ object if there is another DIE, the Scheme
+false value otherwise.  The \verb+dw_make_die()+ routine accepts a
+\verb+Dwarf_Die+ as an argument and returns a \verb+libscheme+ object
+of type \verb+dw_die_type+ that contains a pointer to the
+\verb+Dwarf_Die+ structure.
+
+Now that we have a feel for the way that \verb+libscheme+ is extended,
+we will take a closer look at the design of \verb+libscheme+ itself.
+
+\section{{\tt libscheme} Architecture}
+
+This section describes some specifics of \verb+libscheme+'s
+implementation.  An important feature of its design is that beyond a
+small kernel of routines for memory management, error handling, and
+evaluation, all of its Scheme primitives are implemented in the same
+way as non-\verb+libscheme+ extensions.  This is similar to Tcl's
+implementation strategy.
+
+\subsection{Object Representation}
+\label{sec:object}
+
+Every object in \verb+libscheme+ is an instance of the C structure
+\verb+Scheme_Object+.  Each instance of \verb+Scheme_Object+ contains
+a pointer to a type object (that also happens to be a
+\verb+Scheme_Object+) and two data words.  If an object requires more
+than two words of storage or if the object is some other type of
+foreign C structure, it is stored in a separate memory location and
+pointed to by the \verb+ptr_val+ field.  The actual definition of
+\verb+Scheme_Object+ appears in figure~\ref{fig:schemeobj}.
+
+\begin{figure}[htbp]
+\begin{center}
+\begin{verbatim}
+struct Scheme_Object
+{
+  struct Scheme_Object *type;
+  union
+    {
+      char char_val;
+      int int_val;
+      double double_val;
+      char *string_val;
+      void *ptr_val;
+      struct Scheme_Object *(*prim_val)
+        (int argc, struct Scheme_Object *argv[]);
+      struct Scheme_Object *(*syntax_val)
+        (struct Scheme_Object *form, struct Scheme_Env *env);
+      struct { struct Scheme_Object *car, *cdr; } pair_val;
+      struct { int size; struct Scheme_Object **els; } 
+               vector_val;
+      struct { struct Scheme_Env *env; 
+               struct Scheme_Object *code; } closure_val;
+    } u;
+};
+\end{verbatim}
+\end{center}
+\caption{The definition of {\tt Scheme\_Object}}
+\label{fig:schemeobj}
+\end{figure}
+
+While many Scheme implementations choose to represent certain special
+objects as immediate values (e.g., small integers, characters, the
+empty list, etc.) this approach was not used in \verb+libscheme+
+because the ``everything is an object with a tag approach'' is simpler
+and easier to debug.  A side effect of this decision is that
+\verb+libscheme+ code that does heavy small integer arithmetic will
+allocate garbage that must be collected, in contrast to higher
+performance Scheme implementations that only dynamically allocate very
+large integers.
+
+\subsection{Primitive Functions}
+
+Primitive functions in Scheme are implemented as C functions that take
+two arguments, an argument count and a vector of
+\verb+Scheme_Object+s.  Each primitive is responsible for checking for
+the correct number of arguments---allowing maximum flexibility for
+procedures of variable arity---and for checking the types of its
+arguments.  All arguments to a primitive function are evaluated before
+they are passed to the primitive, following Scheme semantics.  If the
+application writer wants to create a primitive that doesn't evaluate
+its arguments, she must use a syntax primitive.  C functions are
+turned into \verb+libscheme+ primitives with the
+\verb+scheme_make_prim()+ function that accepts the C function as an
+argument and returns a new Scheme object of type
+\verb+scheme_prim_type+. 
+
+\subsection{Primitive Syntax}
+
+The user can add new primitive syntax and special forms to
+\verb+libscheme+.  A \verb+libscheme+ syntax form is implemented as a
+C function that takes two arguments, an expression and an environment
+in which the expression should be evaluated.  The form is passed
+directly to the syntax form with no evaluation performed.  This allows
+the syntax primitive itself to evaluate parts of the form as needed.
+Figure~\ref{fig:if} shows the implementation of the \verb+if+ special
+form.  Note that \verb+if+ cannot be implemented as a procedure
+because it must not evaluate all of its arguments.  The
+\verb+scheme_eval()+ function evaluates a \verb+libscheme+ expression
+with respect to a particular environment.
+
+\begin{figure}[htbp]
+\begin{center}
+\begin{verbatim}
+static Scheme_Object *
+if_syntax (Scheme_Object *form, Scheme_Env *env)
+{
+  int len;
+  Scheme_Object *test, *thenp, *elsep;
+
+  len = scheme_list_length (form);
+  SCHEME_ASSERT (((len == 3) || (len == 4)), 
+                 "badly formed if statement");
+  test = SCHEME_SECOND (form));
+  test = scheme_eval (test, env);
+  if (test != scheme_false)
+    {
+      thenp = SCHEME_THIRD (form);
+      return (scheme_eval (thenp, env));
+    }
+  else
+    {
+      if (len == 4)
+        {
+          elsep = SCHEME_FOURTH (form);
+          return (scheme_eval (elsep, env));
+        }
+      else
+        {
+          return (scheme_false);
+        }
+    }
+}
+\end{verbatim}    
+\end{center}
+  \caption{The {\tt if} special form}
+  \label{fig:if}
+\end{figure}
+
+C functions that represent syntax forms are turned into Scheme objects
+by passing them to the \verb+scheme_make_syntax()+ procedure which
+returns a new object of type \verb+scheme_syntax_type+.
+
+\subsection{Type Extensions}
+
+Scheme as defined in its standard has the following data types:
+boolean, list, symbol, number, character, string, vector, and
+procedure.  While Scheme in its current form does not allow the
+creation of user-defined types, the \verb+libscheme+ system allows
+users to extend the type system with new types by calling the
+\verb+scheme_make_type()+ function with a string representing the name
+of the new type.  This function returns a type object that can be used
+as a type tag in subsequently created objects.  Normally, types are
+created in a file's initialization function and objects of the new
+type are created using a user-defined constructor function that
+allocates and initializes instances of the type.
+
+In figure~\ref{fig:constr} we see the constructor for the
+\verb+dw_debug_type+ type from our \verb+dwarfscheme+ example.  It
+accepts an object of type \verb+Dwarf_Debug+, a pointer to a C
+structure defined in the \verb+libdwarf+ library, allocates a new
+\verb+Scheme_Object+, sets the object type, and stores the pointer to
+the foreign structure into the \verb+ptr_val+ slot of the object.
+
+\begin{figure}[htbp]
+\begin{center}
+\begin{verbatim}
+static Scheme_Object *
+dw_make_debug (Dwarf_Debug dbg)
+{
+  Scheme_Object *debug;
+
+  debug = scheme_alloc_object ();
+  SCHEME_TYPE (debug) = dw_debug_type;
+  SCHEME_PTR_VAL (debug) = dbg;
+  return (debug);
+}
+\end{verbatim}
+\end{center}
+  \caption{An object constructor}
+  \label{fig:constr}
+\end{figure}
+
+It is often convenient to define a macro that checks whether a
+\verb+libscheme+ object is of a specified type.  The macro defined in
+\verb+dwarfscheme+ for the DWARF debug object looks like this:
+\begin{verbatim}
+#define DW_DEBUGP(obj) (SCHEME_TYPE(obj) == dwarf_debug_type)
+\end{verbatim}
+The `P' at the end of \verb+DW_DEBUGP+ indicates that the macro is
+a predicate that returns a true or false value.  All of the builtin
+types have type predicate macros of this form (e.g.,
+\verb+SCHEME_PAIRP+, \verb+SCHEME_VECTORP+, etc.).
+
+\subsection{Environment Representation}
+
+The state of the interpreter is contained in an object of type
+\verb+Scheme_Env+.  The environment contains both global and local
+bindings.  The definition of the \verb+Scheme_Env+ structure is shown
+in figure~\ref{fig:env}.  The global variable bindings are held in a
+hash table.  The local bindings are represented by a vector of
+variables (symbols) and a vector of corresponding values.  An
+environment that holds local variables points to the enclosing
+environment with its \verb+next+ field.  Therefore, variable value
+lookup consists of walking the environment chain, looking for a local
+variable of the correct name.  If no local binding is found, the
+variable is looked for in the global hash table.
+
+\begin{figure}[htbp]
+\begin{center}
+\begin{verbatim}
+struct Scheme_Env
+{
+  int num_bindings;
+  struct Scheme_Object **symbols;
+  struct Scheme_Object **values;
+  Scheme_Hash_Table *globals;
+  struct Scheme_Env *next;
+};
+\end{verbatim}
+\end{center}
+  \caption{The {\tt Scheme\_Env} structure}
+  \label{fig:env}
+\end{figure}
+
+Table~\ref{tab:env} lists the environment manipulation functions.
+Unless the user is adding special forms that create variable bindings,
+she usually only needs to worry about the \verb+scheme_basic_env()+
+and \verb+scheme_add_global()+ functions.  The 
+\verb+scheme_basic_env()+ function is used to create a new environment
+with the standard Scheme bindings which can then be extended with new
+primitives, types, etc. using \verb+scheme_add_global()+.
+
+\begin{table}[htbp]
+\begin{center}
+  \begin{tabular}{ll}
+    \verb+scheme_basic_env ()+ & Return a new \verb+libscheme+ env \\
+    \verb+scheme_add_global (name, val, env)+ & Add a new global binding\\
+    \verb+scheme_add_frame (syms, vals, env)+ & Add a frame of local bindings \\
+    \verb+scheme_pop_frame (env)+ & Pop a local frame \\
+    \verb+scheme_lookup_value (sym, env)+ & Lookup the value of a variable\\
+    \verb+scheme_lookup_global (sym, env)+ & Lookup the value of a global\\
+    \verb+scheme_set_value (sym, val, env)+ & Set the value of a variable\\
+  \end{tabular}
+\end{center}
+  \caption{Environment manipulation functions}
+  \label{tab:env}
+\end{table}
+
+\subsection{Interpreter Interface}
+
+The \verb+libscheme+ functions that are used for reading, evaluating
+and writing expressions are listed in table~\ref{tab:interp}.
+
+\begin{table}[htbp]
+\begin{center}
+  \begin{tabular}{ll}
+    \verb+scheme_read (fp)+ & Read an expression from stream \\
+    \verb+scheme_eval (obj, env)+ & Evaluate an object in environment \\
+    \verb+scheme_write (fp, obj)+ & Write object in machine readable form \\
+    \verb+scheme_display (fp, obj)+ & Write object in human readable form
+  \end{tabular}
+\end{center}
+  \caption{Interpreter functions}
+  \label{tab:interp}
+\end{table}
+
+These functions can be used in the context of a read-eval-print loop
+or called at arbitrary times during program execution.
+
+\subsection{Error Handling}
+
+The \verb+libscheme+ library provides rudimentary error handling
+support.  Errors are signaled using the \verb+scheme_signal_error()+
+function, or by failing the assertion in a \verb+SCHEME_ASSERT()+
+expression.  If the default error handler is installed by calling
+\verb+scheme_default_handler()+, then all uncaught errors will print
+the error message and \verb+abort()+.  Errors can be caught by
+evaluating an expression within a \verb+SCHEME_CATCH_ERROR()+ form.
+This macro evaluates its first argument.  If an error occurs during
+the execution, the value second argument is returned, otherwise, the
+value of the first expression is returned.
+
+\begin{verbatim}
+  obj = scheme_read (stdin);
+  result = SCHEME_CATCH_ERROR (scheme_eval (obj, env), 0);
+  if (result == 0)
+     {
+       /* error handling code */
+     }
+  else
+     {
+       scheme_write (stdout, result);
+     }
+\end{verbatim}
+
+\subsection{Memory Allocation/Garbage Collection}
+
+The \verb+libscheme+ library uses Hans Boehm and Alan Demers'
+conservative garbage collector~\cite{bib:boehm}.  It provides a
+replacement for the C library function \verb+malloc()+ called
+\verb+GC_malloc()+.  The storage that is allocated by
+\verb+GC_malloc()+ is subject to garbage collection.  The collector
+uses a conservative approach, meaning that when it scans for
+accessible objects it treats anything that could possibly point into
+the garbage collected heap as an accessible pointer.  Therefore, it is
+possible that an integer or a floating point number that looks like a
+pointer into this area could be treated as a root and the storage that
+it points to would not be collected.  In practice, this rarely
+happens.
+
+Users of \verb+libscheme+ can use the garbage collector in their own
+program and are strongly encouraged to make use of it when extending
+\verb+libscheme+.  Normally the user can simply call
+\verb+scheme_alloc_object()+ to allocate a new \verb+Scheme_Object+,
+but occasionally other types of objects need to be allocated
+dynamically.
+
+The Boehm/Demers collector is freely available and can run on most any
+32-bit Unix machine.
+
+\section{Pros, Cons and Future Work}
+
+The \verb+libscheme+ library is simple to understand and use.  It
+builds on the powerful semantic base of the Scheme programming
+language.  The library also provides several powerful extensions to
+Scheme including an extensible type system and user defined structure
+types.  
+
+The \verb+libscheme+ interpreter is not very fast.  The primary reason
+is an inefficient function calling sequence that dynamically allocates
+storage, creating unnecessary garbage.  This issue is being addressed
+and future versions should be a great deal more efficient.  In any
+case, \verb+libscheme+ is intended primarily for interactive and
+scripting use for which its performance is already adequate.
+
+When compared to a language like Tcl, Scheme is not as well suited for
+interactive command processing.  A possible solution is to add a
+syntax veneer on top of the parenthetical Scheme syntax for
+interactive use.  On the other hand, Scheme's clean and powerful
+semantics provide a sizeable advantage over Tcl for writing large
+pieces of software.  It also has the advantage of real data types
+rather than Tcl's lowest common denominator ``everything is a string''
+approach.
+
+The \verb+libscheme+ library has already been used in many small
+projects.  The author plans to make \verb+libscheme+ even more useful
+by providing a variety of useful bindings including interfaces to the
+POSIX system calls, a socket library, a regular expression package,
+etc.
+
+\section{Conclusion}
+
+The \verb+libscheme+ library makes Scheme available as a standard C
+library and is easily extended with new primitives, types, and syntax.
+It runs on most Unix workstations including Harris Nighthawks, Suns,
+Intel 386/486 under Linux and OS/2, HP9000s, DECstations and DEC
+Alphas running OSF/1, IBM RS/6000s, NeXT machines and many others.
+Its simplicity and extensibility lends itself to use as an extension
+or scripting language for large systems.  Currently it is being used
+by the DNPAP team at Delf University of Technology in the Netherlands
+as part of their ethernet monitor, and is being evaluated for use in a
+variety of other projects.  The latest version of \verb+libscheme+ can
+be obtained from the Scheme Repository, \verb+ftp.cs.indiana.edu+, in
+the directory \verb+/pub/imp/+.
+
+\begin{thebibliography}{99}
+
+\bibitem{bib:boehm} Hans Boehm and M. Weiser.  {\em Garbage Collection
+    in an Uncooperative Environment\/}.  Software Practice and
+  Experience.  pp. 807-820.  September, 1988.
+
+\bibitem{bib:bourne} Stephen Bourne.  {\em An Introduction to the UNIX
+    Shell\/}.  Berkeley 4.3 UNIX User's Supplementary Documents.  USENIX
+  Association. 
+
+\bibitem{bib:scheme} William Clinger and Jonathan Rees (Editors).
+  {\em Revised\/$^4$ Report on the Algorithmic Language Scheme\/}.
+  Available by anonymous ftp from \verb+altdorf.ai.mit.edu+.  1991.
+
+\bibitem{bib:elk}  Oliver Laumann.  {\em Reference Manual for the Elk
+    Extension Language Kit\/}.  Available by anonymous ftp from
+  \verb+tub.cs.tu-berlin.de+.
+
+\bibitem{bib:tcl} John Ousterhout.  {\em Tcl: an Embeddable Command
+    Language\/}.  Proceedings of the Winter 1990 USENIX Conference.
+  USENIX Association.  1990.
+
+\bibitem{bib:python} Guido van Rossum.  {\em Python Reference
+    Manual\/}.  Release 1.0.2.  Available by anonymous ftp from
+  \verb+ftp.cwi.nl+.  1994.
+
+\bibitem{bib:dwarf} {\em DWARF Debugging Information Format\/}.  Unix
+  International.  Available by anonymous ftp from
+  \verb+dg-rtp.dg.com+.  1994.
+
+\bibitem{bib:libdwarf} {\em DWARF Access Library (libdwarf)\/}.  Unix
+  International.  1994.
+
+\end{thebibliography}
+
+\section*{The Author}
+
+Brent Benson received a BA in Mathematics from the University of
+Rochester 1990 and completed the work for his MS in Computer Science
+at the University of New Hampshire in 1992.  He has been a senior
+software engineer in the small but feisty compiler group at Harris
+Computer Systems since 1992.
+
+\end{document}

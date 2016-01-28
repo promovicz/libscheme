@@ -1,0 +1,39 @@
+The following extensions are provided by libscheme.
+
+(defmacro NAME (ARG1 ARG2 ...) BODY)            ; syntax
+
+	Add additional syntax.
+
+(define-struct NAME (FIELD1 FIELD2 ...))        ; syntax
+
+	Defines a structure type and the following functions:
+
+		(make-NAME INIT1 INIT2 ...)     ; constructor
+		(NAME? obj)                     ; predicate
+		(NAME-FIELD1 INSTANCE)          ; getter
+		(NAME-FIELD2 INSTANCE)          ; getter
+		(set-NAME-FIELD1! INSTANCE VAL) ; setter
+		(set-NAME-FIELD2! INSTANCE VAL) ; setter
+
+(exit [INTEGER])				; function
+
+	Call exit() with optional exit status (0 by default).
+
+(open-input-string STRING)
+
+	Open STRING as an input port and return the port.
+
+(with-input-from-string STRING THUNK)           ; function
+
+	Opens the STRING as the current-input-port and evaluates
+	THUNK. 
+
+(write-to-string OBJECT)
+	
+	Returns a machine-readable representation of the object as a
+	string. 
+
+(display-to-string OBJECT)
+
+	Returns a human-readable representation of the object as a
+	string.

@@ -1,0 +1,5 @@
+Known bugs:
+
+* libscheme does not support full continuations, only escape
+continuations. 
+

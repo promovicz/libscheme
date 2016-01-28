@@ -1,0 +1,14 @@
+New in release 0.5.
+
+Significantly liberalized copyright so that libscheme can be used in
+commercial programs.
+
+Added C++ linkage stuff to header file to facilitate the use of
+libscheme from C++ programs.
+
+Made test interpreter and load function ignore the first line of a
+file if it begins with `#!' in order to facilitate writing executable
+scripts in a Unix environment.
+
+Removed dependence on the `%n' [sf]printf directive so that libscheme
+will work with broken SunOS 4.1.[23] C library.
