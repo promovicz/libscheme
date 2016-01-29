@@ -235,14 +235,15 @@ file_ungetc (int ch, Scheme_Input_Port *port)
 static int
 file_char_ready (Scheme_Input_Port *port)
 {
-  FILE *fp = (FILE *) port->port_data;
 #ifdef HAS_STANDARD_IOB  
+  FILE *fp = (FILE *) port->port_data;
   return (fp->_cnt);
 #elif HAS_GNU_IOB
+  FILE *fp = (FILE *) port->port_data;
   return (fp->_egptr - fp->_gptr);
 #else
   scheme_warning ("char-ready? always returns #f on this platform");
-  return (scheme_false);
+  return (0);
 #endif
 }
 
