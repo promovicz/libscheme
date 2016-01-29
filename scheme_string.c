@@ -387,8 +387,8 @@ strcmp_ci (char *str1, char *str2)
     {
       if (toupper(*str1) == toupper(*str2))
 	{
-	  *str1++;
-	  *str2++;
+	  str1++;
+	  str2++;
 	  continue;
 	}
       else if (toupper(*str1) < toupper(*str2))

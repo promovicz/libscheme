@@ -175,7 +175,7 @@ print_string (char *buf, int index, Scheme_Object *string, int escaped)
 	  buf[index++] = '\\';
 	}
       buf[index++] = *str;
-      *str++;
+      str++;
     }
   if ( escaped )
     {
