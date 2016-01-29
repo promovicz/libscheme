@@ -35,6 +35,16 @@ extern "C"
 {
 #endif
 
+#ifdef __GNUC__
+#define SCHEME_FUN_CONST    __attribute__((const))
+#define SCHEME_FUN_PURE     __attribute__((pure))
+#define SCHEME_FUN_NORETURN __attribute__((noreturn))
+#else
+#define SCHEME_FUN_CONST
+#define SCHEME_FUN_PURE
+#define SCHEME_FUN_NORETURN
+#endif
+
 struct Scheme_Bucket
 {
   char *key;
