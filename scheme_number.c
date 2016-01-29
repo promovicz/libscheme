@@ -443,6 +443,10 @@ abs_prim (int argc, Scheme_Object *argv[])
     {
       return (scheme_make_double (fabs (SCHEME_DBL_VAL(argv[0]))));
     }
+  else
+    {
+	  scheme_signal_error("abs: not a number");
+	}
 }
 
 static Scheme_Object *bin_quotient (Scheme_Object *n1, Scheme_Object *n2);
@@ -800,6 +804,10 @@ number_to_string (int argc, Scheme_Object *argv[])
     {
       return (double_to_string (SCHEME_DBL_VAL(argv[0])));
     }
+  else
+    {
+	  scheme_signal_error("number->string: not a number");
+	}
 }
 
 static Scheme_Object *
