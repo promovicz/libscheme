@@ -24,6 +24,7 @@
 
 #include "scheme.h"
 
+int
 main(int argc, char *argv[])
 {
   Scheme_Env *global_env;
