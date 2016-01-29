@@ -39,6 +39,7 @@ scheme_init_error (Scheme_Env *env)
   scheme_add_global ("exit", scheme_make_prim (scheme_exit), env);
 }
 
+SCHEME_FUN_NORETURN
 void
 scheme_signal_error (char *msg, ...)
 {
