@@ -23,6 +23,7 @@
 */
 
 #include "scheme.h"
+#include <string.h>
 
 #define SCHEME_MAX_PRINT_SIZE 256000
 

@@ -24,6 +24,7 @@
 
 #include "scheme.h"
 #include <string.h>
+#include <ctype.h>
 
 /* globals */
 Scheme_Object *scheme_string_type;

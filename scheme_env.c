@@ -23,6 +23,7 @@
 */
 
 #include "scheme.h"
+#include <ctype.h>
 
 #define GLOBAL_TABLE_SIZE 100313
 #define MAX_SYMBOL_SIZE 1023

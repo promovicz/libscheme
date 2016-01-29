@@ -24,6 +24,7 @@
 
 #include "scheme.h"
 #include <string.h>
+#include <ctype.h>
 
 #define HASH_TABLE_SIZE 1023
 static Scheme_Hash_Table *symbol_table;

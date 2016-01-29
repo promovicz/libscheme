@@ -23,6 +23,7 @@
 */
 
 #include "scheme.h"
+#include <string.h>
 
 struct Scheme_Struct_Proc
 {

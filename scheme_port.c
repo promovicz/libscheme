@@ -23,6 +23,7 @@
 */
 
 #include "scheme.h"
+#include <string.h>
 #include <stdio.h>
 
 /* #define HAS_STANDARD_IOB 1 */
