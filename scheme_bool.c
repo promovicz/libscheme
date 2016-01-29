@@ -40,8 +40,8 @@ static Scheme_Object *eq_prim (int argc, Scheme_Object *argv[]);
 static Scheme_Object *eqv_prim (int argc, Scheme_Object *argv[]);
 static Scheme_Object *equal_prim (int argc, Scheme_Object *argv[]);
 
-static int list_equal (Scheme_Object *lst1, Scheme_Object *lst2);
-static int vector_equal (Scheme_Object *vec1, Scheme_Object *vec2);
+SCHEME_FUN_PURE static int list_equal (Scheme_Object *lst1, Scheme_Object *lst2);
+SCHEME_FUN_PURE static int vector_equal (Scheme_Object *vec1, Scheme_Object *vec2);
 
 void
 scheme_init_bool (Scheme_Env *env)
@@ -149,12 +149,14 @@ equal_prim (int argc, Scheme_Object *argv[])
     }
 }
 
+SCHEME_FUN_CONST
 int 
 scheme_eq (Scheme_Object *obj1, Scheme_Object *obj2)
 {
   return (obj1 == obj2);
 }
 
+SCHEME_FUN_PURE
 int
 scheme_eqv (Scheme_Object *obj1, Scheme_Object *obj2)
 {
@@ -194,6 +196,7 @@ scheme_eqv (Scheme_Object *obj1, Scheme_Object *obj2)
     }
 }
 
+SCHEME_FUN_PURE
 int
 scheme_equal (Scheme_Object *obj1, Scheme_Object *obj2)
 {
@@ -226,6 +229,7 @@ scheme_equal (Scheme_Object *obj1, Scheme_Object *obj2)
     }
 }
 
+SCHEME_FUN_PURE
 static int
 list_equal (Scheme_Object *lst1, Scheme_Object *lst2)
 {
@@ -240,6 +244,7 @@ list_equal (Scheme_Object *lst1, Scheme_Object *lst2)
     }
 }
 
+SCHEME_FUN_PURE
 static int
 vector_equal (Scheme_Object *vec1, Scheme_Object *vec2)
 {

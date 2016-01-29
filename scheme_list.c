@@ -150,6 +150,7 @@ scheme_alloc_list (int size)
   return (first);
 }
 
+SCHEME_FUN_PURE
 int
 scheme_list_length (Scheme_Object *list)
 {
@@ -185,24 +186,28 @@ scheme_map_1 (Scheme_Object *(*fun)(Scheme_Object*), Scheme_Object *lst)
     }
 }
 
+SCHEME_FUN_PURE
 Scheme_Object *
 scheme_car (Scheme_Object *pair)
 {
   return (SCHEME_CAR (pair));
 }
 
+SCHEME_FUN_PURE
 Scheme_Object *
 scheme_cdr (Scheme_Object *pair)
 {
   return (SCHEME_CDR (pair));
 }
 
+SCHEME_FUN_PURE
 Scheme_Object *
 scheme_cadr (Scheme_Object *pair)
 {
   return (SCHEME_CAR (SCHEME_CDR (pair)));
 }
 
+SCHEME_FUN_PURE
 Scheme_Object *
 scheme_caddr (Scheme_Object *pair)
 {

@@ -293,16 +293,16 @@ void scheme_init_promise (Scheme_Env *env);
 void scheme_init_struct (Scheme_Env *env);
 
 /* misc */
-int scheme_eq (Scheme_Object *obj1, Scheme_Object *obj2);
-int scheme_eqv (Scheme_Object *obj1, Scheme_Object *obj2);
-int scheme_equal (Scheme_Object *obj1, Scheme_Object *obj2);
-int scheme_list_length (Scheme_Object *list);
+SCHEME_FUN_CONST int scheme_eq (Scheme_Object *obj1, Scheme_Object *obj2);
+SCHEME_FUN_PURE  int scheme_eqv (Scheme_Object *obj1, Scheme_Object *obj2);
+SCHEME_FUN_PURE  int scheme_equal (Scheme_Object *obj1, Scheme_Object *obj2);
+SCHEME_FUN_PURE  int scheme_list_length (Scheme_Object *list);
 Scheme_Object *scheme_alloc_list (int size);
 Scheme_Object *scheme_map_1 (Scheme_Object *(*fun)(Scheme_Object*), Scheme_Object *lst);
-Scheme_Object *scheme_car (Scheme_Object *pair);
-Scheme_Object *scheme_cdr (Scheme_Object *pair);
-Scheme_Object *scheme_cadr (Scheme_Object *pair);
-Scheme_Object *scheme_caddr (Scheme_Object *pair);
+SCHEME_FUN_PURE  Scheme_Object *scheme_car (Scheme_Object *pair);
+SCHEME_FUN_PURE  Scheme_Object *scheme_cdr (Scheme_Object *pair);
+SCHEME_FUN_PURE  Scheme_Object *scheme_cadr (Scheme_Object *pair);
+SCHEME_FUN_PURE  Scheme_Object *scheme_caddr (Scheme_Object *pair);
 Scheme_Object *scheme_vector_to_list (Scheme_Object *vec);
 Scheme_Object *scheme_list_to_vector (Scheme_Object *list);
 
