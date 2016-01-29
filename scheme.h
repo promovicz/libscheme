@@ -265,7 +265,13 @@ Scheme_Object *scheme_intern_symbol (char *name);
 
 /* initialization */
 Scheme_Env *scheme_basic_env (void);
+void scheme_init_char (Scheme_Env *env);
+void scheme_init_bool (Scheme_Env *env);
 void scheme_init_type (Scheme_Env *env);
+void scheme_init_error (Scheme_Env *env);
+void scheme_init_syntax (Scheme_Env *env);
+void scheme_init_fun (Scheme_Env *env);
+void scheme_init_symbol (Scheme_Env *env);
 void scheme_init_list (Scheme_Env *env);
 void scheme_init_port (Scheme_Env *env);
 void scheme_init_proc (Scheme_Env *env);
