@@ -81,14 +81,19 @@ scheme_make_closure (Scheme_Env *env, Scheme_Object *code)
 }
 
 Scheme_Object *
-scheme_make_cont (jmp_buf buf)
+scheme_make_cont ()
 {
-  Scheme_Object *cont;
+  Scheme_Object *obj;
+  Scheme_Cont *cont;
 
-  cont = scheme_alloc_object ();
-  SCHEME_TYPE (cont) = scheme_cont_type;
-  SCHEME_PTR_VAL (cont) = buf;
-  return (cont);
+  cont = (Scheme_Cont*) scheme_malloc (sizeof(Scheme_Cont));
+  cont->escaped = 0;
+
+  obj = scheme_alloc_object ();
+  SCHEME_TYPE (obj) = scheme_cont_type;
+  SCHEME_CONT_VAL (obj) = cont;
+
+  return (obj);
 }
 
 Scheme_Object *
@@ -222,7 +227,8 @@ scheme_apply (Scheme_Object *rator, int num_rands, Scheme_Object **rands)
     {
       SCHEME_ASSERT ((num_rands == 1),
 		     "apply: wrong number of args to continuation procedure");
-      longjmp ((int *)SCHEME_PTR_VAL(rator), (int)rands[0]);
+	  /* XXX int does not work for us on 64bit. should use TLV/clobal in context */
+      longjmp (SCHEME_CONT_VAL(rator)->buffer, (int)rands[0]);
     }
   else if (fun_type == scheme_struct_proc_type)
     {
@@ -419,19 +425,23 @@ for_each (int argc, Scheme_Object *argv[])
 static Scheme_Object *
 call_cc (int argc, Scheme_Object *argv[])
 {
-  jmp_buf buf;
-  Scheme_Object *ret, *cont;
+  Scheme_Cont *cont;
+  Scheme_Object *ret, *obj;
 
   SCHEME_ASSERT ((argc == 1), "call-with-current-continuation: wrong number of args");
   SCHEME_ASSERT (SCHEME_PROCP (argv[0]), 
 		 "call-with-current-continuation: arg must be a procedure");
-  if (ret = (Scheme_Object *)setjmp (buf))
+
+  obj = scheme_make_cont();
+  cont = SCHEME_CONT_VAL(obj);
+
+  if ((ret = (Scheme_Object *)setjmp (cont->buffer)))
     {
+      cont->escaped = 1;
       return (ret);
     }
   else
     {
-      cont = scheme_make_cont (buf);
-      return (scheme_apply_to_list (argv[0], scheme_make_pair (cont, scheme_null)));
+      return (scheme_apply_to_list (argv[0], scheme_make_pair (obj, scheme_null)));
     }
 }
