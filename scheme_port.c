@@ -771,7 +771,7 @@ write_char (int argc, Scheme_Object *argv[])
 static Scheme_Object *
 load (int argc, Scheme_Object *argv[])
 {
-  Scheme_Object *obj, *ret, *port;
+  Scheme_Object *obj, *ret = scheme_null, *port;
   char *filename;
   FILE *fp;
 

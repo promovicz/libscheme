@@ -110,16 +110,16 @@ scheme_apply_struct_proc (Scheme_Object *sp, Scheme_Object *args)
     default:
       SCHEME_ASSERT ((0), "unknown struct procedure type");
     }
+
+	return scheme_null;
 }
 
 static Scheme_Object *
 define_struct_syntax (Scheme_Object *form, Scheme_Env *env)
 {
-  Scheme_Object *type_symbol, *field_symbols;
-  Scheme_Object *getters, *last_getter;
-  Scheme_Object *setters, *last_setter;
-  Scheme_Object *struct_symbol, *pred_symbol;
-  Scheme_Object *constructor_symbol, *type_obj;
+  Scheme_Object *field_symbols;
+  Scheme_Object *struct_symbol;
+  Scheme_Object *type_obj;
   char *struct_name, *struct_type_name, *field_name;
   int slot_num;
 
@@ -135,7 +135,6 @@ define_struct_syntax (Scheme_Object *form, Scheme_Env *env)
 		     scheme_make_constructor (type_obj, scheme_list_length (field_symbols)), env);
   scheme_add_global (pred_name (struct_name), scheme_make_pred (type_obj), env);
 
-  getters = last_getter = setters = last_setter = scheme_null;
   slot_num = 0;
   while (! SCHEME_NULLP (field_symbols))
     {

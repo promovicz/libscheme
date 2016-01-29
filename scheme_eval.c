@@ -68,7 +68,7 @@ scheme_eval_combination (Scheme_Object *comb, Scheme_Env *env)
 {
   Scheme_Object *rator, *type, *rands;
   Scheme_Object *evaled_rands[SCHEME_MAX_ARGS];
-  Scheme_Object *rand, *fun, *form;
+  Scheme_Object *fun, *form;
   int num_rands, i;
 
   rator = scheme_eval (SCHEME_CAR (comb), env);

@@ -104,8 +104,6 @@ scheme_make_syntax (Scheme_Syntax *proc)
 static Scheme_Object *
 lambda_syntax (Scheme_Object *form, Scheme_Env *env)
 {
-  Scheme_Object *params;
-
   SCHEME_ASSERT (SCHEME_PAIRP(form), "badly formed lambda");
   SCHEME_ASSERT (SCHEME_PAIRP(SCHEME_CDR(form)), "badly formed lambda");
   return (scheme_make_closure (env, SCHEME_CDR(form)));
@@ -114,7 +112,8 @@ lambda_syntax (Scheme_Object *form, Scheme_Env *env)
 static Scheme_Object *
 define_syntax (Scheme_Object *form, Scheme_Env *env)
 {
-  Scheme_Object *var, *val, *sec, *params, *forms;
+  Scheme_Object *var = scheme_null, *val = scheme_null;
+  Scheme_Object *sec, *params, *forms;
 
   sec = SCHEME_CAR (SCHEME_CDR (form));
 
@@ -241,7 +240,7 @@ static Scheme_Object *
 case_syntax (Scheme_Object *form, Scheme_Env *env)
 {
   Scheme_Object *key, *clauses, *clause;
-  Scheme_Object *data, *exprs, *res;
+  Scheme_Object *data, *exprs, *res = scheme_null;
 
   key = SCHEME_CAR (SCHEME_CDR (form));
   clauses = SCHEME_CDR (SCHEME_CDR (form));
@@ -325,8 +324,8 @@ static Scheme_Object *named_let_syntax (Scheme_Object *form, Scheme_Env *env);
 static Scheme_Object *
 let_syntax (Scheme_Object *form, Scheme_Env *env)
 {
-  Scheme_Object *bindings, *binding, *vars, *vals, *ev_vals, *forms, *ret;
-  Scheme_Object *vars_last, *vals_last, *pair, *aform;
+  Scheme_Object *bindings, *binding, *vars, *vals, *forms;
+  Scheme_Object *vars_last, *vals_last, *pair, *aform, *ret = scheme_null;
   int num_int_defs, num_bindings, i;
   Scheme_Env *frame;
 
@@ -454,7 +453,7 @@ named_let_syntax (Scheme_Object *form, Scheme_Env *env)
 static Scheme_Object *
 let_star_syntax (Scheme_Object *form, Scheme_Env *env)
 {
-  Scheme_Object *bindings, *vars, *vals, *ev_vals, *forms, *ret;
+  Scheme_Object *bindings, *vars, *vals, *forms, *ret = scheme_null;
   Scheme_Object *vars_last, *vals_last, *pair, *aform;
   Scheme_Env *frame;
   int num_int_defs, num_bindings, i;
@@ -559,7 +558,7 @@ let_star_syntax (Scheme_Object *form, Scheme_Env *env)
 static Scheme_Object *
 letrec_syntax (Scheme_Object *form, Scheme_Env *env)
 {
-  Scheme_Object *bindings, *vars, *vals, *forms, *res;
+  Scheme_Object *bindings, *vars, *vals, *forms, *res = scheme_null;
   Scheme_Object *vars_last, *vals_last, *pair, *aform;
   int num_int_defs;
 
@@ -673,7 +672,7 @@ do_syntax (Scheme_Object *form, Scheme_Env *env)
   Scheme_Object *second, *third;
   Scheme_Object *vars, *inits, *steps;
   Scheme_Object *test, *finals, *forms;
-  Scheme_Object *ret, *temp, *temp2;
+  Scheme_Object *ret, *temp;
   Scheme_Object *step_first, *step_last, *clause, *pair;
 
   second = SCHEME_CAR (SCHEME_CDR (form));
@@ -780,8 +779,6 @@ static Scheme_Object *quasi (Scheme_Object *x, int level, Scheme_Env *env);
 static Scheme_Object *
 quasiquote_syntax (Scheme_Object *form, Scheme_Env *env)
 {
-  Scheme_Object *template;
-
   SCHEME_ASSERT ((scheme_list_length (form) == 2), "quasiquote(`): wrong number of args");
   return (quasi (SCHEME_CAR (SCHEME_CDR (form)), 0, env));
 }

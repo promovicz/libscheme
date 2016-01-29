@@ -188,7 +188,6 @@ static int
 print_pair (char *str, int index, Scheme_Object *pair, int escaped)
 {
   Scheme_Object *cdr;
-  int num_chars;
 
   str[index++] = '(';
   index = print (str, index, SCHEME_CAR (pair), escaped);
@@ -233,7 +232,6 @@ static int
 print_char (char *str, int index, Scheme_Object *charobj, int escaped)
 {
   char ch;
-  int num_chars;
 
   ch = SCHEME_CHAR_VAL (charobj);
   if (escaped)

@@ -166,31 +166,30 @@ static Scheme_Object *
 read_list (Scheme_Object *port)
 {
   Scheme_Object *obj, *car, *cdr;
-  int ch;
 
   skip_whitespace_comments (port);
   if (peek_char(port) == ')')
     {
-      ch = scheme_getc (port);
+      scheme_getc (port);
       return (scheme_null);
     }
   car = scheme_read (port);
   skip_whitespace_comments (port);
   if (peek_char(port) == ')')
     {
-      ch = scheme_getc (port);
+      scheme_getc (port);
       cdr = scheme_null;
     }
   else if ((peek_char(port) == '.') && isspace (double_peek_char(port)))
     {
-      ch = scheme_getc (port);
+      scheme_getc (port);
       cdr = scheme_read (port);
       skip_whitespace_comments (port);
       if (peek_char(port) != ')')
 	{
 	  scheme_signal_error ("read: malformed list");
 	}
-      ch = scheme_getc (port);
+      scheme_getc (port);
     }
   else
     {
