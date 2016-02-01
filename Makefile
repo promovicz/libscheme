@@ -50,6 +50,11 @@ LIBS+=-lgc
 RANLIB=:
 
 #
+# The size program for some stats
+#
+SIZE=size
+
+#
 # We currently use good old makedepend.
 #
 MAKEDEPEND=makedepend
@@ -79,10 +84,12 @@ SRCS = $(patsubst %.o,%.c,$(OBJS))
 
 scheme: libscheme.a main.o
 	$(CC) $(CFLAGS) $(LIBS) -o scheme main.o libscheme.a
+	$(SIZE) scheme
 
 libscheme.a: $(OBJS)
 	$(AR) rv libscheme.a $(OBJS)
 	$(RANLIB) libscheme.a
+	$(SIZE) libscheme.a
 
 test: scheme
 	./scheme test.scm
