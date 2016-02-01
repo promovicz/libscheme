@@ -426,7 +426,7 @@ static Scheme_Object *
 call_cc (int argc, Scheme_Object *argv[])
 {
   Scheme_Cont *cont;
-  Scheme_Object *ret, *obj;
+  Scheme_Object *ret = scheme_null, *obj;
 
   SCHEME_ASSERT ((argc == 1), "call-with-current-continuation: wrong number of args");
   SCHEME_ASSERT (SCHEME_PROCP (argv[0]), 
