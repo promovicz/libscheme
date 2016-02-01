@@ -74,6 +74,7 @@ struct Scheme_Cont
 {
   int escaped;
   jmp_buf buffer;
+  struct Scheme_Object *retval;
 };
 typedef struct Scheme_Cont Scheme_Cont;
 

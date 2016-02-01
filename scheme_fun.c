@@ -88,6 +88,7 @@ scheme_make_cont ()
 
   cont = (Scheme_Cont*) scheme_malloc (sizeof(Scheme_Cont));
   cont->escaped = 0;
+  cont->retval = scheme_null;
 
   obj = scheme_alloc_object ();
   SCHEME_TYPE (obj) = scheme_cont_type;
@@ -225,10 +226,15 @@ scheme_apply (Scheme_Object *rator, int num_rands, Scheme_Object **rands)
     }
   else if (fun_type == scheme_cont_type)
     {
+      Scheme_Cont *cont = SCHEME_CONT_VAL(rator);
       SCHEME_ASSERT ((num_rands == 1),
-		     "apply: wrong number of args to continuation procedure");
-	  /* XXX int does not work for us on 64bit. should use TLV/clobal in context */
-      longjmp (SCHEME_CONT_VAL(rator)->buffer, (int)rands[0]);
+                     "apply: wrong number of args to continuation procedure");
+      if (cont->escaped == 0)
+        {
+          scheme_signal_error("apply: continuation has been escaped");
+        }
+      cont->retval = rands[0];
+      longjmp (cont->buffer, 0);
     }
   else if (fun_type == scheme_struct_proc_type)
     {
@@ -435,13 +441,17 @@ call_cc (int argc, Scheme_Object *argv[])
   obj = scheme_make_cont();
   cont = SCHEME_CONT_VAL(obj);
 
-  if ((ret = (Scheme_Object *)setjmp (cont->buffer)))
+  if (setjmp (cont->buffer))
     {
-      cont->escaped = 1;
-      return (ret);
+      ret = cont->retval;
+      cont->retval = scheme_null;
     }
   else
     {
       return (scheme_apply_to_list (argv[0], scheme_make_pair (obj, scheme_null)));
     }
+
+  cont->escaped = 1;
+
+  return (ret);
 }
