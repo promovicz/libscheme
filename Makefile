@@ -59,7 +59,8 @@ SIZE=size
 #
 MAKEDEPEND=makedepend
 
-OBJS =  scheme_alloc.o \
+OBJS = \
+	scheme_alloc.o \
 	scheme_bool.o \
 	scheme_char.o \
 	scheme_env.o \
