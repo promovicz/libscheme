@@ -71,26 +71,7 @@ OBJS =  scheme_alloc.o \
 	scheme_type.o \
 	scheme_vector.o
 
-SRCS =  scheme_alloc.c \
-	scheme_bool.c \
-	scheme_char.c \
-	scheme_env.c \
-	scheme_error.c \
-	scheme_eval.c \
-	scheme_fun.c \
-	scheme_hash.c \
-	scheme_list.c \
-	scheme_number.c \
-	scheme_port.c \
-	scheme_print.c \
-	scheme_promise.c \
-	scheme_read.c \
-	scheme_string.c \
-	scheme_struct.c \
-	scheme_symbol.c \
-	scheme_syntax.c \
-	scheme_type.c \
-	scheme_vector.c
+SRCS = $(patsubst %.o,%.c,$(OBJS))
 
 scheme: libscheme.a main.o
 	$(CC) $(CFLAGS) $(LIBS) -o scheme main.o libscheme.a
