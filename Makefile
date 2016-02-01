@@ -102,7 +102,8 @@ depend: $(SRCS)
 .PHONY: depend
 
 clean:
-	$(RM) -f $(OBJS) scheme main.o libscheme.a \
-	libscheme.aux libscheme.dvi libscheme.log tmp1 tmp2 tmp3
-
-# DO NOT DELETE THIS LINE -- make depend depends on it.
+	$(RM) -f \
+		Makedepends $(OBJS) scheme main.o \
+		libscheme.a libscheme.aux libscheme.dvi libscheme.log \
+		tmp1 tmp2 tmp3
+.PHONY: clean
