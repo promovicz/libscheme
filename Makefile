@@ -96,6 +96,10 @@ test: scheme
 	rm tmp1 tmp2 tmp3
 .PHONY: test
 
+cscope: $(SRCS)
+	cscope -b $(CCINCLUDEFLAGS) $(SRCS)
+.PHONY: cscope
+
 depend: $(SRCS)
 	touch Makedepends
 	$(MAKEDEPEND) -f Makedepends $(CCINCLUDEFLAGS) -- $(CFLAGS) -- $(SRCS)
