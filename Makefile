@@ -84,6 +84,11 @@ libscheme.a: $(OBJS)
 
 depend:
 	$(MAKEDEPEND) $(CCINCLUDEFLAGS) -- $(CFLAGS) -- $(SRCS)
+test: scheme
+	./scheme test.scm
+	rm tmp1 tmp2 tmp3
+.PHONY: test
+
 
 clean:
 	$(RM) -f $(OBJS) scheme main.o libscheme.a \
