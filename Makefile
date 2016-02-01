@@ -11,17 +11,19 @@ CC?=cc
 # Determine compiler include paths.
 #
 CCINCLUDE:=$(shell ./conf-includes $(CC))
-CCINCLUDEARGS:=$(CCINCLUDE:%=-I%)
+CCINCLUDEFLAGS:=$(CCINCLUDE:%=-I%)
+
+CFLAGS?=-I.
 
 #
 # Optimization and debugging flags go here.
 #
-CFLAGS?=-O3 -g
+CFLAGS+=-O3 -g
 
 #
 # We want lots of warnings.
 #
-CFLAGS?=-Wall -Wextra -Wno-unused-parameter
+CFLAGS+=-Wall -Wextra -Wno-unused-parameter
 
 #
 # GCC can suggest pure, const and noreturn candidate functions.
@@ -81,7 +83,7 @@ libscheme.a: $(OBJS)
 	$(RANLIB) libscheme.a
 
 depend:
-	$(MAKEDEPEND) $(CCINCLUDEARGS) -- $(CFLAGS) -- $(SRCS)
+	$(MAKEDEPEND) $(CCINCLUDEFLAGS) -- $(CFLAGS) -- $(SRCS)
 
 clean:
 	$(RM) -f $(OBJS) scheme main.o libscheme.a \
