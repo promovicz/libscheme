@@ -1,6 +1,10 @@
 #!/bin/sh
+#
+# Detects the include path of a C-like compiler.
+#
+# Uses magic that probably only some modern compilers support.
+#
 
 COMPILER=$1
 
 $COMPILER -E - -v < /dev/null 2>&1 >/dev/null | sed -n -e '/#include <...> search starts here:/,/End of search list./ p' | grep ' /' | tr '\n' ' '
-
