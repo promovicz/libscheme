@@ -2,8 +2,6 @@
 # Makefile for libscheme
 #
 
--include Makedepends
-
 #
 # This must be an ANSI C compiler.
 #
@@ -101,6 +99,7 @@ cscope: $(SRCS)
 	cscope -b $(CCINCLUDEFLAGS) $(SRCS)
 .PHONY: cscope
 
+-include Makedepends
 depend: $(SRCS)
 	touch Makedepends
 	$(MAKEDEPEND) -f Makedepends $(CCINCLUDEFLAGS) -- $(CFLAGS) -- $(SRCS)
