@@ -152,11 +152,12 @@ static Scheme_Object *
 scheme_make_instance (Scheme_Object *type, int num_fields)
 {
   Scheme_Object *inst;
+  Scheme_Object **els;
 
-  inst = scheme_alloc_object ();
-  SCHEME_TYPE (inst) = type;
+  inst = scheme_alloc_object (type, num_fields * sizeof(Scheme_Object*));
+  els = (Scheme_Object **) SCHEME_PTR_VAL(inst);
   SCHEME_VEC_SIZE (inst) = num_fields;
-  SCHEME_VEC_ELS (inst) = (Scheme_Object **) scheme_malloc (sizeof (Scheme_Object*));
+  SCHEME_VEC_ELS (inst) = els;
   return (inst);
 }
 
@@ -166,13 +167,11 @@ scheme_make_struct_proc (Scheme_Object *type, int proc_type, int field_num)
   Scheme_Object *obj;
   Scheme_Struct_Proc *proc;
 
-  proc = (Scheme_Struct_Proc *) scheme_malloc (sizeof (Scheme_Struct_Proc));
+  obj = scheme_alloc_object (scheme_struct_proc_type, sizeof(Scheme_Struct_Proc));
+  proc = (Scheme_Struct_Proc *) SCHEME_PTR_VAL(obj);
   proc->struct_type = type;
   proc->proc_type = proc_type;
   proc->slot_num = field_num;
-  obj = scheme_alloc_object ();
-  SCHEME_TYPE (obj) = scheme_struct_proc_type;
-  SCHEME_PTR_VAL (obj) = proc;
   return (obj);
 }
 

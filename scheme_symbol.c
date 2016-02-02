@@ -61,10 +61,16 @@ Scheme_Object *
 scheme_make_symbol (char *name)
 {
   Scheme_Object *sym;
+  size_t len = strlen(name);
+  char *new;
 
-  sym = scheme_alloc_object ();
-  SCHEME_TYPE (sym) = scheme_symbol_type;
-  SCHEME_STR_VAL (sym) = scheme_strdup (name);
+  sym = scheme_alloc_object (scheme_symbol_type, len + 1);
+  new = SCHEME_PTR_VAL(sym);
+  if(len > 0) {
+    memcpy(new, name, len);
+  }
+  new[len] = 0;
+  SCHEME_STR_VAL(sym) = new;
   return (sym);
 }
 

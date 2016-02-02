@@ -139,8 +139,7 @@ scheme_make_integer (int i)
 {
   Scheme_Object *si;
 
-  si = scheme_alloc_object ();
-  SCHEME_TYPE (si) = scheme_integer_type;
+  si = scheme_alloc_object (scheme_integer_type, 0);
   SCHEME_INT_VAL (si) = i;
   return (si);
 }
@@ -150,8 +149,7 @@ scheme_make_double (double d)
 {
   Scheme_Object *sd;
 
-  sd = scheme_alloc_object ();
-  SCHEME_TYPE (sd) = scheme_double_type;
+  sd = scheme_alloc_object (scheme_double_type, 0);
   SCHEME_DBL_VAL (sd) = d;
   return (sd);
 }

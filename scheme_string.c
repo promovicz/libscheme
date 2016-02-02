@@ -88,22 +88,32 @@ Scheme_Object *
 scheme_make_string (char *chars)
 {
   Scheme_Object *str;
-  
-  str = scheme_alloc_object ();
-  SCHEME_TYPE (str) = scheme_string_type;
-  SCHEME_STR_VAL (str) = scheme_strdup (chars);
+  size_t len = strlen(chars);
+  char *new;
+
+  str = scheme_alloc_object (scheme_string_type, len + 1);
+  new = SCHEME_PTR_VAL(str);
+  if(len > 0) {
+    memcpy(new, chars, len);
+  }
+  new[len] = 0;
+  SCHEME_STR_VAL(str) = new;
   return (str);
 }
 
 Scheme_Object *
 scheme_alloc_string (int size, char fill)
 {
-  Scheme_Object *str;
   int i;
+  size_t nbytes = sizeof(Scheme_Object) + (size + 1) * sizeof(char);
+  Scheme_Object *str;
+  char *val;
+
+  str = scheme_malloc (nbytes);
+  val = (char*)(&str[1]);
   
-  str = scheme_alloc_object ();
   SCHEME_TYPE (str) = scheme_string_type;
-  SCHEME_STR_VAL (str) = (char *) scheme_malloc (sizeof (char) * (size+1));
+  SCHEME_STR_VAL (str) = val;
   for ( i=0 ; i<size ; ++i )
     {
       SCHEME_STR_VAL(str)[i] = fill;

@@ -82,8 +82,7 @@ scheme_make_char (char ch)
 {
   Scheme_Object *sc;
 
-  sc = scheme_alloc_object ();
-  SCHEME_TYPE (sc) = scheme_char_type;
+  sc = scheme_alloc_object (scheme_char_type, 0);
   SCHEME_CHAR_VAL (sc) = ch;
   return (sc);
 }

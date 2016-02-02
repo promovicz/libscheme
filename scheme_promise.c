@@ -52,13 +52,11 @@ scheme_make_promise (Scheme_Object *expr, Scheme_Env *env)
   Scheme_Object *obj;
   Scheme_Promise *promise;
 
-  promise = (Scheme_Promise *) scheme_malloc (sizeof (Scheme_Promise));
+  obj = scheme_alloc_object (scheme_promise_type, sizeof(Scheme_Promise));
+  promise = (Scheme_Promise *) SCHEME_PTR_VAL(obj);
   promise->forced = 0;
   promise->val = expr;
   promise->env = env;
-  obj = scheme_alloc_object ();
-  SCHEME_TYPE (obj) = scheme_promise_type;
-  SCHEME_PTR_VAL (obj) = promise;
   return (obj);
 }
 

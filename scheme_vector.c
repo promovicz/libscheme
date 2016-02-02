@@ -61,13 +61,17 @@ scheme_init_vector (Scheme_Env *env)
 Scheme_Object *
 scheme_make_vector (int size, Scheme_Object *fill)
 {
-  Scheme_Object *vec;
   int i;
+  Scheme_Object *vec, **els;
+  size_t nbytes = sizeof(Scheme_Object) + sizeof(Scheme_Object*) * size;
 
-  vec = scheme_alloc_object ();
+  vec = (Scheme_Object *)scheme_malloc(nbytes);
+  els = (Scheme_Object **)(&vec[1]);
+
   SCHEME_TYPE(vec) = scheme_vector_type;
   SCHEME_VEC_SIZE(vec) = size;
-  SCHEME_VEC_ELS(vec) = (Scheme_Object**)scheme_malloc(sizeof(Scheme_Object*)*size);
+  SCHEME_VEC_ELS(vec) = els;
+
   for ( i=0 ; i<size ; ++i )
     {
       SCHEME_VEC_ELS(vec)[i] = fill;

@@ -130,14 +130,10 @@ scheme_init_port (Scheme_Env *env)
 static Scheme_Object *
 scheme_make_eof (void)
 {
-  Scheme_Object *eof;
-
-  eof = scheme_alloc_object ();
-  SCHEME_TYPE (eof) = scheme_eof_type;
-  return (eof);
+  return scheme_alloc_object(scheme_eof_type, 0);
 }
 
-Scheme_Input_Port *
+Scheme_Object *
 scheme_make_input_port (Scheme_Object *subtype,
 			void *data,
 			int (*getc_fun) (Scheme_Input_Port*),
@@ -145,32 +141,36 @@ scheme_make_input_port (Scheme_Object *subtype,
 			int (*char_ready_fun) (Scheme_Input_Port*),
 			void (*close_fun) (Scheme_Input_Port*))
 {
+  Scheme_Object *obj;
   Scheme_Input_Port *ip;
 
-  ip = (Scheme_Input_Port *) scheme_malloc (sizeof (Scheme_Input_Port));
+  obj = scheme_alloc_object(scheme_input_port_type, sizeof(Scheme_Input_Port));
+  ip = (Scheme_Input_Port *) SCHEME_PTR_VAL(obj);
   ip->sub_type = subtype;
   ip->port_data = data;
   ip->getc_fun = getc_fun;
   ip->ungetc_fun = ungetc_fun;
   ip->char_ready_fun = char_ready_fun;
   ip->close_fun = close_fun;
-  return (ip);
+  return (obj);
 }
 
-Scheme_Output_Port *
+Scheme_Object *
 scheme_make_output_port (Scheme_Object *subtype,
 			 void *data,
 			 void (*write_string_fun) (char *str, Scheme_Output_Port*),
 			 void (*close_fun) (Scheme_Output_Port*))
 {
+  Scheme_Object *obj;
   Scheme_Output_Port *op;
 
-  op = (Scheme_Output_Port *) scheme_malloc (sizeof (Scheme_Output_Port));
+  obj = scheme_alloc_object(scheme_output_port_type, sizeof(Scheme_Output_Port));
+  op = (Scheme_Output_Port *) SCHEME_PTR_VAL(obj);
   op->sub_type = subtype;
   op->port_data = data;
   op->write_string_fun = write_string_fun;
   op->close_fun = close_fun;
-  return (op);
+  return (obj);
 }
 
 int
@@ -261,19 +261,13 @@ file_close_input (Scheme_Input_Port *port)
 Scheme_Object *
 scheme_make_file_input_port (FILE *fp)
 {
-  Scheme_Object *port;
-  Scheme_Input_Port *ip;
-
-  port = scheme_alloc_object ();
-  SCHEME_TYPE (port) = scheme_input_port_type;
-  SCHEME_PTR_VAL (port) = 
-    scheme_make_input_port (scheme_file_input_port_type,
+  return scheme_make_input_port (
+                scheme_file_input_port_type,
 			    fp,
 			    file_getc,
 			    file_ungetc,
 			    file_char_ready,
 			    file_close_input);
-  return (port);
 }
 
 /* string input ports */
@@ -336,18 +330,12 @@ scheme_make_indexed_string (char *str)
 Scheme_Object *
 scheme_make_string_input_port (char *str)
 {
-  Scheme_Object *port;
-
-  port = scheme_alloc_object ();
-  SCHEME_TYPE (port) = scheme_input_port_type;
-  SCHEME_PTR_VAL (port) =
-    scheme_make_input_port (scheme_string_input_port_type,
+  return scheme_make_input_port (scheme_string_input_port_type,
 			    scheme_make_indexed_string (str),
 			    string_getc,
 			    string_ungetc,
 			    string_char_ready,
 			    string_close);
-  return (port);
 }
 
 /* file output ports */
@@ -369,16 +357,10 @@ file_close_output (Scheme_Output_Port *port)
 Scheme_Object *
 scheme_make_file_output_port (FILE *fp)
 {
-  Scheme_Object *port;
-
-  port = scheme_alloc_object ();
-  SCHEME_TYPE(port) = scheme_output_port_type;
-  SCHEME_PTR_VAL(port) = 
-    scheme_make_output_port (scheme_file_output_port_type,
+  return scheme_make_output_port (scheme_file_output_port_type,
 			     fp,
 			     file_write_string,
 			     file_close_output);
-  return (port);
 }
 
 static Scheme_Object *

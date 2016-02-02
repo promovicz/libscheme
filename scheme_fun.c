@@ -62,8 +62,7 @@ scheme_make_prim (Scheme_Prim *fun)
 {
   Scheme_Object *prim;
 
-  prim = scheme_alloc_object ();
-  SCHEME_TYPE (prim) = scheme_prim_type;
+  prim = scheme_alloc_object (scheme_prim_type, 0);
   SCHEME_PRIM (prim) = fun;
   return (prim);
 }
@@ -73,8 +72,7 @@ scheme_make_closure (Scheme_Env *env, Scheme_Object *code)
 {
   Scheme_Object *closure;
 
-  closure = scheme_alloc_object ();
-  SCHEME_TYPE (closure) = scheme_closure_type;
+  closure = scheme_alloc_object (scheme_closure_type, 0);
   SCHEME_CLOS_ENV (closure) = env;
   SCHEME_CLOS_CODE (closure) = code;
   return (closure);
@@ -86,14 +84,11 @@ scheme_make_cont ()
   Scheme_Object *obj;
   Scheme_Cont *cont;
 
-  cont = (Scheme_Cont*) scheme_malloc (sizeof(Scheme_Cont));
+  obj = scheme_alloc_object (scheme_cont_type, sizeof(Scheme_Cont));
+  cont = SCHEME_PTR_VAL(obj);
   cont->escaped = 0;
   cont->retval = scheme_null;
-
-  obj = scheme_alloc_object ();
-  SCHEME_TYPE (obj) = scheme_cont_type;
   SCHEME_CONT_VAL (obj) = cont;
-
   return (obj);
 }
 

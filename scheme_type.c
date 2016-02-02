@@ -39,9 +39,15 @@ Scheme_Object *
 scheme_make_type (char *name)
 {
   Scheme_Object *type;
+  size_t len = strlen(name);
+  char *new;
 
-  type = scheme_alloc_object ();
-  SCHEME_TYPE(type) = scheme_type_type;
-  SCHEME_STR_VAL(type) = scheme_strdup (name);
+  type = scheme_alloc_object (scheme_type_type, len + 1);
+  new = SCHEME_PTR_VAL(type);
+  if(len > 0) {
+    memcpy(new, name, len);
+  }
+  new[len] = 0;
+  SCHEME_STR_VAL(type) = new;
   return (type);
 }

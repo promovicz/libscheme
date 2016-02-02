@@ -62,21 +62,13 @@ scheme_init_bool (Scheme_Env *env)
 static Scheme_Object *
 scheme_make_true (void)
 {
-  Scheme_Object *true;
-
-  true = scheme_alloc_object ();
-  SCHEME_TYPE (true) = scheme_true_type;
-  return (true);
+  return scheme_alloc_object(scheme_true_type, 0);
 }
 
 static Scheme_Object *
 scheme_make_false (void)
 {
-  Scheme_Object *false;
-
-  false = scheme_alloc_object ();
-  SCHEME_TYPE (false) = scheme_false_type;
-  return (false);
+  return scheme_alloc_object(scheme_false_type, 0);
 }
 
 static Scheme_Object *

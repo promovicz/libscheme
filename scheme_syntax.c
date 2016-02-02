@@ -93,8 +93,7 @@ scheme_make_syntax (Scheme_Syntax *proc)
 {
   Scheme_Object *syntax;
 
-  syntax = scheme_alloc_object ();
-  SCHEME_TYPE (syntax) = scheme_syntax_type;
+  syntax = scheme_alloc_object (scheme_syntax_type, 0);
   SCHEME_SYNTAX (syntax) = proc;
   return (syntax);
 }
@@ -871,10 +870,11 @@ defmacro_syntax (Scheme_Object *form, Scheme_Env *env)
   SCHEME_ASSERT (SCHEME_SYMBOLP (name), "defmacro: second arg must be a symbol");
   code = SCHEME_CDR (SCHEME_CDR (form));
   fun = scheme_make_closure (env, code);
-  
-  macro = scheme_alloc_object ();
-  SCHEME_TYPE (macro) = scheme_macro_type;
+
+  macro = scheme_alloc_object (scheme_macro_type, 0);
   SCHEME_PTR_VAL (macro) = fun;
+
   scheme_add_global (SCHEME_STR_VAL (name), macro, env);
+
   return (macro);
 }

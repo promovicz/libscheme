@@ -108,11 +108,7 @@ scheme_init_list (Scheme_Env *env)
 static Scheme_Object *
 scheme_make_null (void)
 {
-  Scheme_Object *null;
-
-  null = scheme_alloc_object ();
-  SCHEME_TYPE (null) = scheme_null_type;
-  return (null);
+  return scheme_alloc_object (scheme_null_type, 0);
 }
 
 Scheme_Object *
@@ -120,8 +116,7 @@ scheme_make_pair (Scheme_Object *car, Scheme_Object *cdr)
 {
   Scheme_Object *cons;
 
-  cons = scheme_alloc_object ();
-  SCHEME_TYPE(cons) = scheme_pair_type;
+  cons = scheme_alloc_object (scheme_pair_type, 0);
   SCHEME_CAR(cons) = car;
   SCHEME_CDR(cons) = cdr;
   return (cons);

@@ -187,7 +187,7 @@ void scheme_debug_print (Scheme_Object *obj);
 Scheme_Object *scheme_apply (Scheme_Object *rator, int num_rands, Scheme_Object **rands);
 Scheme_Object *scheme_apply_to_list (Scheme_Object *rator, Scheme_Object *rands);
 Scheme_Object *scheme_apply_struct_proc (Scheme_Object *rator, Scheme_Object *rands);
-Scheme_Object *scheme_alloc_object (void);
+Scheme_Object *scheme_alloc_object (Scheme_Object *type, size_t nbytes);
 void *scheme_malloc (size_t size);
 void *scheme_calloc (size_t num, size_t size);
 char *scheme_strdup (char *str);
@@ -245,7 +245,7 @@ int scheme_char_ready (Scheme_Object *port);
 void scheme_close_input_port (Scheme_Object *port);
 void scheme_close_output_port (Scheme_Object *port);
 
-Scheme_Input_Port *
+Scheme_Object *
 scheme_make_input_port (
   Scheme_Object *subtype,
   void *data,
@@ -254,7 +254,7 @@ scheme_make_input_port (
   int (*char_ready_fun) (Scheme_Input_Port*),
   void (*close_fun) (Scheme_Input_Port*)
 );
-Scheme_Output_Port *
+Scheme_Object *
 scheme_make_output_port (
   Scheme_Object *subtype,
   void *data,
