@@ -165,7 +165,7 @@ read_char (Scheme_Object *port)
 static Scheme_Object *
 read_list (Scheme_Object *port)
 {
-  Scheme_Object *obj, *car, *cdr;
+  Scheme_Object *car, *cdr;
 
   skip_whitespace_comments (port);
   if (peek_char(port) == ')')

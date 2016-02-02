@@ -371,7 +371,7 @@ append (Scheme_Object *lst1, Scheme_Object *lst2)
 static Scheme_Object *
 reverse_prim (int argc, Scheme_Object *argv[])
 {
-  Scheme_Object *lst, *cur, *last;
+  Scheme_Object *lst, *last;
 
   SCHEME_ASSERT ((argc == 1), "reverse: wrong number of args");
   last = scheme_null;
