@@ -103,6 +103,7 @@ cscope: $(SRCS)
 depend: $(SRCS)
 	touch Makedepends
 	$(MAKEDEPEND) -f Makedepends $(CCINCLUDEFLAGS) -- $(CFLAGS) -- $(SRCS)
+	rm Makedepends.bak
 .PHONY: depend
 
 clean:
