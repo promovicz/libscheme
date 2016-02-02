@@ -13,6 +13,9 @@ CC?=cc
 CCINCLUDE:=$(shell ./conf-includes $(CC))
 CCINCLUDEFLAGS:=$(CCINCLUDE:%=-I%)
 
+#
+# Use local includes.
+#
 CFLAGS?=-I.
 
 #
