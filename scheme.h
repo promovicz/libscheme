@@ -90,9 +90,9 @@ struct Scheme_Object
       struct Scheme_Cont *cont_val;
       struct { void *ptr1, *ptr2; } two_ptr_val;
       struct Scheme_Object *(*prim_val)
-	(int argc, struct Scheme_Object *argv[]);
+        (int argc, struct Scheme_Object *argv[]);
       struct Scheme_Object *(*syntax_val)
-	(struct Scheme_Object *form, struct Scheme_Env *env);
+        (struct Scheme_Object *form, struct Scheme_Env *env);
       struct { struct Scheme_Object *car, *cdr; } pair_val;
       struct { int size; struct Scheme_Object **els; } vector_val;
       struct { struct Scheme_Env *env; struct Scheme_Object *code; } closure_val;
