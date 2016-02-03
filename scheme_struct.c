@@ -8,7 +8,7 @@
   software and its documentation for any purpose, provided that the
   above copyright notice and the following two paragraphs appear in
   all copies of this software.
- 
+
   IN NO EVENT SHALL BRENT BENSON BE LIABLE TO ANY PARTY FOR DIRECT,
   INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT
   OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF BRENT
@@ -126,12 +126,12 @@ define_struct_syntax (Scheme_Object *form, Scheme_Env *env)
   struct_symbol = SCHEME_CAR (SCHEME_CDR (form));
   field_symbols = SCHEME_CAR (SCHEME_CDR (SCHEME_CDR (form)));
   struct_name = SCHEME_STR_VAL (struct_symbol);
-  
+
   struct_type_name = type_name (struct_name);
   type_obj = scheme_make_type (struct_type_name);
   scheme_add_global (struct_type_name, type_obj, env);
 
-  scheme_add_global (constructor_name (struct_name), 
+  scheme_add_global (constructor_name (struct_name),
 		     scheme_make_constructor (type_obj, scheme_list_length (field_symbols)), env);
   scheme_add_global (pred_name (struct_name), scheme_make_pred (type_obj), env);
 
@@ -271,7 +271,7 @@ setter_name (char *struct_name, char *field_name)
   set_len = 4;			/* strlen ("set-") */
   dash_len = 1;			/* strlen ("-") */
   bang_len = 1;			/* strlen ("!") */
-  name = (char *) 
+  name = (char *)
     scheme_malloc (sizeof (char)*(set_len + name_len + dash_len + field_len + bang_len + 1));
   strcpy (name, "set-");
   strcat (name, struct_name);
@@ -280,4 +280,3 @@ setter_name (char *struct_name, char *field_name)
   strcat (name, "!");
   return (name);
 }
-

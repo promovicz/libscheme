@@ -8,7 +8,7 @@
   software and its documentation for any purpose, provided that the
   above copyright notice and the following two paragraphs appear in
   all copies of this software.
- 
+
   IN NO EVENT SHALL BRENT BENSON BE LIABLE TO ANY PARTY FOR DIRECT,
   INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT
   OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF BRENT

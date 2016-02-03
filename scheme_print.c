@@ -8,7 +8,7 @@
   software and its documentation for any purpose, provided that the
   above copyright notice and the following two paragraphs appear in
   all copies of this software.
- 
+
   IN NO EVENT SHALL BRENT BENSON BE LIABLE TO ANY PARTY FOR DIRECT,
   INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT
   OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF BRENT
@@ -84,12 +84,12 @@ scheme_write_string (char *str, Scheme_Object *port)
   (op->write_string_fun) (str, op);
 }
 
-static void 
+static void
 print_to_port (Scheme_Object *obj, Scheme_Object *port, int escaped)
 {
   Scheme_Output_Port *op;
   int index = 0;
-  
+
   op = (Scheme_Output_Port *) SCHEME_PTR_VAL (port);
   index = print (print_buffer, index, obj, escaped);
   print_buffer[index] = '\0';

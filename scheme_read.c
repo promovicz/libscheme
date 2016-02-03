@@ -8,7 +8,7 @@
   software and its documentation for any purpose, provided that the
   above copyright notice and the following two paragraphs appear in
   all copies of this software.
- 
+
   IN NO EVENT SHALL BRENT BENSON BE LIABLE TO ANY PARTY FOR DIRECT,
   INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT
   OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF BRENT
@@ -229,7 +229,7 @@ read_quote (Scheme_Object *port)
   Scheme_Object *obj;
 
   obj = scheme_read (port);
-  return (scheme_make_pair (scheme_quote_symbol, 
+  return (scheme_make_pair (scheme_quote_symbol,
 			    scheme_make_pair (obj, scheme_null)));
 }
 
@@ -239,7 +239,7 @@ read_vector (Scheme_Object *port)
 {
   Scheme_Object *obj, *vec;
   int len, i;
-  
+
   obj = read_list (port);
   len = scheme_list_length (obj);
   vec = scheme_make_vector (len, NULL);
@@ -303,7 +303,7 @@ read_number (Scheme_Object *port)
       if (is_negative)
 	{
 	  i = -i;
-	} 
+	}
       return (scheme_make_integer (i));
     }
 }
@@ -556,9 +556,9 @@ static Scheme_Object *
 read_quasiquote (Scheme_Object *port)
 {
   Scheme_Object *quoted_obj, *ret;
-  
+
   quoted_obj = scheme_read (port);
-  ret = scheme_make_pair (scheme_quasiquote_symbol, 
+  ret = scheme_make_pair (scheme_quasiquote_symbol,
 			  scheme_make_pair (quoted_obj, scheme_null));
   return (ret);
 }
@@ -570,7 +570,7 @@ read_unquote (Scheme_Object *port)
   Scheme_Object *obj, *ret;
 
   obj = scheme_read (port);
-  ret = scheme_make_pair (scheme_unquote_symbol, 
+  ret = scheme_make_pair (scheme_unquote_symbol,
 			  scheme_make_pair (obj, scheme_null));
   return (ret);
 }
@@ -582,7 +582,7 @@ read_unquote_splicing (Scheme_Object *port)
   Scheme_Object *obj, *ret;
 
   obj = scheme_read (port);
-  ret = scheme_make_pair (scheme_unquote_splicing_symbol, 
+  ret = scheme_make_pair (scheme_unquote_splicing_symbol,
 			  scheme_make_pair (obj, scheme_null));
   return (ret);
 }
@@ -614,7 +614,7 @@ peek_char (Scheme_Object *port)
   return (ch);
 }
 
-static int 
+static int
 double_peek_char (Scheme_Object *port)
 {
   int ch1, ch2;

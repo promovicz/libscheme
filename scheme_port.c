@@ -8,7 +8,7 @@
   software and its documentation for any purpose, provided that the
   above copyright notice and the following two paragraphs appear in
   all copies of this software.
- 
+
   IN NO EVENT SHALL BRENT BENSON BE LIABLE TO ANY PARTY FOR DIRECT,
   INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT
   OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF BRENT
@@ -82,7 +82,7 @@ static Scheme_Object *flush_output (int argc, Scheme_Object *argv[]);
 static Scheme_Object *with_input_from_string (int argc, Scheme_Object *argv[]);
 static Scheme_Object *open_input_string (int argc, Scheme_Object *argv[]);
 
-void 
+void
 scheme_init_port (Scheme_Env *env)
 {
   scheme_eof_type = scheme_make_type ("<eof>");
@@ -177,7 +177,7 @@ int
 scheme_getc (Scheme_Object *port)
 {
   Scheme_Input_Port *ip;
-  
+
   ip = (Scheme_Input_Port *) SCHEME_PTR_VAL (port);
   return ((ip->getc_fun) (ip));
 }
@@ -220,7 +220,7 @@ scheme_close_output_port (Scheme_Object *port)
 
 /* file input ports */
 
-static int 
+static int
 file_getc (Scheme_Input_Port *port)
 {
   return (fgetc ((FILE *)port->port_data));
@@ -235,7 +235,7 @@ file_ungetc (int ch, Scheme_Input_Port *port)
 static int
 file_char_ready (Scheme_Input_Port *port)
 {
-#ifdef HAS_STANDARD_IOB  
+#ifdef HAS_STANDARD_IOB
   FILE *fp = (FILE *) port->port_data;
   return (fp->_cnt);
 #elif HAS_GNU_IOB
@@ -272,7 +272,7 @@ scheme_make_file_input_port (FILE *fp)
 
 /* string input ports */
 
-static int 
+static int
 string_getc (Scheme_Input_Port *port)
 {
   Scheme_Indexed_String *is;
@@ -371,7 +371,7 @@ call_with_input_file (int argc, Scheme_Object *argv[])
   Scheme_Object *ret, *port;
 
   SCHEME_ASSERT ((argc == 2), "call-with-input-file: wrong number of args");
-  SCHEME_ASSERT (SCHEME_STRINGP (argv[0]), 
+  SCHEME_ASSERT (SCHEME_STRINGP (argv[0]),
 		 "call-with-input-file: first arg must be a string");
   SCHEME_ASSERT (SCHEME_PROCP (argv[1]),
 		 "call-with-input-file: second arg must be a procedure");
@@ -395,7 +395,7 @@ call_with_output_file (int argc, Scheme_Object *argv[])
   Scheme_Object *ret, *port;
 
   SCHEME_ASSERT ((argc == 2), "call-with-output-file: wrong number of args");
-  SCHEME_ASSERT (SCHEME_STRINGP (argv[0]), 
+  SCHEME_ASSERT (SCHEME_STRINGP (argv[0]),
 		 "call-with-output-file: first arg must be a string");
   SCHEME_ASSERT (SCHEME_PROCP (argv[1]),
 		 "call-with-output-file: second arg must be a procedure");
@@ -447,7 +447,7 @@ with_input_from_file (int argc, Scheme_Object *argv[])
   Scheme_Object *ret, *old_port, *new_port;
 
   SCHEME_ASSERT ((argc == 2), "with-input-from-file: wrong number of args");
-  SCHEME_ASSERT (SCHEME_STRINGP (argv[0]), 
+  SCHEME_ASSERT (SCHEME_STRINGP (argv[0]),
 		 "with-input-from-file: first arg must be a string");
   SCHEME_ASSERT (SCHEME_PROCP (argv[1]),
 		 "with-input-from-file: second arg must be a procedure");
@@ -473,7 +473,7 @@ with_input_from_string (int argc, Scheme_Object *argv[])
   Scheme_Object *ret, *old_port, *new_port;
 
   SCHEME_ASSERT ((argc == 2), "with-input-from-string: wrong number of args");
-  SCHEME_ASSERT (SCHEME_STRINGP (argv[0]), 
+  SCHEME_ASSERT (SCHEME_STRINGP (argv[0]),
 		 "with-input-from-string: first arg must be a string");
   SCHEME_ASSERT (SCHEME_PROCP (argv[1]),
 		 "with-input-from-file: second arg must be a procedure");
@@ -495,7 +495,7 @@ with_output_to_file (int argc, Scheme_Object *argv[])
   Scheme_Object *ret;
 
   SCHEME_ASSERT ((argc == 2), "with-output-to-file: wrong number of args");
-  SCHEME_ASSERT (SCHEME_STRINGP (argv[0]), 
+  SCHEME_ASSERT (SCHEME_STRINGP (argv[0]),
 		 "with-output-to-file: first arg must be a string");
   SCHEME_ASSERT (SCHEME_PROCP (argv[1]),
 		 "with-output-to-file: second arg must be a procedure");
@@ -676,7 +676,7 @@ static Scheme_Object *
 write (int argc, Scheme_Object *argv[])
 {
   Scheme_Object *port;
-  
+
   SCHEME_ASSERT ((argc==1 || argc==2), "write: wrong number of args");
   if (argc == 2)
     {
@@ -695,7 +695,7 @@ static Scheme_Object *
 display (int argc, Scheme_Object *argv[])
 {
   Scheme_Object *port;
-  
+
   SCHEME_ASSERT ((argc==1 || argc==2), "display: wrong number of args");
   if (argc == 2)
     {
@@ -714,7 +714,7 @@ static Scheme_Object *
 newline (int argc, Scheme_Object *argv[])
 {
   Scheme_Object *port;
-  
+
   SCHEME_ASSERT ((argc==0 || argc==1), "newline: wrong number of args");
   if (argc == 1)
     {
@@ -734,7 +734,7 @@ write_char (int argc, Scheme_Object *argv[])
 {
   Scheme_Object *port;
   char buf[256];
-  
+
   SCHEME_ASSERT ((argc==1 || argc==2), "write-char: wrong number of args");
   if (argc == 2)
     {
@@ -796,7 +796,7 @@ static Scheme_Object *
 write_to_string (int argc, Scheme_Object *argv[])
 {
   char *str;
-  
+
   SCHEME_ASSERT ((argc == 1), "write-to-string: wrong number of args");
   str = scheme_write_to_string (argv[0]);
   return (scheme_make_string (str));
@@ -806,9 +806,8 @@ static Scheme_Object *
 display_to_string (int argc, Scheme_Object *argv[])
 {
   char *str;
-  
+
   SCHEME_ASSERT ((argc == 1), "display-to-string: wrong number of args");
   str = scheme_display_to_string (argv[0]);
   return (scheme_make_string (str));
 }
-

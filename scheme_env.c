@@ -8,7 +8,7 @@
   software and its documentation for any purpose, provided that the
   above copyright notice and the following two paragraphs appear in
   all copies of this software.
- 
+
   IN NO EVENT SHALL BRENT BENSON BE LIABLE TO ANY PARTY FOR DIRECT,
   INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT
   OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF BRENT
@@ -39,7 +39,7 @@ scheme_basic_env (void)
 {
   Scheme_Env *env;
 
-  /* The ordering of the first few init calls is important. 
+  /* The ordering of the first few init calls is important.
      Add to the end of the list, not the beginning. */
   env = scheme_make_env ();
   scheme_init_type (env);
@@ -77,7 +77,7 @@ scheme_add_global (char *name, Scheme_Object *obj, Scheme_Env *env)
 {
   char lower_name[MAX_SYMBOL_SIZE];
   int i;
-  
+
   i = 0;
   while ( name[i] )
     {
@@ -92,7 +92,7 @@ Scheme_Env *
 scheme_new_frame (int num_bindings)
 {
   Scheme_Env *frame;
-  
+
   frame = (Scheme_Env *) scheme_malloc (sizeof (Scheme_Env));
   frame->num_bindings = num_bindings;
   frame->symbols = (Scheme_Object **) scheme_malloc (num_bindings * sizeof (Scheme_Object*));
@@ -159,7 +159,7 @@ scheme_pop_frame (Scheme_Env *env)
   return (env->next);
 }
 
-void 
+void
 scheme_set_value (Scheme_Object *symbol, Scheme_Object *val, Scheme_Env *env)
 {
   Scheme_Env *frame;

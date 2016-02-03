@@ -8,7 +8,7 @@
   software and its documentation for any purpose, provided that the
   above copyright notice and the following two paragraphs appear in
   all copies of this software.
- 
+
   IN NO EVENT SHALL BRENT BENSON BE LIABLE TO ANY PARTY FOR DIRECT,
   INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT
   OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF BRENT
@@ -57,7 +57,7 @@ static Scheme_Object *scheme_lambda;
 
 #define CONS(a,b) scheme_make_pair(a,b)
 
-void 
+void
 scheme_init_syntax (Scheme_Env *env)
 {
   scheme_syntax_type = scheme_make_type ("<syntax>");
@@ -209,7 +209,7 @@ cond_syntax (Scheme_Object *form, Scheme_Env *env)
       if (test != scheme_false)
 	{
 	  forms = SCHEME_CDR (clause);
-	  if (!SCHEME_NULLP (forms) && 
+	  if (!SCHEME_NULLP (forms) &&
 	      (SCHEME_CAR(forms) == scheme_intern_symbol ("=>")))
 	    {
 	      Scheme_Object *proc;
@@ -420,7 +420,7 @@ let_syntax (Scheme_Object *form, Scheme_Env *env)
   return (ret);
 }
 
-static int 
+static int
 internal_def_p (Scheme_Object *form)
 {
   return (SCHEME_PAIRP(form) && (SCHEME_CAR(form) == scheme_define));
@@ -721,7 +721,7 @@ do_syntax (Scheme_Object *form, Scheme_Env *env)
     }
   /* bind the vars to the initial values */
   env = scheme_add_frame (vars, inits, env);
-  
+
   ret = scheme_null;
   while (scheme_eval (test, env) == scheme_false)
     {
@@ -801,18 +801,18 @@ quasi (Scheme_Object *x, int level, Scheme_Env *env)
     {
       x = SCHEME_CDR (x);
       SCHEME_ASSERT (SCHEME_PAIRP (x), "bad unquote form");
-      if (level) 
+      if (level)
 	{
 	  ret = scheme_make_pair (SCHEME_CAR (x), scheme_null);
 	  ret = quasi (ret, level-1, env);
 	  ret = scheme_make_pair (scheme_unquote, ret);
-        } 
-      else 
+        }
+      else
 	{
 	  ret = scheme_eval (SCHEME_CAR (x), env);
 	}
       return ret;
-    } 
+    }
   else if (SCHEME_PAIRP (SCHEME_CAR (x))
 	   && SCHEME_CAR (SCHEME_CAR (x)) == scheme_unquote_splicing)
     {
@@ -820,7 +820,7 @@ quasi (Scheme_Object *x, int level, Scheme_Env *env)
       form = list = tail = cell = scheme_null;
       x = SCHEME_CAR (x);
       SCHEME_ASSERT (SCHEME_PAIRP (SCHEME_CDR (x)), "bad unquote-splicing form");
-      if (level) 
+      if (level)
 	{
 	  list = quasi (SCHEME_CDR (x), level-1, env);
 	  list = scheme_make_pair (scheme_unquote_splicing, list);
@@ -829,7 +829,7 @@ quasi (Scheme_Object *x, int level, Scheme_Env *env)
 	  return list;
 	}
       form = scheme_eval (SCHEME_CAR (SCHEME_CDR (x)), env);
-      for ( ; SCHEME_PAIRP(form) ; tail = cell, form = SCHEME_CDR (form)) 
+      for ( ; SCHEME_PAIRP(form) ; tail = cell, form = SCHEME_CDR (form))
 	{
 	  cell = scheme_make_pair (SCHEME_CAR (form), scheme_null);
 	  if (SCHEME_NULLP (list))
@@ -844,8 +844,8 @@ quasi (Scheme_Object *x, int level, Scheme_Env *env)
 	}
       SCHEME_CDR (tail) = qcdr;
       return list;
-    } 
-  else 
+    }
+  else
     {
       qcar = qcdr = scheme_null;
       if (SCHEME_CAR (x) == scheme_quasiquote)   /* hack! */

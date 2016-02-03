@@ -8,7 +8,7 @@
   software and its documentation for any purpose, provided that the
   above copyright notice and the following two paragraphs appear in
   all copies of this software.
- 
+
   IN NO EVENT SHALL BRENT BENSON BE LIABLE TO ANY PARTY FOR DIRECT,
   INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT
   OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF BRENT
@@ -143,7 +143,7 @@ equal_prim (int argc, Scheme_Object *argv[])
 }
 
 SCHEME_FUN_CONST
-int 
+int
 scheme_eq (Scheme_Object *obj1, Scheme_Object *obj2)
 {
   return (obj1 == obj2);
@@ -216,7 +216,7 @@ scheme_equal (Scheme_Object *obj1, Scheme_Object *obj2)
     {
       return 1;
     }
-  else 
+  else
     {
       return 0;
     }
@@ -250,6 +250,3 @@ vector_equal (Scheme_Object *vec1, Scheme_Object *vec2)
     }
   return 1;
 }
-
-
-

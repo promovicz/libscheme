@@ -8,7 +8,7 @@
   software and its documentation for any purpose, provided that the
   above copyright notice and the following two paragraphs appear in
   all copies of this software.
- 
+
   IN NO EVENT SHALL BRENT BENSON BE LIABLE TO ANY PARTY FOR DIRECT,
   INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT
   OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF BRENT
@@ -151,7 +151,7 @@ scheme_apply (Scheme_Object *rator, int num_rands, Scheme_Object **rands)
       /* process internal defines */
       num_int_defs = 0;
       vars = vals = vars_last = vals_last = scheme_null;
-      while (!SCHEME_NULLP(forms) && 
+      while (!SCHEME_NULLP(forms) &&
 	     SCHEME_PAIRP (SCHEME_CAR(forms)) &&
 	     SCHEME_CAR (SCHEME_CAR (forms)) == scheme_intern_symbol ("define"))
 	{
@@ -162,7 +162,7 @@ scheme_apply (Scheme_Object *rator, int num_rands, Scheme_Object **rands)
 	    pair = scheme_make_pair (SCHEME_CAR (SCHEME_CAR (SCHEME_CDR (aform))), scheme_null);
 	  else
 	    pair = scheme_make_pair (SCHEME_CAR (SCHEME_CDR (aform)), scheme_null);
-	  
+
 	  if (SCHEME_NULLP (vars))
 	    vars = vars_last = pair;
 	  else
@@ -233,7 +233,7 @@ scheme_apply (Scheme_Object *rator, int num_rands, Scheme_Object **rands)
     }
   else if (fun_type == scheme_struct_proc_type)
     {
-      return (scheme_apply_struct_proc (rator, 
+      return (scheme_apply_struct_proc (rator,
 					scheme_collect_rest (num_rands, rands)));
     }
   else
@@ -399,7 +399,7 @@ map_help (Scheme_Object *fun, Scheme_Object *list)
     }
   else
     {
-      return (scheme_make_pair 
+      return (scheme_make_pair
 	      (scheme_apply_to_list(fun,scheme_make_pair(SCHEME_CAR(list), scheme_null)),
 	       map_help (fun, SCHEME_CDR (list))));
     }
@@ -430,7 +430,7 @@ call_cc (int argc, Scheme_Object *argv[])
   Scheme_Object *ret = scheme_null, *obj;
 
   SCHEME_ASSERT ((argc == 1), "call-with-current-continuation: wrong number of args");
-  SCHEME_ASSERT (SCHEME_PROCP (argv[0]), 
+  SCHEME_ASSERT (SCHEME_PROCP (argv[0]),
 		 "call-with-current-continuation: arg must be a procedure");
 
   obj = scheme_make_cont();

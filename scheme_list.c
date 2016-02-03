@@ -8,7 +8,7 @@
   software and its documentation for any purpose, provided that the
   above copyright notice and the following two paragraphs appear in
   all copies of this software.
- 
+
   IN NO EVENT SHALL BRENT BENSON BE LIABLE TO ANY PARTY FOR DIRECT,
   INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT
   OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF BRENT
@@ -176,7 +176,7 @@ scheme_map_1 (Scheme_Object *(*fun)(Scheme_Object*), Scheme_Object *lst)
     }
   else
     {
-      return (scheme_make_pair (fun (SCHEME_CAR (lst)), 
+      return (scheme_make_pair (fun (SCHEME_CAR (lst)),
 				scheme_map_1 (fun, SCHEME_CDR (lst))));
     }
 }
@@ -435,7 +435,7 @@ name (int argc, Scheme_Object *argv[]) \
     } \
   return (scheme_false); \
 }
-    
+
 GEN_MEM(memv, memv, scheme_eqv)
 GEN_MEM(memq, memq, scheme_eq)
 GEN_MEM(member, member, scheme_equal)
@@ -560,4 +560,3 @@ cdddr_prim (int argc, Scheme_Object *argv[])
   SCHEME_ASSERT(SCHEME_PAIRP(argv[0]), "cdddr: arg must be a pair");
   return (SCHEME_CDR (SCHEME_CDR (SCHEME_CDR (argv[0]))));
 }
-

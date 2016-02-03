@@ -8,7 +8,7 @@
   software and its documentation for any purpose, provided that the
   above copyright notice and the following two paragraphs appear in
   all copies of this software.
- 
+
   IN NO EVENT SHALL BRENT BENSON BE LIABLE TO ANY PARTY FOR DIRECT,
   INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT
   OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF BRENT
@@ -78,7 +78,7 @@ error (int argc, Scheme_Object *argv[])
   longjmp (scheme_error_buf, 1);
 }
 
-void 
+void
 scheme_default_handler (void)
 {
   if (setjmp (scheme_error_buf))

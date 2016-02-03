@@ -8,7 +8,7 @@
   software and its documentation for any purpose, provided that the
   above copyright notice and the following two paragraphs appear in
   all copies of this software.
- 
+
   IN NO EVENT SHALL BRENT BENSON BE LIABLE TO ANY PARTY FOR DIRECT,
   INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT
   OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF BRENT
@@ -222,7 +222,7 @@ static Scheme_Object *
 vector_fill (int argc, Scheme_Object *argv[])
 {
   int i;
-  
+
   SCHEME_ASSERT ((argc == 2), "vector-fill!: wrong number of args");
   SCHEME_ASSERT (SCHEME_VECTORP (argv[0]), "vector-fill!: first arg must be a vector");
   for ( i=0 ; i<SCHEME_VEC_SIZE (argv[0]) ; ++i )
