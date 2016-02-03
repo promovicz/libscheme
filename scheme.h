@@ -146,7 +146,7 @@ void scheme_default_handler (void);
 #define SCHEME_CATCH_ERROR(try_expr, err_expr) \
   (setjmp(scheme_error_buf) ? (err_expr) : (try_expr))
 #define SCHEME_ASSERT(expr,msg) \
-  ((expr) ? 0 : (scheme_signal_error(msg), 1))
+  ((expr) ? 0 : (scheme_signal_error(msg)))
 
 /* types */
 extern Scheme_Object *scheme_type_type;
