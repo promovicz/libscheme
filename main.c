@@ -25,53 +25,66 @@
 #include "scheme.h"
 #include <stdio.h>
 
-int
-main(int argc, char *argv[])
-{
-  Scheme_Env *global_env;
-  Scheme_Object *obj, *in_port;
-  int i;
+void load_file(Scheme_Env *env, const char *path) {
+  Scheme_Object *in_port, *obj;
   FILE *fp;
 
-  global_env = scheme_basic_env ();
-
-  /* load any files given on the command line */
-  for ( i=1 ; i<argc ; ++i )
+  fp = fopen (path, "r");
+  if (! fp)
     {
-      fp = fopen (argv[i], "r");
-      if (! fp)
-	{
-	  fprintf (stderr, "could not open file for loading: %s\n", argv[i]);
-	}
-      else
-	{
-	  /* skip `#!' line if present */
-	  fscanf (fp, "#!%*s\n");
-	  /* read each expression and evaluate it */
-	  in_port = scheme_make_file_input_port (fp);
-	  while ((obj = scheme_read (in_port)) != scheme_eof)
-	    {
-	      obj = SCHEME_CATCH_ERROR (scheme_eval (obj, global_env), 0);
-	    }
-	  scheme_close_input_port (in_port);
-	}
+      fprintf (stderr, "could not open file for loading: %s\n", path);
     }
-  /* enter read-eval-print loop */
+  else
+    {
+      /* skip `#!' line if present */
+      fscanf (fp, "#!%*s\n");
+      /* read each expression and evaluate it */
+      in_port = scheme_make_file_input_port (fp);
+      while ((obj = scheme_read (in_port)) != scheme_eof)
+        {
+          obj = SCHEME_CATCH_ERROR (scheme_eval (obj, env), 0);
+        }
+      scheme_close_input_port (in_port);
+    }
+}
+
+void read_eval_print(Scheme_Env *env) {
+  Scheme_Object *obj;
   do
     {
       printf ("> ");
       obj = scheme_read (scheme_stdin_port);
       if (obj == scheme_eof)
-	{
-	  printf ("\n; done\n");
-	  exit (0);
-	}
-      obj = SCHEME_CATCH_ERROR(scheme_eval (obj, global_env),0);
+        {
+          printf ("\n; done\n");
+          exit (0);
+        }
+      obj = SCHEME_CATCH_ERROR(scheme_eval (obj, env), 0);
       if (obj)
-	{
-	  scheme_write (obj, scheme_stdout_port);
-	  printf ("\n");
-	}
+        {
+          scheme_write (obj, scheme_stdout_port);
+          printf ("\n");
+        }
     }
   while ( 1 );
+}
+
+int
+main(int argc, char *argv[])
+{
+  Scheme_Env *env;
+  int i;
+
+  env = scheme_basic_env ();
+
+  /* load any files given on the command line */
+  for ( i=1 ; i<argc ; ++i )
+    {
+      load_file(env, argv[i]);
+    }
+
+  /* enter read-eval-print loop */
+  read_eval_print(env);
+
+  return 0;
 }
