@@ -26,7 +26,7 @@ CFLAGS+=-O3 -g
 #
 # We want lots of warnings.
 #
-CFLAGS+=-Wall -Wextra -Wno-unused-parameter
+CFLAGS+=-Wall -Wextra -Wno-unused-parameter -Wno-unused-function
 
 #
 # GCC can suggest pure, const and noreturn candidate functions.
