@@ -94,8 +94,8 @@ libscheme.a: $(OBJS)
 	$(SIZE) libscheme.a
 
 test: scheme
-	./scheme test.scm
-	rm tmp1 tmp2 tmp3
+	./scheme run-tests.scm
+	rm -f tmp1 tmp2 tmp3
 .PHONY: test
 
 cscope: $(SRCS)
