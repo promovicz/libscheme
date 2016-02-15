@@ -224,7 +224,7 @@ scheme_apply (Scheme_Object *rator, int num_rands, Scheme_Object **rands)
       Scheme_Cont *cont = SCHEME_CONT_VAL(rator);
       SCHEME_ASSERT ((num_rands == 1),
                      "apply: wrong number of args to continuation procedure");
-      if (cont->escaped == 0)
+      if (cont->escaped)
         {
           scheme_signal_error("apply: continuation has been escaped");
         }
