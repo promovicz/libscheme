@@ -95,6 +95,11 @@ libscheme.a: $(OBJS)
 	$(RANLIB) libscheme.a
 	$(SIZE) libscheme.a
 
+# Run benchmark
+bench: scheme
+	time ./scheme bench.scm
+.PHONY: bench
+
 # Run tests
 test: scheme
 	./scheme run-tests.scm
