@@ -84,24 +84,29 @@ OBJS = \
 
 SRCS = $(patsubst %.o,%.c,$(OBJS))
 
+# Build main executable
 scheme: libscheme.a main.o
 	$(CC) $(CFLAGS) $(LIBS) -o scheme main.o libscheme.a
 	$(SIZE) scheme
 
+# Build static library
 libscheme.a: $(OBJS)
 	$(AR) rv libscheme.a $(OBJS)
 	$(RANLIB) libscheme.a
 	$(SIZE) libscheme.a
 
+# Run tests
 test: scheme
 	./scheme run-tests.scm
 	rm -f tmp1 tmp2 tmp3
 .PHONY: test
 
+# Generate index
 cscope: $(SRCS)
 	cscope -b $(CCINCLUDEFLAGS) $(SRCS)
 .PHONY: cscope
 
+# Update dependencies
 -include Makedepends
 depend: $(SRCS)
 	touch Makedepends
@@ -109,6 +114,7 @@ depend: $(SRCS)
 	rm Makedepends.bak
 .PHONY: depend
 
+# Clean build
 clean:
 	$(RM) -f \
 		Makedepends $(OBJS) scheme main.o \
