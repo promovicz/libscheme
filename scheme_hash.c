@@ -76,13 +76,13 @@ scheme_lookup_in_table (Scheme_Hash_Table *table, char *key)
   while ( bucket )
     {
       if (strcmp (key, bucket->key) == 0)
-	{
-	  return (bucket->val);
-	}
+        {
+          return (bucket->val);
+        }
       else
-	{
-	  bucket = bucket->next;
-	}
+        {
+          bucket = bucket->next;
+        }
     }
   return (NULL);
 }
@@ -103,10 +103,10 @@ scheme_change_in_table (Scheme_Hash_Table *table, char *key, void *new)
   while ( bucket )
     {
       if (strcmp (key, bucket->key) == 0)
-	{
-	  bucket->val = new;
-	  return;
-	}
+        {
+          bucket->val = new;
+          return;
+        }
       bucket = bucket->next;
     }
 }

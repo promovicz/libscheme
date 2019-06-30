@@ -155,7 +155,7 @@ vector_set (int argc, Scheme_Object *argv[])
   SCHEME_ASSERT (SCHEME_INTP (argv[1]), "vector-set!: second arg must be an integer");
   i = SCHEME_INT_VAL (argv[1]);
   SCHEME_ASSERT ((i >= 0) && (i < SCHEME_VEC_SIZE (argv[0])),
-		 "vector-ref: index out of range");
+                 "vector-ref: index out of range");
   SCHEME_VEC_ELS(argv[0])[i] = argv[2];
   return (argv[0]);
 }
@@ -180,14 +180,14 @@ scheme_vector_to_list (Scheme_Object *vec)
     {
       pair = scheme_make_pair (SCHEME_VEC_ELS(vec)[i], scheme_null);
       if (first == scheme_null)
-	{
-	  first = last = pair;
-	}
+        {
+          first = last = pair;
+        }
       else
-	{
-	  SCHEME_CDR (last) = pair;
-	  last = pair;
-	}
+        {
+          SCHEME_CDR (last) = pair;
+          last = pair;
+        }
     }
   return (first);
 }
@@ -240,7 +240,7 @@ vector_append (int argc, Scheme_Object *argv[])
 
   SCHEME_ASSERT ((argc == 2), "vector-append: wrong number of args");
   SCHEME_ASSERT (SCHEME_VECTORP (argv[0]) && SCHEME_VECTORP (argv[1]),
-		 "vector-append: both args must be vectors");
+                 "vector-append: both args must be vectors");
   len1 = SCHEME_VEC_SIZE (argv[0]);
   len2 = SCHEME_VEC_SIZE (argv[1]);
   new = scheme_make_vector ((len1 + len2), NULL);

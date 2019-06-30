@@ -162,14 +162,14 @@ if_syntax (Scheme_Object *form, Scheme_Env *env)
   else
     {
       if (len == 4)
-	{
-	  elsep = SCHEME_CAR (SCHEME_CDR (SCHEME_CDR ((SCHEME_CDR (form)))));
-	  return (scheme_eval (elsep, env));
-	}
+        {
+          elsep = SCHEME_CAR (SCHEME_CDR (SCHEME_CDR ((SCHEME_CDR (form)))));
+          return (scheme_eval (elsep, env));
+        }
       else
-	{
-	  return (scheme_false);
-	}
+        {
+          return (scheme_false);
+        }
     }
 }
 
@@ -181,7 +181,7 @@ set_syntax (Scheme_Object *form, Scheme_Env *env)
   SCHEME_ASSERT ((scheme_list_length (form) == 3), "bad set! form");
   var = SCHEME_CAR (SCHEME_CDR (form));
   SCHEME_ASSERT (SCHEME_TYPE (var) == scheme_symbol_type,
-		 "second arg to `set!' must be symbol");
+                 "second arg to `set!' must be symbol");
   val = scheme_eval (SCHEME_CAR (SCHEME_CDR (SCHEME_CDR (form))), env);
   scheme_set_value (var, val, env);
   return (val);
@@ -290,9 +290,9 @@ and_syntax (Scheme_Object *form, Scheme_Env *env)
     {
       ret = scheme_eval (SCHEME_CAR (forms), env);
       if (ret == scheme_false)
-	{
-	  return (scheme_false);
-	}
+        {
+          return (scheme_false);
+        }
       forms = SCHEME_CDR (forms);
     }
   return (ret);
@@ -309,9 +309,9 @@ or_syntax (Scheme_Object *form, Scheme_Env *env)
     {
       ret = scheme_eval (SCHEME_CAR (forms), env);
       if (ret != scheme_false)
-	{
-	  return (ret);
-	}
+        {
+          return (ret);
+        }
       forms = SCHEME_CDR (forms);
     }
   return (ret);

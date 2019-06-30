@@ -162,26 +162,26 @@ scheme_eqv (Scheme_Object *obj1, Scheme_Object *obj2)
       return 0;
     }
   else if (SCHEME_TYPE(obj1) == scheme_integer_type &&
-	   SCHEME_INT_VAL(obj1) == SCHEME_INT_VAL(obj2))
+           SCHEME_INT_VAL(obj1) == SCHEME_INT_VAL(obj2))
     {
       return 1;
     }
   else if (SCHEME_TYPE(obj1)== scheme_double_type &&
-	   SCHEME_DBL_VAL(obj1) == SCHEME_DBL_VAL(obj2))
+           SCHEME_DBL_VAL(obj1) == SCHEME_DBL_VAL(obj2))
     {
       return 1;
     }
   else if (SCHEME_TYPE(obj1) == scheme_char_type &&
-	   SCHEME_CHAR_VAL(obj1) == SCHEME_CHAR_VAL(obj2))
+           SCHEME_CHAR_VAL(obj1) == SCHEME_CHAR_VAL(obj2))
     {
       return 1;
     }
   else if (SCHEME_SYMBOLP(obj1))
     {
       if (strcmp (SCHEME_STR_VAL(obj1), SCHEME_STR_VAL(obj2)) == 0)
-	return 1;
+        return 1;
       else
-	return 0;
+        return 0;
     }
   else
     {
@@ -202,17 +202,17 @@ scheme_equal (Scheme_Object *obj1, Scheme_Object *obj2)
       return 0;
     }
   else if (SCHEME_TYPE(obj1) == scheme_pair_type &&
-	   list_equal(obj1, obj2))
+           list_equal(obj1, obj2))
     {
       return 1;
     }
   else if (SCHEME_TYPE(obj1) == scheme_vector_type &&
-	   vector_equal(obj1, obj2))
+           vector_equal(obj1, obj2))
     {
       return 1;
     }
   else if (SCHEME_TYPE(obj1) == scheme_string_type &&
-	   (strcmp(SCHEME_STR_VAL(obj1), SCHEME_STR_VAL(obj2)) == 0))
+           (strcmp(SCHEME_STR_VAL(obj1), SCHEME_STR_VAL(obj2)) == 0))
     {
       return 1;
     }
@@ -232,7 +232,7 @@ list_equal (Scheme_Object *lst1, Scheme_Object *lst2)
   else
     {
       return (scheme_equal (SCHEME_CAR (lst1), SCHEME_CAR (lst2)) &&
-	      scheme_equal (SCHEME_CDR (lst1), SCHEME_CDR (lst2)));
+              scheme_equal (SCHEME_CDR (lst1), SCHEME_CDR (lst2)));
     }
 }
 
@@ -244,9 +244,9 @@ vector_equal (Scheme_Object *vec1, Scheme_Object *vec2)
   for ( i=0 ; i<SCHEME_VEC_SIZE(vec1) ; ++i )
     {
       if (! scheme_equal (SCHEME_VEC_ELS(vec1)[i], SCHEME_VEC_ELS(vec2)[i]))
-	{
-	  return 0;
-	}
+        {
+          return 0;
+        }
     }
   return 1;
 }

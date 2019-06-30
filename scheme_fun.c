@@ -234,7 +234,7 @@ scheme_apply (Scheme_Object *rator, int num_rands, Scheme_Object **rands)
   else if (fun_type == scheme_struct_proc_type)
     {
       return (scheme_apply_struct_proc (rator,
-					scheme_collect_rest (num_rands, rands)));
+                                        scheme_collect_rest (num_rands, rands)));
     }
   else
     {
@@ -270,14 +270,14 @@ scheme_collect_rest (int num_rest, Scheme_Object **rest)
     {
       pair = scheme_make_pair (rest[i], scheme_null);
       if (SCHEME_NULLP (rest_list))
-	{
-	  rest_list = last = pair;
-	}
+        {
+          rest_list = last = pair;
+        }
       else
-	{
-	  SCHEME_CDR (last) = pair;
-	  last = pair;
-	}
+        {
+          SCHEME_CDR (last) = pair;
+          last = pair;
+        }
     }
   return (rest_list);
 }
@@ -303,14 +303,14 @@ apply (int argc, Scheme_Object *argv[])
     {
       pair = scheme_make_pair (argv[i], scheme_null);
       if (SCHEME_NULLP (rands))
-	{
-	  rands = rands_last = pair;
-	}
+        {
+          rands = rands_last = pair;
+        }
       else
-	{
-	  SCHEME_CDR (rands_last) = pair;
-	  rands_last = pair;
-	}
+        {
+          SCHEME_CDR (rands_last) = pair;
+          rands_last = pair;
+        }
     }
   SCHEME_ASSERT (SCHEME_LISTP (argv[i]), "apply: last arg must be a list");
   if (SCHEME_NULLP (rands))
@@ -345,16 +345,16 @@ map (int argc, Scheme_Object *argv[])
     {
       SCHEME_ASSERT (SCHEME_LISTP (argv[i]), "map: all args other than first must be lists");
       if (i == 1)
-	{
-	  size = scheme_list_length (argv[i]);
-	}
+        {
+          size = scheme_list_length (argv[i]);
+        }
       else
-	{
-	  if (size != scheme_list_length (argv[i]))
-	    {
-	      scheme_signal_error ("map: all lists must have same size");
-	    }
-	}
+        {
+          if (size != scheme_list_length (argv[i]))
+            {
+              scheme_signal_error ("map: all lists must have same size");
+            }
+        }
     }
 
   retfirst = retlast = scheme_null;
@@ -400,8 +400,8 @@ map_help (Scheme_Object *fun, Scheme_Object *list)
   else
     {
       return (scheme_make_pair
-	      (scheme_apply_to_list(fun,scheme_make_pair(SCHEME_CAR(list), scheme_null)),
-	       map_help (fun, SCHEME_CDR (list))));
+              (scheme_apply_to_list(fun,scheme_make_pair(SCHEME_CAR(list), scheme_null)),
+               map_help (fun, SCHEME_CDR (list))));
     }
 }
 
@@ -431,7 +431,7 @@ call_cc (int argc, Scheme_Object *argv[])
 
   SCHEME_ASSERT ((argc == 1), "call-with-current-continuation: wrong number of args");
   SCHEME_ASSERT (SCHEME_PROCP (argv[0]),
-		 "call-with-current-continuation: arg must be a procedure");
+                 "call-with-current-continuation: arg must be a procedure");
 
   obj = scheme_make_cont();
   cont = SCHEME_CONT_VAL(obj);
