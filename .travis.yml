@@ -8,6 +8,11 @@ compiler:
   - gcc
   - clang
 
+addons:
+  apt:
+    packages:
+	  - xutils-dev
+
 sudo: false
 
 script:
