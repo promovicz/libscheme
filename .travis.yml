@@ -1,0 +1,19 @@
+language: c
+
+os:
+  - linux
+  - osx
+
+compiler:
+  - gcc
+  - clang
+
+sudo: false
+
+script:
+  - make clean
+  - make depend
+  - make
+  - make test
+  - make bench
+
