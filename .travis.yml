@@ -11,6 +11,7 @@ compiler:
 addons:
   apt:
     packages:
+      - libgc-dev
       - xutils-dev
 
 sudo: false
