@@ -2,7 +2,6 @@ language: c
 
 os:
   - linux
-  - osx
 
 compiler:
   - gcc
@@ -11,6 +10,7 @@ compiler:
 addons:
   apt:
     packages:
+      - libc6-dev
       - libgc-dev
       - xutils-dev
 
@@ -20,6 +20,6 @@ script:
   - make clean
   - make depend
   - make
-  - make test
   - make bench
+  - make test
 
