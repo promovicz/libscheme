@@ -138,6 +138,7 @@ posix_execv (int argc, Scheme_Object *argv[])
   SCHEME_ASSERT (SCHEME_STRINGP (argv[0]), "posix-execv: first arg must be a string");
   SCHEME_ASSERT (SCHEME_LISTP (argv[1]), "posix-execv: second arg must be a list");
   path = SCHEME_STR_VAL (argv[0]);
+  arg_list = argv[1];
   num_extra_args = scheme_list_length (arg_list);
   exec_argv = (char **) scheme_malloc (sizeof (char *) * (num_extra_args + 2));
   exec_argv[0] = path;
