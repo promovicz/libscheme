@@ -60,6 +60,9 @@ SIZE=size
 #
 MAKEDEPEND=makedepend
 
+#
+# Source files
+#
 SRCS = \
 	scheme_alloc.c \
 	scheme_bool.c \
@@ -82,6 +85,9 @@ SRCS = \
 	scheme_type.c \
 	scheme_vector.c
 
+#
+# Object files
+#
 OBJS = $(patsubst %.c,%.o,$(SRCS))
 
 # Build main executable
