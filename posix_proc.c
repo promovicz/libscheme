@@ -120,10 +120,9 @@ posix_execl (int argc, Scheme_Object *argv[])
       exec_argv[i] = SCHEME_STR_VAL (argv[i]);
     }
   exec_argv[argc] = NULL;
-  if (execv (path, exec_argv) == -1)
-    {
-      scheme_signal_error ("posix-execl: could not exec `%s'", path);
-    }
+  execv (path, exec_argv);
+  /* execv only returns on error */
+  scheme_signal_error ("posix-execl: could not exec `%s'", path);
 }
 
 static Scheme_Object *
@@ -151,9 +150,8 @@ posix_execv (int argc, Scheme_Object *argv[])
       arg_list = SCHEME_CDR (arg_list);
     }
   exec_argv[num_extra_args+1] = NULL;
-  if (execv (path, exec_argv) == -1)
-    {
-      scheme_signal_error ("posix-execv: could not exec `%s'", path);
-    }
+  execv (path, exec_argv);
+  /* execv only returns on error */
+  scheme_signal_error ("posix-execv: could not exec `%s'", path);
 }
 
