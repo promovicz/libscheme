@@ -108,14 +108,14 @@ test: scheme
 
 # Generate index
 cscope: $(SRCS)
-	cscope -b $(CCINCLUDEFLAGS) $(SRCS)
+	cscope -b $(CCINCLUDEFLAGS) $(^)
 .PHONY: cscope
 
 # Update dependencies
 -include Makedepends
 depend: $(SRCS)
 	touch Makedepends
-	$(MAKEDEPEND) -f Makedepends $(CCINCLUDEFLAGS) -- $(CFLAGS) -- $(SRCS)
+	$(MAKEDEPEND) -f Makedepends $(CCINCLUDEFLAGS) -- $(CFLAGS) -- $(^)
 	rm Makedepends.bak
 .PHONY: depend
 
