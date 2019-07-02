@@ -98,7 +98,7 @@ posix_waitpid (int argc, Scheme_Object *argv[])
   SCHEME_ASSERT ((argc == 1), "posix-waitpid: wrong number of args");
   SCHEME_ASSERT (SCHEME_INTP (argv[0]), "posix-waitpid: arg must be an integer");
   pid = SCHEME_INT_VAL (argv[0]);
-  ret = wait (pid, NULL, 0);
+  ret = waitpid (pid, NULL, 0);
   SCHEME_ASSERT ((ret != -1), "posix-waitpid: could not wait");
   return (scheme_make_integer (ret));
 }
