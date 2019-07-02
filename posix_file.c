@@ -113,7 +113,7 @@ static Scheme_Object *stat_mtime (int argc, Scheme_Object *argv[]);
 #define POSIX_DIRP(obj)    (SCHEME_TYPE(obj) == posix_dir_type)
 
 void
-init_posix_file (Scheme_Env *env)
+scheme_init_posix_file (Scheme_Env *env)
 {
   /* types */
   posix_stat_type = scheme_make_type ("<stat>");

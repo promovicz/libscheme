@@ -38,7 +38,7 @@ static Scheme_Object *posix_execl (int argc, Scheme_Object *argv[]);
 static Scheme_Object *posix_execv (int argc, Scheme_Object *argv[]);
 
 void 
-init_posix_proc (Scheme_Env *env)
+scheme_init_posix_proc (Scheme_Env *env)
 {
   scheme_add_global ("posix-fork", scheme_make_prim (posix_fork), env);
   scheme_add_global ("posix-exit", scheme_make_prim (posix_exit), env);
