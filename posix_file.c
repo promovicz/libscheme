@@ -405,7 +405,6 @@ static Scheme_Object *
 posix_closedir (int argc, Scheme_Object *argv[])
 {
   DIR *dirp;
-  struct dirent *direntp;
 
   SCHEME_ASSERT ((argc == 1), "posix-closedir: wrong number of args");
   SCHEME_ASSERT (POSIX_DIRP(argv[0]), "posix-closedir: arg must be a dir object");
@@ -418,7 +417,6 @@ static Scheme_Object *
 posix_rewinddir (int argc, Scheme_Object *argv[])
 {
   DIR *dirp;
-  struct dirent *direntp;
 
   SCHEME_ASSERT ((argc == 1), "posix-rewinddir: wrong number of args");
   SCHEME_ASSERT (POSIX_DIRP(argv[0]), "posix-rewinddir: arg must be a dir object");
@@ -594,7 +592,6 @@ fildes_to_output_port (int argc, Scheme_Object *argv[])
 {
   int fd;
   FILE *fp;
-  Scheme_Object *port;
 
   SCHEME_ASSERT ((argc == 1), "fildes->output-port: wrong number of args");
   SCHEME_ASSERT (SCHEME_INTP(argv[0]), "fildes->output-port: arg must be an integer");
@@ -608,7 +605,6 @@ fildes_to_input_port (int argc, Scheme_Object *argv[])
 {
   int fd;
   FILE *fp;
-  Scheme_Object *port;
 
   SCHEME_ASSERT ((argc == 1), "fildes->input-port: wrong number of args");
   SCHEME_ASSERT (SCHEME_INTP(argv[0]), "fildes->input-port: arg must be an integer");
