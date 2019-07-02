@@ -203,8 +203,7 @@ make_stat_object (struct stat *s)
 {
   Scheme_Object *stat_obj;
 
-  stat_obj = scheme_alloc_object ();
-  SCHEME_TYPE (stat_obj) = posix_stat_type;
+  stat_obj = scheme_alloc_object (posix_stat_type, 0);
   SCHEME_PTR_VAL (stat_obj) = s;
   return (stat_obj);
 }
@@ -214,8 +213,7 @@ make_dir_object (DIR *dirp)
 {
   Scheme_Object *dir_obj;
 
-  dir_obj = scheme_alloc_object ();
-  SCHEME_TYPE (dir_obj) = posix_dir_type;
+  dir_obj = scheme_alloc_object (posix_dir_type, 0);
   SCHEME_PTR_VAL (dir_obj) = dirp;
   return (dir_obj);
 }
