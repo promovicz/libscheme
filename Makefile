@@ -63,7 +63,7 @@ MAKEDEPEND=makedepend
 #
 # Source files
 #
-SRCS = \
+SCHEME_SRCS = \
 	scheme_alloc.c \
 	scheme_bool.c \
 	scheme_char.c \
@@ -88,7 +88,13 @@ SRCS = \
 #
 # Object files
 #
-OBJS = $(patsubst %.c,%.o,$(SRCS))
+SCHEME_OBJS = $(patsubst %.c,%.o,$(SCHEME_SRCS))
+
+#
+# Derived variables
+#
+SRCS = $(SCHEME_SRCS)
+OBJS = $(SCHEME_OBJS)
 
 # Build main executable
 scheme: libscheme.a main.o
