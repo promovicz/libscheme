@@ -28,6 +28,7 @@
 #include "posix.h"
 
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <unistd.h>
 
 static Scheme_Object *posix_fork (int argc, Scheme_Object *argv[]);
