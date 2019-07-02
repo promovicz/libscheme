@@ -167,7 +167,9 @@ scheme_init_posix_file (Scheme_Env *env)
   scheme_add_global ("S_IREAD", scheme_make_integer (S_IREAD), env);
   scheme_add_global ("S_IWRITE", scheme_make_integer (S_IWRITE), env);
   scheme_add_global ("S_IEXEC", scheme_make_integer (S_IEXEC), env);
+#ifdef S_ENFMT
   scheme_add_global ("S_ENFMT", scheme_make_integer (S_ENFMT), env);
+#endif
   scheme_add_global ("S_IRWXU", scheme_make_integer (S_IRWXU), env);
   scheme_add_global ("S_IRUSR", scheme_make_integer (S_IRUSR), env);
   scheme_add_global ("S_IWUSR", scheme_make_integer (S_IWUSR), env);
