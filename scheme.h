@@ -336,6 +336,7 @@ Scheme_Object *scheme_list_to_vector (Scheme_Object *list);
 #define SCHEME_PROCP(obj)    (SCHEME_PRIMP(obj) || SCHEME_CLOSUREP(obj) || SCHEME_CONTP(obj))
 #define SCHEME_INPORTP(obj)  (SCHEME_TYPE(obj) == scheme_input_port_type)
 #define SCHEME_OUTPORTP(obj) (SCHEME_TYPE(obj) == scheme_output_port_type)
+#define SCHEME_PORTP(obj)    (SCHEME_INPORTP(obj) || SCHEME_OUTPORTP(obj))
 #define SCHEME_EOFP(obj)     (SCHEME_TYPE(obj) == scheme_eof_type)
 #define SCHEME_PROMP(obj)    (SCHEME_TYPE(obj) == scheme_promise_type)
 /* other */

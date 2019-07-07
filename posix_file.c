@@ -624,8 +624,7 @@ port_to_fildes (int argc, Scheme_Object *argv[])
   int fd;
 
   SCHEME_ASSERT ((argc == 1), "port->fildes: wrong number of args");
-  SCHEME_ASSERT ((SCHEME_INPORTP(argv[0]) || SCHEME_OUTPORTP(argv[0])), 
-				"port->fildes: arg must be a port");
+  SCHEME_ASSERT (SCHEME_PORTP(argv[0]), "port->fildes: arg must be a port");
   fp = (FILE *) SCHEME_PTR_VAL (argv[0]);
   fd = fileno (fp);
   return (scheme_make_integer (fd));
