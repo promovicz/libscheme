@@ -61,14 +61,19 @@
 #include <fcntl.h>
 #include <stdio.h>
 
-/* variables */
+/* static variables */
 static Scheme_Object *posix_stat_type;
 static Scheme_Object *posix_dir_type;
 
-/* functions */
+/* macros */
+#define POSIX_STATP(obj)   (SCHEME_TYPE(obj) == posix_stat_type)
+#define POSIX_DIRP(obj)    (SCHEME_TYPE(obj) == posix_dir_type)
+
+/* static utility declarations */
 static Scheme_Object *make_stat_object (struct stat *s);
 static Scheme_Object *make_dir_object (DIR *dirp);
 
+/* static function declarations */
 static Scheme_Object *posix_getcwd (int argc, Scheme_Object *argv[]);
 static Scheme_Object *posix_chdir (int argc, Scheme_Object *argv[]);
 static Scheme_Object *posix_mkdir (int argc, Scheme_Object *argv[]);
@@ -97,7 +102,7 @@ static Scheme_Object *fildes_to_output_port (int argc, Scheme_Object *argv[]);
 static Scheme_Object *fildes_to_input_port (int argc, Scheme_Object *argv[]);
 static Scheme_Object *port_to_fildes (int argc, Scheme_Object *argv[]);
 
-/* accessors */
+/* static accessor declarations */
 static Scheme_Object *stat_mode (int argc, Scheme_Object *argv[]);
 static Scheme_Object *stat_ino (int argc, Scheme_Object *argv[]);
 static Scheme_Object *stat_dev (int argc, Scheme_Object *argv[]);
@@ -109,8 +114,7 @@ static Scheme_Object *stat_atime (int argc, Scheme_Object *argv[]);
 static Scheme_Object *stat_ctime (int argc, Scheme_Object *argv[]);
 static Scheme_Object *stat_mtime (int argc, Scheme_Object *argv[]);
 
-#define POSIX_STATP(obj)   (SCHEME_TYPE(obj) == posix_stat_type)
-#define POSIX_DIRP(obj)    (SCHEME_TYPE(obj) == posix_dir_type)
+/* exported functions */
 
 void
 scheme_init_posix_file (Scheme_Env *env)
@@ -196,7 +200,7 @@ scheme_init_posix_file (Scheme_Env *env)
   scheme_add_global ("SEEK_END  ", scheme_make_integer (SEEK_END  ), env);
 }
 
-/* utilities */
+/* static utilities */
 
 static Scheme_Object *
 make_stat_object (struct stat *s)
@@ -218,7 +222,7 @@ make_dir_object (DIR *dirp)
   return (dir_obj);
 }
 
-/* new primitives */
+/* static functions */
 
 static Scheme_Object *
 posix_getcwd (int argc, Scheme_Object *argv[])
@@ -627,7 +631,8 @@ port_to_fildes (int argc, Scheme_Object *argv[])
   return (scheme_make_integer (fd));
 }
 
-/* accessors */
+/* static accessors */
+
 static Scheme_Object *
 stat_mode (int argc, Scheme_Object *argv[])
 {

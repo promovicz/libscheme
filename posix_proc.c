@@ -31,12 +31,15 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+/* static function declarations */
 static Scheme_Object *posix_fork (int argc, Scheme_Object *argv[]);
 static Scheme_Object *posix_exit (int argc, Scheme_Object *argv[]);
 static Scheme_Object *posix_wait (int argc, Scheme_Object *argv[]);
 static Scheme_Object *posix_waitpid (int argc, Scheme_Object *argv[]);
 static Scheme_Object *posix_execl (int argc, Scheme_Object *argv[]);
 static Scheme_Object *posix_execv (int argc, Scheme_Object *argv[]);
+
+/* exported functions */
 
 void 
 scheme_init_posix_proc (Scheme_Env *env)
@@ -48,6 +51,8 @@ scheme_init_posix_proc (Scheme_Env *env)
   scheme_add_global ("posix-execl", scheme_make_prim (posix_execl), env);
   scheme_add_global ("posix-execv", scheme_make_prim (posix_execv), env);
 }
+
+/* static functions */
 
 static Scheme_Object *
 posix_fork (int argc, Scheme_Object *argv[])
