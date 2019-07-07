@@ -84,17 +84,21 @@ SCHEME_SRCS = \
 	scheme_syntax.c \
 	scheme_type.c \
 	scheme_vector.c
+POSIX_SRCS = \
+	posix_file.c \
+	posix_proc.c
 
 #
 # Object files
 #
 SCHEME_OBJS = $(patsubst %.c,%.o,$(SCHEME_SRCS))
+POSIX_OBJS = $(patsubst %.c,%.o,$(POSIX_SRCS))
 
 #
 # Derived variables
 #
-SRCS = $(SCHEME_SRCS)
-OBJS = $(SCHEME_OBJS)
+SRCS = $(SCHEME_SRCS) $(POSIX_SRCS)
+OBJS = $(SCHEME_OBJS) $(POSIX_OBJS)
 
 # Build main executable
 scheme: libscheme.a main.o
