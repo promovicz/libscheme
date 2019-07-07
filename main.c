@@ -23,6 +23,8 @@
 */
 
 #include "scheme.h"
+#include "posix.h"
+
 #include <stdio.h>
 
 void load_file(Scheme_Env *env, const char *path) {
@@ -76,6 +78,8 @@ main(int argc, char *argv[])
   int i;
 
   env = scheme_basic_env ();
+  scheme_init_posix_file(env);
+  scheme_init_posix_proc(env);
 
   /* load any files given on the command line */
   for ( i=1 ; i<argc ; ++i )
