@@ -57,6 +57,7 @@ scheme_basic_env (void)
   scheme_init_error (env);
   scheme_init_promise (env);
   scheme_init_struct (env);
+  scheme_init_pointer (env);
   scheme_env = env;
   return (env);
 }

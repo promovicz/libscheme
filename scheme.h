@@ -162,6 +162,7 @@ extern Scheme_Object *scheme_eof_type;
 extern Scheme_Object *scheme_true_type, *scheme_false_type;
 extern Scheme_Object *scheme_syntax_type, *scheme_macro_type;
 extern Scheme_Object *scheme_promise_type, *scheme_struct_proc_type;
+extern Scheme_Object *scheme_pointer_type;
 
 /* common symbols */
 extern Scheme_Object *scheme_quote_symbol;
@@ -216,6 +217,7 @@ Scheme_Object *scheme_make_double (double d);
 Scheme_Object *scheme_make_char (char ch);
 Scheme_Object *scheme_make_syntax (Scheme_Syntax *syntax);
 Scheme_Object *scheme_make_promise (Scheme_Object *expr, Scheme_Env *env);
+Scheme_Object *scheme_make_pointer (void *ptr);
 
 /* generic port support */
 
@@ -302,6 +304,7 @@ void scheme_init_number (Scheme_Env *env);
 void scheme_init_eval (Scheme_Env *env);
 void scheme_init_promise (Scheme_Env *env);
 void scheme_init_struct (Scheme_Env *env);
+void scheme_init_pointer (Scheme_Env *env);
 
 /* misc */
 SCHEME_FUN_CONST int scheme_eq (Scheme_Object *obj1, Scheme_Object *obj2);
@@ -339,6 +342,7 @@ Scheme_Object *scheme_list_to_vector (Scheme_Object *list);
 #define SCHEME_PORTP(obj)    (SCHEME_INPORTP(obj) || SCHEME_OUTPORTP(obj))
 #define SCHEME_EOFP(obj)     (SCHEME_TYPE(obj) == scheme_eof_type)
 #define SCHEME_PROMP(obj)    (SCHEME_TYPE(obj) == scheme_promise_type)
+#define SCHEME_POINTERP(obj) (SCHEME_TYPE(obj) == scheme_pointer_type)
 /* other */
 #define SCHEME_CADR(obj)     (SCHEME_CAR (SCHEME_CDR (obj)))
 #define SCHEME_CAAR(obj)     (SCHEME_CAR (SCHEME_CAR (obj)))

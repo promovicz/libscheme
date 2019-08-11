@@ -74,6 +74,7 @@ SCHEME_SRCS = \
 	scheme_hash.c \
 	scheme_list.c \
 	scheme_number.c \
+	scheme_pointer.c \
 	scheme_port.c \
 	scheme_print.c \
 	scheme_promise.c \
