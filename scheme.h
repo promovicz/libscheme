@@ -328,6 +328,8 @@ Scheme_Object *scheme_list_to_vector (Scheme_Object *list);
 #define SCHEME_STRINGP(obj)  (SCHEME_TYPE(obj) == scheme_string_type)
 #define SCHEME_SYMBOLP(obj)  (SCHEME_TYPE(obj) == scheme_symbol_type)
 #define SCHEME_BOOLP(obj)    ((obj == scheme_true) || (obj == scheme_false))
+#define SCHEME_TRUEP(obj)    (obj == scheme_true)
+#define SCHEME_FALSEP(obj)   (obj == scheme_false)
 #define SCHEME_SYNTAXP(obj)  (SCHEME_TYPE(obj) == scheme_syntax_type)
 #define SCHEME_PRIMP(obj)    (SCHEME_TYPE(obj) == scheme_prim_type)
 #define SCHEME_CONTP(obj)    (SCHEME_TYPE(obj) == scheme_cont_type)
