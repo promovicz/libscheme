@@ -36,7 +36,7 @@ scheme_init_type (Scheme_Env *env)
 }
 
 Scheme_Object *
-scheme_make_type (char *name)
+scheme_make_type (const char *name)
 {
   Scheme_Object *type;
   size_t len = strlen(name);

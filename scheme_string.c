@@ -85,7 +85,7 @@ scheme_init_string (Scheme_Env *env)
 }
 
 Scheme_Object *
-scheme_make_string (char *chars)
+scheme_make_string (const char *chars)
 {
   Scheme_Object *str;
   size_t len = strlen(chars);
