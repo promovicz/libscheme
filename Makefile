@@ -45,6 +45,16 @@ LIBS+=-lm
 LIBS+=-lgc
 
 #
+# Dynamic linker library
+#
+LIBS+=-ldl
+
+#
+# Foreign function interface library
+#
+LIBS+=-lffi
+
+#
 # If your system needs ranlib, put it here.  Otherwise,
 # use a colon.
 #
@@ -88,18 +98,24 @@ SCHEME_SRCS = \
 POSIX_SRCS = \
 	posix_file.c \
 	posix_proc.c
+LIBDL_SRCS = \
+	libdl.c
+LIBFFI_SRCS = \
+	libffi.c
 
 #
 # Object files
 #
 SCHEME_OBJS = $(patsubst %.c,%.o,$(SCHEME_SRCS))
 POSIX_OBJS = $(patsubst %.c,%.o,$(POSIX_SRCS))
+LIBDL_OBJS = $(patsubst %.c,%.o,$(LIBDL_SRCS))
+LIBFFI_OBJS = $(patsubst %.c,%.o,$(LIBFFI_SRCS))
 
 #
 # Derived variables
 #
-SRCS = $(SCHEME_SRCS) $(POSIX_SRCS)
-OBJS = $(SCHEME_OBJS) $(POSIX_OBJS)
+SRCS = $(SCHEME_SRCS) $(POSIX_SRCS) $(LIBDL_SRCS) $(LIBFFI_SRCS)
+OBJS = $(SCHEME_OBJS) $(POSIX_OBJS) $(LIBDL_OBJS) $(LIBFFI_OBJS)
 
 # Build main executable
 scheme: libscheme.a main.o

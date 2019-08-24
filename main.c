@@ -24,6 +24,8 @@
 
 #include "scheme.h"
 #include "posix.h"
+#include "libdl.h"
+#include "libffi.h"
 
 #include <stdio.h>
 
@@ -80,6 +82,8 @@ main(int argc, char *argv[])
   env = scheme_basic_env ();
   scheme_init_posix_file(env);
   scheme_init_posix_proc(env);
+  scheme_init_libdl(env);
+  scheme_init_libffi(env);
 
   /* load any files given on the command line */
   for ( i=1 ; i<argc ; ++i )
