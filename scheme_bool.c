@@ -176,6 +176,11 @@ scheme_eqv (Scheme_Object *obj1, Scheme_Object *obj2)
     {
       return 1;
     }
+  else if (SCHEME_TYPE(obj1) == scheme_pointer_type &&
+           SCHEME_PTR_VAL(obj1) == SCHEME_PTR_VAL(obj2))
+    {
+      return 1;
+    }
   else if (SCHEME_SYMBOLP(obj1))
     {
       if (strcmp (SCHEME_STR_VAL(obj1), SCHEME_STR_VAL(obj2)) == 0)
