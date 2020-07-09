@@ -261,13 +261,12 @@ file_close_input (Scheme_Input_Port *port)
 Scheme_Object *
 scheme_make_file_input_port (FILE *fp)
 {
-  return scheme_make_input_port (
-                scheme_file_input_port_type,
-			    fp,
-			    file_getc,
-			    file_ungetc,
-			    file_char_ready,
-			    file_close_input);
+  return scheme_make_input_port (scheme_file_input_port_type,
+				 fp,
+				 file_getc,
+				 file_ungetc,
+				 file_char_ready,
+				 file_close_input);
 }
 
 /* string input ports */
@@ -331,11 +330,11 @@ Scheme_Object *
 scheme_make_string_input_port (char *str)
 {
   return scheme_make_input_port (scheme_string_input_port_type,
-			    scheme_make_indexed_string (str),
-			    string_getc,
-			    string_ungetc,
-			    string_char_ready,
-			    string_close);
+				 scheme_make_indexed_string (str),
+				 string_getc,
+				 string_ungetc,
+				 string_char_ready,
+				 string_close);
 }
 
 /* file output ports */
