@@ -26,8 +26,10 @@
 #include <string.h>
 
 #ifdef NO_GC
+#include <stdlib.h>
 #define MALLOC malloc
 #else
+#include <gc.h>
 #define MALLOC GC_malloc
 #endif
 

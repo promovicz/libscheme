@@ -193,10 +193,6 @@ void *scheme_malloc (size_t size);
 void *scheme_calloc (size_t num, size_t size);
 char *scheme_strdup (char *str);
 
-/* garbage collected heap interface */
-extern void *GC_malloc (size_t size_in_bytes);
-extern int GC_expand_hp (int num_4k_blocks);
-
 /* hash table interface */
 Scheme_Hash_Table *scheme_hash_table (int size);
 void scheme_add_to_table (Scheme_Hash_Table *table, char *key, void *val);
