@@ -140,7 +140,7 @@ libffi_prep (int argc, Scheme_Object *argv[])
   /* check arguments */
   SCHEME_ASSERT ((argc == 2), "ffi-prep: wrong number of args");
   SCHEME_ASSERT (LIBFFI_TYPEP(argv[0]), "ffi-prep: first arg must be a type");
-  SCHEME_ASSERT (SCHEME_LISTP(argv[1]), "ffi-prep: second arg must be a list"); 
+  SCHEME_ASSERT (SCHEME_LISTP(argv[1]), "ffi-prep: second arg must be a list");
   /* get main arguments */
   r = argv[0];
   rt = SCHEME_PTR_VAL(r);
@@ -202,4 +202,3 @@ libffi_type_alignment (int argc, Scheme_Object *argv[])
   /* return result */
   return (scheme_make_integer(t->alignment));
 }
-
