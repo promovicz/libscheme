@@ -47,7 +47,7 @@ scheme_init_symbol (Scheme_Env *env)
 {
   scheme_symbol_type = scheme_make_type ("<symbol>");
   scheme_add_global ("<symbol>", scheme_symbol_type, env);
-  symbol_table = scheme_hash_table (HASH_TABLE_SIZE);
+  symbol_table = scheme_make_hash_table (HASH_TABLE_SIZE);
   scheme_quote_symbol = scheme_intern_symbol ("quote");
   scheme_quasiquote_symbol = scheme_intern_symbol ("quasiquote");
   scheme_unquote_symbol = scheme_intern_symbol ("unquote");

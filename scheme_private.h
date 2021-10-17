@@ -70,7 +70,7 @@ struct Scheme_Hash_Table
   Scheme_Bucket **buckets;
 };
 
-Scheme_Hash_Table *scheme_hash_table (int size);
+Scheme_Hash_Table *scheme_make_hash_table (int size);
 void scheme_add_to_table (Scheme_Hash_Table *table, char *key, void *val);
 void scheme_change_in_table (Scheme_Hash_Table *table, char *key, void *new_val);
 void *scheme_lookup_in_table (Scheme_Hash_Table *table, char *key);

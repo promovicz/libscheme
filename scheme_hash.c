@@ -29,7 +29,7 @@ extern char *scheme_strdup (char *);
 static unsigned int scheme_hash (char *key);
 
 Scheme_Hash_Table *
-scheme_hash_table (int size)
+scheme_make_hash_table (int size)
 {
   Scheme_Hash_Table *table;
 
