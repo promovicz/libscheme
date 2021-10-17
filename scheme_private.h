@@ -86,6 +86,8 @@ struct Scheme_Method
 struct Scheme_Port
 {
   FILE *stream;
+  char *buf;
+  size_t len;
 };
 
 /* init functions */

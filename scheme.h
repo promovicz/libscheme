@@ -210,6 +210,8 @@ SCHEME_FUN_PURE  Scheme_Value scheme_caddr (Scheme_Value pair);
 /* port */
 Scheme_Value scheme_make_input_port (FILE *fp);
 Scheme_Value scheme_make_output_port (FILE *fp);
+Scheme_Value scheme_make_string_input_port(const char *buf, size_t len);
+Scheme_Value scheme_make_string_output_port(size_t maxlen);
 void scheme_close_input_port (Scheme_Value port);
 void scheme_close_output_port (Scheme_Value port);
 int scheme_getc (Scheme_Value port);

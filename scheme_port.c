@@ -45,6 +45,8 @@ static Scheme_Value input_port_p (int argc, Scheme_Value argv[]);
 static Scheme_Value output_port_p (int argc, Scheme_Value argv[]);
 static Scheme_Value open_input_file (int argc, Scheme_Value argv[]);
 static Scheme_Value open_output_file (int argc, Scheme_Value argv[]);
+static Scheme_Value open_input_string (int argc, Scheme_Value argv[]);
+static Scheme_Value open_output_string (int argc, Scheme_Value argv[]);
 static Scheme_Value close_input_port (int argc, Scheme_Value argv[]);
 static Scheme_Value close_output_port (int argc, Scheme_Value argv[]);
 static Scheme_Value current_input_port (int argc, Scheme_Value argv[]);
@@ -65,6 +67,7 @@ static Scheme_Value load (int argc, Scheme_Value argv[]);
 /* non-standard */
 static Scheme_Value drain_input (int argc, Scheme_Value argv[]);
 static Scheme_Value flush_output (int argc, Scheme_Value argv[]);
+static Scheme_Value port_string (int argc, Scheme_Value argv[]);
 //static Scheme_Value with_input_from_string (int argc, Scheme_Value argv[]);
 //static Scheme_Value open_input_string (int argc, Scheme_Value argv[]);
 
@@ -90,6 +93,8 @@ scheme_init_port (Scheme_Env *env)
   /* opening and closing */
   scheme_add_global ("open-input-file", scheme_make_prim (open_input_file), env);
   scheme_add_global ("open-output-file", scheme_make_prim (open_output_file), env);
+  scheme_add_global ("open-input-string", scheme_make_prim (open_input_string), env);
+  scheme_add_global ("open-output-string", scheme_make_prim (open_output_string), env);
   scheme_add_global ("close-input-port", scheme_make_prim (close_input_port), env);
   scheme_add_global ("close-output-port", scheme_make_prim (close_output_port), env);
 
@@ -117,6 +122,9 @@ scheme_init_port (Scheme_Env *env)
   /* buffering */
   scheme_add_global ("drain-input", scheme_make_prim (drain_input), env);
   scheme_add_global ("flush-output", scheme_make_prim (flush_output), env);
+
+  /* string ports */
+  scheme_add_global ("port-string", scheme_make_prim (port_string), env);
 
   /* standard ports */
   cur_in_port = scheme_stdin_port = scheme_make_input_port (stdin);
@@ -146,6 +154,29 @@ scheme_make_output_port (FILE *stream)
   op = (Scheme_Port *) SCHEME_PTR_VAL(obj);
   op->stream = stream;
   return (obj);
+}
+
+Scheme_Value
+scheme_make_string_input_port(const char *buf, size_t len)
+{
+  FILE *is = fmemopen((char*)buf, len, "r");
+  Scheme_Value port = scheme_make_input_port(is);
+  Scheme_Port *p = (Scheme_Port *)SCHEME_PTR_VAL(port);
+  p->buf = (char*)buf;
+  p->len = len;
+  return port;
+}
+
+Scheme_Value
+scheme_make_string_output_port(size_t maxlen)
+{
+  char *buf = scheme_calloc(1, maxlen + 1);
+  FILE *is = fmemopen(buf, maxlen, "w");
+  Scheme_Value port = scheme_make_output_port(is);
+  Scheme_Port *p = (Scheme_Port *)SCHEME_PTR_VAL(port);
+  p->buf = buf;
+  p->len = maxlen;
+  return port;
 }
 
 void
@@ -361,6 +392,34 @@ open_output_file (int argc, Scheme_Value argv[])
       scheme_signal_error ("Cannot open output file %s", SCHEME_STR_VAL(argv[0]));
     }
   return (scheme_make_output_port (fp));
+}
+
+static Scheme_Value
+open_input_string (int argc, Scheme_Value argv[])
+{
+  char *s;
+  size_t l;
+
+  SCHEME_ASSERT ((argc == 1), "open-input-string: wrong number of args");
+  SCHEME_ASSERT (SCHEME_STRINGP(argv[0]), "open-input-string: arg must be a string");
+
+  s = SCHEME_STR_VAL(argv[0]);
+  l = strlen(s);
+
+  return (scheme_make_string_input_port (s, l));
+}
+
+static Scheme_Value
+open_output_string (int argc, Scheme_Value argv[])
+{
+  size_t max = 2^16; // XXX
+
+  SCHEME_ASSERT ((argc == 0 || argc == 1), "open-output-string: wrong number of args");
+  if(argc == 1) {
+    SCHEME_ASSERT (SCHEME_INTP(argv[0]), "open-output-string: arg must be an integer");
+    max = SCHEME_INT_VAL(argv[0]);
+  }
+  return (scheme_make_string_output_port (max));
 }
 
 static Scheme_Value
@@ -621,3 +680,19 @@ flush_output (int argc, Scheme_Value argv[])
 
   return (scheme_true);
 }
+
+static Scheme_Value
+port_string (int argc, Scheme_Value argv[])
+{
+  Scheme_Value port;
+  Scheme_Port *p;
+
+  SCHEME_ASSERT ((argc == 1), "port-string: wrong number of args");
+  SCHEME_ASSERT (SCHEME_OUTPORTP(argv[0]) || SCHEME_INPORTP(argv[0]), "port-string: arg must be a port");
+  port = argv[0];
+  p = (Scheme_Port *) SCHEME_PTR_VAL (port);
+  SCHEME_ASSERT ((p->buf != NULL), "port-string: arg must be a string port");
+
+  return scheme_make_string(p->buf);
+}
+
