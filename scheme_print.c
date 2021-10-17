@@ -36,13 +36,6 @@ static int print_char (FILE *os, Scheme_Value chobj, int escaped);
 /* exported functions */
 
 void
-scheme_debug_print (Scheme_Value obj)
-{
-  scheme_write (obj, scheme_stdout_port);
-  fflush (stdout);
-}
-
-void
 scheme_write (Scheme_Value obj, Scheme_Value port)
 {
   print_to_port (obj, port, 1);

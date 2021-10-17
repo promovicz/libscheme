@@ -212,7 +212,6 @@ Scheme_Value scheme_read (Scheme_Value port);
 
 /* print */
 
-void scheme_debug_print (Scheme_Value obj);
 void scheme_write (Scheme_Value obj, Scheme_Value port);
 void scheme_display (Scheme_Value obj, Scheme_Value port);
 //char *scheme_write_to_string (Scheme_Value obj);
