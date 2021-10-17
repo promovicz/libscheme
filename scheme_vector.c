@@ -37,8 +37,9 @@ static Scheme_Value vector_set (int argc, Scheme_Value argv[]);
 static Scheme_Value vector_to_list (int argc, Scheme_Value argv[]);
 static Scheme_Value list_to_vector (int argc, Scheme_Value argv[]);
 static Scheme_Value vector_fill (int argc, Scheme_Value argv[]);
-
 static Scheme_Value vector_append (int argc, Scheme_Value argv[]);
+
+/* exported functions */
 
 void
 scheme_init_vector (Scheme_Env *env)
@@ -54,7 +55,6 @@ scheme_init_vector (Scheme_Env *env)
   scheme_add_global ("vector->list", scheme_make_prim (vector_to_list), env);
   scheme_add_global ("list->vector", scheme_make_prim (list_to_vector), env);
   scheme_add_global ("vector-fill!", scheme_make_prim (vector_fill), env);
-
   scheme_add_global ("vector-append", scheme_make_prim (vector_append), env);
 }
 
@@ -79,7 +79,49 @@ scheme_make_vector (int size, Scheme_Value fill)
   return (vec);
 }
 
-/* locals */
+Scheme_Value
+scheme_list_to_vector (Scheme_Value list)
+{
+  int len, i;
+  Scheme_Value vec;
+
+  len = scheme_list_length (list);
+  vec = scheme_make_vector (len, 0);
+  i = 0;
+  while (! SCHEME_NULLP (list))
+    {
+      SCHEME_VEC_ELS(vec)[i] = SCHEME_CAR (list);
+      i++;
+      list = SCHEME_CDR (list);
+    }
+  return (vec);
+}
+
+Scheme_Value
+scheme_vector_to_list (Scheme_Value vec)
+{
+  int len, i;
+  Scheme_Value first, last, pair;
+
+  len = SCHEME_VEC_SIZE (vec);
+  first = last = scheme_null;
+  for ( i=0 ; i<len ; ++i )
+    {
+      pair = scheme_make_pair (SCHEME_VEC_ELS(vec)[i], scheme_null);
+      if (first == scheme_null)
+	{
+	  first = last = pair;
+	}
+      else
+	{
+	  SCHEME_CDR (last) = pair;
+	  last = pair;
+	}
+    }
+  return (first);
+}
+
+/* static functions */
 
 static Scheme_Value
 vector_p (int argc, Scheme_Value argv[])
@@ -168,54 +210,12 @@ vector_to_list (int argc, Scheme_Value argv[])
   return (scheme_vector_to_list (argv[0]));
 }
 
-Scheme_Value
-scheme_vector_to_list (Scheme_Value vec)
-{
-  int len, i;
-  Scheme_Value first, last, pair;
-
-  len = SCHEME_VEC_SIZE (vec);
-  first = last = scheme_null;
-  for ( i=0 ; i<len ; ++i )
-    {
-      pair = scheme_make_pair (SCHEME_VEC_ELS(vec)[i], scheme_null);
-      if (first == scheme_null)
-        {
-          first = last = pair;
-        }
-      else
-        {
-          SCHEME_CDR (last) = pair;
-          last = pair;
-        }
-    }
-  return (first);
-}
-
 static Scheme_Value
 list_to_vector (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "list->vector: wrong number of args");
   SCHEME_ASSERT (SCHEME_LISTP(argv[0]), "list->vector: arg must be a list");
   return (scheme_list_to_vector (argv[0]));
-}
-
-Scheme_Value
-scheme_list_to_vector (Scheme_Value list)
-{
-  int len, i;
-  Scheme_Value vec;
-
-  len = scheme_list_length (list);
-  vec = scheme_make_vector (len, 0);
-  i = 0;
-  while (! SCHEME_NULLP (list))
-    {
-      SCHEME_VEC_ELS(vec)[i] = SCHEME_CAR (list);
-      i++;
-      list = SCHEME_CDR (list);
-    }
-  return (vec);
 }
 
 static Scheme_Value
