@@ -36,10 +36,16 @@ extern "C"
 {
 #endif
 
-struct Scheme_Hash_Table;
+
 struct Scheme_Bucket;
-typedef struct Scheme_Hash_Table Scheme_Hash_Table;
+struct Scheme_Hash_Table;
+struct Scheme_Method;
+struct Scheme_Port;
+
 typedef struct Scheme_Bucket Scheme_Bucket;
+typedef struct Scheme_Hash_Table Scheme_Hash_Table;
+typedef struct Scheme_Method Scheme_Method;
+typedef struct Scheme_Port Scheme_Port;
 
 struct Scheme_Env
 {
@@ -68,6 +74,18 @@ struct Scheme_Hash_Table
 {
   int size;
   Scheme_Bucket **buckets;
+};
+
+struct Scheme_Method
+{
+  Scheme_Value type;
+  Scheme_Value fun;
+  struct Scheme_Method *next;
+};
+
+struct Scheme_Port
+{
+  FILE *stream;
 };
 
 /* init functions */

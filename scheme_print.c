@@ -22,7 +22,7 @@
   MODIFICATIONS.
 */
 
-#include "scheme.h"
+#include "scheme_private.h"
 #include <string.h>
 
 /* static function declarations */

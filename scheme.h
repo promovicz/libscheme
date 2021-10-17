@@ -100,14 +100,6 @@ struct Scheme_Object
 #define SCHEME_METH_DEF(obj) ((obj)->u.methods_val.def)
 #define SCHEME_METHS(obj)    ((obj)->u.methods_val.meths)
 
-struct Scheme_Method
-{
-  Scheme_Value type;
-  Scheme_Value fun;
-  struct Scheme_Method *next;
-};
-typedef struct Scheme_Method Scheme_Method;
-
 typedef Scheme_Value
 (Scheme_Prim) (int argc, Scheme_Value argv[]);
 
@@ -175,14 +167,6 @@ Scheme_Value scheme_make_char (char ch);
 Scheme_Value scheme_make_syntax (Scheme_Syntax *syntax);
 Scheme_Value scheme_make_promise (Scheme_Value expr, Scheme_Env *env);
 Scheme_Value scheme_make_pointer (void *ptr);
-
-/* port */
-
-struct Scheme_Port
-{
-  FILE *stream;
-};
-typedef struct Scheme_Port Scheme_Port;
 
 /* initialization */
 Scheme_Env *scheme_basic_env (void);
