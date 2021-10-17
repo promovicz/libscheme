@@ -22,7 +22,7 @@
   MODIFICATIONS.
 */
 
-#include "scheme.h"
+#include "scheme_private.h"
 
 /* globals */
 Scheme_Value scheme_syntax_type;

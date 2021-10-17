@@ -107,6 +107,13 @@ void scheme_init_promise (Scheme_Env *env);
 void scheme_init_struct (Scheme_Env *env);
 void scheme_init_pointer (Scheme_Env *env);
 
+/* environment */
+Scheme_Env *scheme_new_frame (int num_bindings);
+void scheme_add_binding (int index, Scheme_Value sym, Scheme_Value val, Scheme_Env *frame);
+Scheme_Env *scheme_extend_env (Scheme_Env *frame, Scheme_Env *env);
+Scheme_Env *scheme_add_frame (Scheme_Value syms, Scheme_Value vals, Scheme_Env *env);
+Scheme_Env *scheme_pop_frame (Scheme_Env *env);
+
 /* hash */
 Scheme_Hash_Table *scheme_make_hash_table (int size);
 void scheme_add_to_table (Scheme_Hash_Table *table, char *key, void *val);

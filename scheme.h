@@ -155,11 +155,6 @@ extern Scheme_Value scheme_stderr_port;
 /* environment */
 Scheme_Env *scheme_basic_env (void);
 void scheme_add_global (char *name, Scheme_Value val, Scheme_Env *env);
-Scheme_Env *scheme_new_frame (int num_bindings);
-void scheme_add_binding (int index, Scheme_Value sym, Scheme_Value val, Scheme_Env *frame);
-Scheme_Env *scheme_extend_env (Scheme_Env *frame, Scheme_Env *env);
-Scheme_Env *scheme_add_frame (Scheme_Value syms, Scheme_Value vals, Scheme_Env *env);
-Scheme_Env *scheme_pop_frame (Scheme_Env *env);
 void scheme_set_value (Scheme_Value var, Scheme_Value val, Scheme_Env *env);
 Scheme_Value scheme_lookup_value (Scheme_Value symbol, Scheme_Env *env);
 Scheme_Value scheme_lookup_global (Scheme_Value symbol, Scheme_Env *env);
