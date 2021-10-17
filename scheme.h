@@ -235,23 +235,6 @@ Scheme_Value scheme_intern_symbol (char *name);
 
 /* initialization */
 Scheme_Env *scheme_basic_env (void);
-void scheme_init_char (Scheme_Env *env);
-void scheme_init_bool (Scheme_Env *env);
-void scheme_init_type (Scheme_Env *env);
-void scheme_init_error (Scheme_Env *env);
-void scheme_init_syntax (Scheme_Env *env);
-void scheme_init_fun (Scheme_Env *env);
-void scheme_init_symbol (Scheme_Env *env);
-void scheme_init_list (Scheme_Env *env);
-void scheme_init_port (Scheme_Env *env);
-void scheme_init_proc (Scheme_Env *env);
-void scheme_init_vector (Scheme_Env *env);
-void scheme_init_string (Scheme_Env *env);
-void scheme_init_number (Scheme_Env *env);
-void scheme_init_eval (Scheme_Env *env);
-void scheme_init_promise (Scheme_Env *env);
-void scheme_init_struct (Scheme_Env *env);
-void scheme_init_pointer (Scheme_Env *env);
 
 /* misc */
 SCHEME_FUN_CONST int scheme_eq (Scheme_Value obj1, Scheme_Value obj2);

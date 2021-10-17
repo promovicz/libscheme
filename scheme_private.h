@@ -70,6 +70,26 @@ struct Scheme_Hash_Table
   Scheme_Bucket **buckets;
 };
 
+/* init functions */
+void scheme_init_char (Scheme_Env *env);
+void scheme_init_bool (Scheme_Env *env);
+void scheme_init_type (Scheme_Env *env);
+void scheme_init_error (Scheme_Env *env);
+void scheme_init_syntax (Scheme_Env *env);
+void scheme_init_fun (Scheme_Env *env);
+void scheme_init_symbol (Scheme_Env *env);
+void scheme_init_list (Scheme_Env *env);
+void scheme_init_port (Scheme_Env *env);
+void scheme_init_proc (Scheme_Env *env);
+void scheme_init_vector (Scheme_Env *env);
+void scheme_init_string (Scheme_Env *env);
+void scheme_init_number (Scheme_Env *env);
+void scheme_init_eval (Scheme_Env *env);
+void scheme_init_promise (Scheme_Env *env);
+void scheme_init_struct (Scheme_Env *env);
+void scheme_init_pointer (Scheme_Env *env);
+
+/* hash */
 Scheme_Hash_Table *scheme_make_hash_table (int size);
 void scheme_add_to_table (Scheme_Hash_Table *table, char *key, void *val);
 void scheme_change_in_table (Scheme_Hash_Table *table, char *key, void *new_val);
