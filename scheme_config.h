@@ -25,6 +25,10 @@
 #ifndef SCHEME_CONFIG_H
 #define SCHEME_CONFIG_H
 
+#ifndef IN_LIBSCHEME
+#error This is a private header file.
+#endif
+
 /* maximum number of arguments */
 #define SCHEME_MAX_ARGS 256
 /* maximum length of symbols */
