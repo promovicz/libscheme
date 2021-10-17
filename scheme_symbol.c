@@ -39,11 +39,13 @@ Scheme_Value scheme_unquote_splicing_symbol;
 /* locals */
 static Scheme_Hash_Table *symbol_table;
 
-/* static function declarations */
-static Scheme_Value scheme_make_symbol (char *name);
+/* primitive declarations */
 static Scheme_Value symbol_p_prim (int argc, Scheme_Value argv[]);
 static Scheme_Value string_to_symbol_prim (int argc, Scheme_Value argv[]);
 static Scheme_Value symbol_to_string_prim (int argc, Scheme_Value argv[]);
+
+/* internal declarations */
+static Scheme_Value make_symbol (char *name);
 static char *downcase (char *str);
 
 /* exported functions */
@@ -76,30 +78,13 @@ scheme_intern_symbol (char *name)
     }
   else
     {
-      sym = scheme_make_symbol (name);
+      sym = make_symbol (name);
       scheme_add_to_table (symbol_table, name, sym);
       return (sym);
     }
 }
 
-/* static functions */
-
-static Scheme_Value
-scheme_make_symbol (char *name)
-{
-  Scheme_Value sym;
-  size_t len = strlen(name);
-  char *new;
-
-  sym = scheme_alloc_object (scheme_symbol_type, len + 1);
-  new = SCHEME_PTR_VAL(sym);
-  if(len > 0) {
-    memcpy(new, name, len);
-  }
-  new[len] = 0;
-  SCHEME_STR_VAL(sym) = new;
-  return (sym);
-}
+/* primitive functions */
 
 static Scheme_Value
 symbol_p_prim (int argc, Scheme_Value argv[])
@@ -113,7 +98,7 @@ string_to_symbol_prim (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "string->symbol: wrong number of args");
   SCHEME_ASSERT (SCHEME_STRINGP(argv[0]), "string->symbol: arg must be string");
-  return (scheme_make_symbol (SCHEME_STR_VAL(argv[0])));
+  return (make_symbol (SCHEME_STR_VAL(argv[0])));
 }
 
 static Scheme_Value
@@ -122,6 +107,25 @@ symbol_to_string_prim (int argc, Scheme_Value argv[])
   SCHEME_ASSERT ((argc == 1), "symbol->string: wrong number of args");
   SCHEME_ASSERT (SCHEME_SYMBOLP(argv[0]), "symbol->string: arg must be symbol");
   return (scheme_make_string (SCHEME_STR_VAL(argv[0])));
+}
+
+/* internal functions */
+
+static Scheme_Value
+make_symbol (char *name)
+{
+  Scheme_Value sym;
+  size_t len = strlen(name);
+  char *new;
+
+  sym = scheme_alloc_object (scheme_symbol_type, len + 1);
+  new = SCHEME_PTR_VAL(sym);
+  if(len > 0) {
+    memcpy(new, name, len);
+  }
+  new[len] = 0;
+  SCHEME_STR_VAL(sym) = new;
+  return (sym);
 }
 
 static char *
