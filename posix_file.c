@@ -9,7 +9,7 @@
   software and its documentation for any purpose, provided that the
   above copyright notice and the following two paragraphs appear in
   all copies of this software.
- 
+
   IN NO EVENT SHALL BRENT BENSON BE LIABLE TO ANY PARTY FOR DIRECT,
   INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT
   OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF BRENT
@@ -601,7 +601,7 @@ fildes_to_output_port (int argc, Scheme_Value argv[])
   SCHEME_ASSERT (SCHEME_INTP(argv[0]), "fildes->output-port: arg must be an integer");
   fd = SCHEME_INT_VAL (argv[0]);
   fp = fdopen (fd, "w");
-  return (scheme_make_file_output_port (fp));
+  return (scheme_make_output_port (fp));
 }
 
 static Scheme_Value
@@ -614,7 +614,7 @@ fildes_to_input_port (int argc, Scheme_Value argv[])
   SCHEME_ASSERT (SCHEME_INTP(argv[0]), "fildes->input-port: arg must be an integer");
   fd = SCHEME_INT_VAL (argv[0]);
   fp = fdopen (fd, "r");
-  return (scheme_make_file_input_port (fp));
+  return (scheme_make_input_port (fp));
 }
 
 static Scheme_Value
@@ -711,4 +711,3 @@ stat_mtime (int argc, Scheme_Value argv[])
   SCHEME_ASSERT (POSIX_STATP(argv[0]), "stat-mtime: arg must be a stat object");
   return (scheme_make_integer (((struct stat *) SCHEME_PTR_VAL(argv[0]))->st_mtime));
 }
-

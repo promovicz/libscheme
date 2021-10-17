@@ -119,13 +119,13 @@ scheme_init_port (Scheme_Env *env)
   scheme_add_global ("flush-output", scheme_make_prim (flush_output), env);
 
   /* standard ports */
-  cur_in_port = scheme_stdin_port = scheme_make_file_input_port (stdin);
-  cur_out_port = scheme_stdout_port = scheme_make_file_output_port (stdout);
-  scheme_stderr_port = scheme_make_file_output_port (stderr);
+  cur_in_port = scheme_stdin_port = scheme_make_input_port (stdin);
+  cur_out_port = scheme_stdout_port = scheme_make_output_port (stdout);
+  scheme_stderr_port = scheme_make_output_port (stderr);
 }
 
 Scheme_Value
-scheme_make_file_input_port (FILE *stream)
+scheme_make_input_port (FILE *stream)
 {
   Scheme_Value obj;
   Scheme_Port *ip;
@@ -137,7 +137,7 @@ scheme_make_file_input_port (FILE *stream)
 }
 
 Scheme_Value
-scheme_make_file_output_port (FILE *stream)
+scheme_make_output_port (FILE *stream)
 {
   Scheme_Value obj;
   Scheme_Port *op;
@@ -222,7 +222,7 @@ call_with_input_file (int argc, Scheme_Value argv[])
     {
       scheme_signal_error ("cannot open file for input: %s", filename);
     }
-  port = scheme_make_file_input_port (fp);
+  port = scheme_make_input_port (fp);
   ret = scheme_apply_to_list (argv[1], scheme_make_pair (port, scheme_null));
   fclose (fp);
   return (ret);
@@ -246,7 +246,7 @@ call_with_output_file (int argc, Scheme_Value argv[])
     {
       scheme_signal_error ("cannot open file for output: %s", filename);
     }
-  port = scheme_make_file_output_port (fp);
+  port = scheme_make_output_port (fp);
   ret = scheme_apply_to_list (argv[1], scheme_make_pair (port, scheme_null));
   fclose (fp);
   return (ret);
@@ -298,7 +298,7 @@ with_input_from_file (int argc, Scheme_Value argv[])
     {
       scheme_signal_error ("cannot open file for input: %s", filename);
     }
-  new_port = scheme_make_file_input_port (fp);
+  new_port = scheme_make_input_port (fp);
   old_port = cur_in_port;
   cur_in_port = new_port;
   ret = scheme_apply (argv[1], 0, NULL);
@@ -345,7 +345,7 @@ open_input_file (int argc, Scheme_Value argv[])
     {
       scheme_signal_error ("Cannot open input file %s", SCHEME_STR_VAL(argv[0]));
     }
-  return (scheme_make_file_input_port (fp));
+  return (scheme_make_input_port (fp));
 }
 
 static Scheme_Value
@@ -360,7 +360,7 @@ open_output_file (int argc, Scheme_Value argv[])
     {
       scheme_signal_error ("Cannot open output file %s", SCHEME_STR_VAL(argv[0]));
     }
-  return (scheme_make_file_output_port (fp));
+  return (scheme_make_output_port (fp));
 }
 
 static Scheme_Value
@@ -566,7 +566,7 @@ load (int argc, Scheme_Value argv[])
   /* skip `#!' to end of line if possible */
   fscanf (fp, "#!%*s\n");
   /* now read all expressions */
-  port = scheme_make_file_input_port (fp);
+  port = scheme_make_input_port (fp);
   while ((obj = scheme_read (port)) != scheme_eof)
     {
       ret = scheme_eval (obj, scheme_env);

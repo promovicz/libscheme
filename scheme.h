@@ -208,8 +208,8 @@ SCHEME_FUN_PURE  Scheme_Value scheme_cadr (Scheme_Value pair);
 SCHEME_FUN_PURE  Scheme_Value scheme_caddr (Scheme_Value pair);
 
 /* port */
-Scheme_Value scheme_make_file_input_port (FILE *fp);
-Scheme_Value scheme_make_file_output_port (FILE *fp);
+Scheme_Value scheme_make_input_port (FILE *fp);
+Scheme_Value scheme_make_output_port (FILE *fp);
 void scheme_close_input_port (Scheme_Value port);
 void scheme_close_output_port (Scheme_Value port);
 int scheme_getc (Scheme_Value port);

@@ -43,7 +43,7 @@ void load_file(Scheme_Env *env, const char *path) {
       /* skip `#!' line if present */
       fscanf (fp, "#!%*s\n");
       /* read each expression and evaluate it */
-      in_port = scheme_make_file_input_port (fp);
+      in_port = scheme_make_input_port (fp);
       while ((obj = scheme_read (in_port)) != scheme_eof)
         {
           obj = SCHEME_CATCH_ERROR (scheme_eval (obj, env), 0);
