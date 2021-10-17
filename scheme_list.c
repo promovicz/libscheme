@@ -30,7 +30,6 @@ Scheme_Value scheme_null_type;
 Scheme_Value scheme_pair_type;
 
 /* locals */
-static Scheme_Value scheme_make_null (void);
 static Scheme_Value pair_p_prim (int argc, Scheme_Value argv[]);
 static Scheme_Value cons_prim (int argc, Scheme_Value argv[]);
 static Scheme_Value car_prim (int argc, Scheme_Value argv[]);
@@ -69,7 +68,7 @@ scheme_init_list (Scheme_Env *env)
 {
   scheme_null_type = scheme_make_type ("<empty-list>");
   scheme_add_global ("<empty-list>", scheme_null_type, env);
-  scheme_null = scheme_make_null ();
+  scheme_null = scheme_alloc_object (scheme_null_type, 0);
   scheme_pair_type = scheme_make_type ("<pair>");
   scheme_add_global ("<pair>", scheme_pair_type, env);
   scheme_add_global ("pair?", scheme_make_prim (pair_p_prim), env);
@@ -104,12 +103,6 @@ scheme_init_list (Scheme_Env *env)
   scheme_add_global ("cddar", scheme_make_prim (cddar_prim), env);
   scheme_add_global ("caddr", scheme_make_prim (caddr_prim), env);
   scheme_add_global ("cdddr", scheme_make_prim (cdddr_prim), env);
-}
-
-static Scheme_Value
-scheme_make_null (void)
-{
-  return scheme_alloc_object (scheme_null_type, 0);
 }
 
 Scheme_Value
