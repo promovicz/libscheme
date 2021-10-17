@@ -74,7 +74,7 @@ static Scheme_Value port_string (int argc, Scheme_Value argv[]);
 //static Scheme_Value open_input_string (int argc, Scheme_Value argv[]);
 
 /* internal functions */
-Scheme_Value get_port_string(Scheme_Value port);
+static Scheme_Value get_port_string(Scheme_Value port);
 
 /* exported functions */
 
