@@ -25,8 +25,10 @@
 #include "scheme_private.h"
 #include <string.h>
 
-extern char *scheme_strdup (char *);
+/* static function declarations */
 static unsigned int scheme_hash (char *key);
+
+/* exported functions */
 
 Scheme_Hash_Table *
 scheme_make_hash_table (int size)
@@ -110,6 +112,8 @@ scheme_change_in_table (Scheme_Hash_Table *table, char *key, void *new)
       bucket = bucket->next;
     }
 }
+
+/* static functions */
 
 static unsigned int
 scheme_hash (char *key)

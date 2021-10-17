@@ -26,8 +26,8 @@
 #include <string.h>
 #include <ctype.h>
 
+/* configuration */
 #define HASH_TABLE_SIZE 1023
-static Scheme_Hash_Table *symbol_table;
 
 /* globals */
 Scheme_Value scheme_symbol_type;
@@ -37,10 +37,16 @@ Scheme_Value scheme_unquote_symbol;
 Scheme_Value scheme_unquote_splicing_symbol;
 
 /* locals */
+static Scheme_Hash_Table *symbol_table;
+
+/* static function declarations */
+static Scheme_Value scheme_make_symbol (char *name);
 static Scheme_Value symbol_p_prim (int argc, Scheme_Value argv[]);
 static Scheme_Value string_to_symbol_prim (int argc, Scheme_Value argv[]);
 static Scheme_Value symbol_to_string_prim (int argc, Scheme_Value argv[]);
 static char *downcase (char *str);
+
+/* exported functions */
 
 void
 scheme_init_symbol (Scheme_Env *env)
@@ -55,23 +61,6 @@ scheme_init_symbol (Scheme_Env *env)
   scheme_add_global ("symbol?", scheme_make_prim (symbol_p_prim), env);
   scheme_add_global ("string->symbol", scheme_make_prim (string_to_symbol_prim), env);
   scheme_add_global ("symbol->string", scheme_make_prim (symbol_to_string_prim), env);
-}
-
-static Scheme_Value
-scheme_make_symbol (char *name)
-{
-  Scheme_Value sym;
-  size_t len = strlen(name);
-  char *new;
-
-  sym = scheme_alloc_object (scheme_symbol_type, len + 1);
-  new = SCHEME_PTR_VAL(sym);
-  if(len > 0) {
-    memcpy(new, name, len);
-  }
-  new[len] = 0;
-  SCHEME_STR_VAL(sym) = new;
-  return (sym);
 }
 
 Scheme_Value
@@ -93,7 +82,24 @@ scheme_intern_symbol (char *name)
     }
 }
 
-/* locals */
+/* static functions */
+
+static Scheme_Value
+scheme_make_symbol (char *name)
+{
+  Scheme_Value sym;
+  size_t len = strlen(name);
+  char *new;
+
+  sym = scheme_alloc_object (scheme_symbol_type, len + 1);
+  new = SCHEME_PTR_VAL(sym);
+  if(len > 0) {
+    memcpy(new, name, len);
+  }
+  new[len] = 0;
+  SCHEME_STR_VAL(sym) = new;
+  return (sym);
+}
 
 static Scheme_Value
 symbol_p_prim (int argc, Scheme_Value argv[])
