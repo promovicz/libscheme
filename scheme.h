@@ -223,7 +223,6 @@ Scheme_Value scheme_make_pointer (void *ptr);
 
 struct Scheme_Port
 {
-  Scheme_Value sub_type;
   FILE *stream;
 };
 typedef struct Scheme_Port Scheme_Port;
