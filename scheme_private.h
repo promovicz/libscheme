@@ -37,13 +37,12 @@ extern "C"
 {
 #endif
 
-
-struct Scheme_Bucket;
+struct Scheme_Hash_Bucket;
 struct Scheme_Hash_Table;
 struct Scheme_Method;
 struct Scheme_Port;
 
-typedef struct Scheme_Bucket Scheme_Bucket;
+typedef struct Scheme_Hash_Bucket Scheme_Hash_Bucket;
 typedef struct Scheme_Hash_Table Scheme_Hash_Table;
 typedef struct Scheme_Method Scheme_Method;
 typedef struct Scheme_Port Scheme_Port;
@@ -64,17 +63,17 @@ struct Scheme_Cont
   Scheme_Value retval;
 };
 
-struct Scheme_Bucket
+struct Scheme_Hash_Bucket
 {
   char *key;
   void *val;
-  struct Scheme_Bucket *next;
+  struct Scheme_Hash_Bucket *next;
 };
 
 struct Scheme_Hash_Table
 {
   int size;
-  Scheme_Bucket **buckets;
+  Scheme_Hash_Bucket **buckets;
 };
 
 struct Scheme_Method
