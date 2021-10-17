@@ -34,6 +34,11 @@ CFLAGS+=-Wall -Wextra -Wno-unused-parameter -Wno-unused-function
 #CFLAGS+=-Wsuggest-attribute=pure -Wsuggest-attribute=const -Wsuggest-attribute=noreturn
 
 #
+# We are compiling library code.
+#
+CFLAGS+=-DIN_LIBSCHEME
+
+#
 # The math library is needed for the numeric functions
 # in scheme_number.c.
 #

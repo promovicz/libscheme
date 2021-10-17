@@ -22,7 +22,7 @@
   MODIFICATIONS.
 */
 
-#include "scheme.h"
+#include "scheme_private.h"
 #include <ctype.h>
 
 #define GLOBAL_TABLE_SIZE 100313

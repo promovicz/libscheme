@@ -49,37 +49,10 @@ struct Scheme_Object;
 typedef struct Scheme_Object Scheme_Object;
 typedef struct Scheme_Object * Scheme_Value;
 
-struct Scheme_Bucket
-{
-  char *key;
-  void *val;
-  struct Scheme_Bucket *next;
-};
-typedef struct Scheme_Bucket Scheme_Bucket;
-
-struct Scheme_Hash_Table
-{
-  int size;
-  Scheme_Bucket **buckets;
-};
-typedef struct Scheme_Hash_Table Scheme_Hash_Table;
-
-struct Scheme_Env
-{
-  int num_bindings;
-  Scheme_Value *symbols;
-  Scheme_Value *values;
-  Scheme_Hash_Table *globals;
-  struct Scheme_Env *next;
-};
+struct Scheme_Env;
 typedef struct Scheme_Env Scheme_Env;
 
-struct Scheme_Cont
-{
-  int escaped;
-  jmp_buf buffer;
-  Scheme_Value retval;
-};
+struct Scheme_Cont;
 typedef struct Scheme_Cont Scheme_Cont;
 
 struct Scheme_Object
@@ -195,12 +168,6 @@ Scheme_Value scheme_alloc_object (Scheme_Value type, size_t nbytes);
 void *scheme_malloc (size_t size);
 void *scheme_calloc (size_t num, size_t size);
 char *scheme_strdup (char *str);
-
-/* hash table interface */
-Scheme_Hash_Table *scheme_hash_table (int size);
-void scheme_add_to_table (Scheme_Hash_Table *table, char *key, void *val);
-void scheme_change_in_table (Scheme_Hash_Table *table, char *key, void *new_val);
-void *scheme_lookup_in_table (Scheme_Hash_Table *table, char *key);
 
 /* constructors */
 Scheme_Value scheme_make_prim (Scheme_Prim *prim);
