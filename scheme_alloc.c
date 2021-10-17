@@ -75,9 +75,10 @@ scheme_strdup (char *str)
 {
   char *new;
   size_t len = strlen(str);
+  size_t space = len + 1;
 
-  new = scheme_malloc ((len + 1) * sizeof (char));
-  strncpy (new, str, len);
+  new = scheme_malloc (space);
+  strncpy (new, str, space);
   new[len] = 0;
   return (new);
 }
