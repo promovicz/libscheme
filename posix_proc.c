@@ -41,7 +41,7 @@ static Scheme_Value posix_execv (int argc, Scheme_Value argv[]);
 
 /* exported functions */
 
-void 
+void
 scheme_init_posix_proc (Scheme_Env *env)
 {
   scheme_add_global ("posix-fork", scheme_make_prim (posix_fork), env);
