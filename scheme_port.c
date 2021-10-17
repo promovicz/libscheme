@@ -63,8 +63,8 @@ static Scheme_Value newline (int argc, Scheme_Value argv[]);
 static Scheme_Value write_char (int argc, Scheme_Value argv[]);
 static Scheme_Value load (int argc, Scheme_Value argv[]);
 /* non-standard */
-//static Scheme_Value drain_input (int argc, Scheme_Value argv[]);
-//static Scheme_Value flush_output (int argc, Scheme_Value argv[]);
+static Scheme_Value drain_input (int argc, Scheme_Value argv[]);
+static Scheme_Value flush_output (int argc, Scheme_Value argv[]);
 //static Scheme_Value with_input_from_string (int argc, Scheme_Value argv[]);
 //static Scheme_Value open_input_string (int argc, Scheme_Value argv[]);
 
@@ -115,8 +115,8 @@ scheme_init_port (Scheme_Env *env)
   //scheme_add_global ("display-to-string", scheme_make_prim (display_to_string), env);
 
   /* buffering */
-  //scheme_add_global ("drain-input", scheme_make_prim (drain_input), env);
-  //scheme_add_global ("flush-output", scheme_make_prim (flush_output), env);
+  scheme_add_global ("drain-input", scheme_make_prim (drain_input), env);
+  scheme_add_global ("flush-output", scheme_make_prim (flush_output), env);
 
   /* standard ports */
   cur_in_port = scheme_stdin_port = scheme_make_file_input_port (stdin);
@@ -586,4 +586,32 @@ load (int argc, Scheme_Value argv[])
   printf ("; done loading %s\n", filename);
   fclose (fp);
   return (ret);
+}
+
+static Scheme_Value
+drain_input (int argc, Scheme_Value argv[])
+{
+  Scheme_Port *ip;
+
+  SCHEME_ASSERT ((argc == 1), "drain-input: wrong number of args");
+  SCHEME_ASSERT (SCHEME_INPORTP(argv[0]), "drain-input: arg must be an input port");
+
+  ip = (Scheme_Port *) SCHEME_PTR_VAL (argv[0]);
+  fflush(ip->stream);
+
+  return (scheme_true);
+}
+
+static Scheme_Value
+flush_output (int argc, Scheme_Value argv[])
+{
+  Scheme_Port *op;
+
+  SCHEME_ASSERT ((argc == 1), "flush-output: wrong number of args");
+  SCHEME_ASSERT (SCHEME_OUTPORTP(argv[0]), "flush-output: arg must be an output port");
+
+  op = (Scheme_Port *) SCHEME_PTR_VAL (argv[0]);
+  fflush(op->stream);
+
+  return (scheme_true);
 }
