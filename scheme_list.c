@@ -29,7 +29,7 @@ Scheme_Value scheme_null;
 Scheme_Value scheme_null_type;
 Scheme_Value scheme_pair_type;
 
-/* locals */
+/* static function declarations */
 static Scheme_Value pair_p_prim (int argc, Scheme_Value argv[]);
 static Scheme_Value cons_prim (int argc, Scheme_Value argv[]);
 static Scheme_Value car_prim (int argc, Scheme_Value argv[]);
@@ -62,6 +62,8 @@ static Scheme_Value cdadr_prim (int argc, Scheme_Value argv[]);
 static Scheme_Value cddar_prim (int argc, Scheme_Value argv[]);
 static Scheme_Value caddr_prim (int argc, Scheme_Value argv[]);
 static Scheme_Value cdddr_prim (int argc, Scheme_Value argv[]);
+
+/* exported functions */
 
 void
 scheme_init_list (Scheme_Env *env)
@@ -203,7 +205,7 @@ scheme_caddr (Scheme_Value pair)
   return (SCHEME_CAR (SCHEME_CDR (SCHEME_CDR (pair))));
 }
 
-/* local functions */
+/* static functions */
 
 static Scheme_Value
 pair_p_prim (int argc, Scheme_Value argv[])
