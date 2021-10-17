@@ -135,12 +135,12 @@ libscheme.a: $(OBJS)
 
 # Run benchmark
 bench: scheme
-	time ./scheme bench.scm
+	time -v ./scheme bench.scm
 .PHONY: bench
 
 # Run tests
 test: scheme
-	./scheme run-tests.scm
+	time -v ./scheme run-tests.scm
 	rm -f tmp1 tmp2 tmp3
 .PHONY: test
 
