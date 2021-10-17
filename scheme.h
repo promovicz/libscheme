@@ -155,29 +155,20 @@ extern Scheme_Value scheme_unquote_symbol;
 extern Scheme_Value scheme_unquote_splicing_symbol;
 
 /* constants */
+extern Scheme_Value scheme_eof;
 extern Scheme_Value scheme_null;
 extern Scheme_Value scheme_true;
 extern Scheme_Value scheme_false;
 
-/* basics */
-Scheme_Value scheme_eval (Scheme_Value obj, Scheme_Env *env);
-Scheme_Value scheme_apply (Scheme_Value rator, int num_rands, Scheme_Value *rands);
-Scheme_Value scheme_apply_to_list (Scheme_Value rator, Scheme_Value rands);
-Scheme_Value scheme_apply_struct_proc (Scheme_Value rator, Scheme_Value rands);
-Scheme_Value scheme_alloc_object (Scheme_Value type, size_t nbytes);
-void *scheme_malloc (size_t size);
-void *scheme_calloc (size_t num, size_t size);
-char *scheme_strdup (char *str);
+/* globals */
+extern Scheme_Value scheme_stdin_port;
+extern Scheme_Value scheme_stdout_port;
+extern Scheme_Value scheme_stderr_port;
 
 /* constructors */
-Scheme_Value scheme_make_prim (Scheme_Prim *prim);
-Scheme_Value scheme_make_closure (Scheme_Env *env, Scheme_Value code);
-Scheme_Value scheme_make_cont ();
 Scheme_Value scheme_make_type (const char *name);
-Scheme_Value scheme_make_pair (Scheme_Value car, Scheme_Value cdr);
 Scheme_Value scheme_make_string (const char *chars);
 Scheme_Value scheme_alloc_string (int size, char fill);
-Scheme_Value scheme_make_vector (int size, Scheme_Value fill);
 Scheme_Value scheme_make_integer (int i);
 Scheme_Value scheme_make_double (double d);
 Scheme_Value scheme_make_char (char ch);
@@ -193,29 +184,8 @@ struct Scheme_Port
 };
 typedef struct Scheme_Port Scheme_Port;
 
-extern Scheme_Value scheme_eof;
-extern Scheme_Value scheme_stdin_port;
-extern Scheme_Value scheme_stdout_port;
-extern Scheme_Value scheme_stderr_port;
-
-Scheme_Value scheme_make_file_input_port (FILE *fp);
-Scheme_Value scheme_make_file_output_port (FILE *fp);
-void scheme_close_input_port (Scheme_Value port);
-void scheme_close_output_port (Scheme_Value port);
-int scheme_getc (Scheme_Value port);
-void scheme_ungetc (int ch, Scheme_Value port);
-void scheme_puts (char *str, Scheme_Value port);
-
-/* read */
-
-Scheme_Value scheme_read (Scheme_Value port);
-
-/* print */
-
-void scheme_write (Scheme_Value obj, Scheme_Value port);
-void scheme_display (Scheme_Value obj, Scheme_Value port);
-//char *scheme_write_to_string (Scheme_Value obj);
-//char *scheme_display_to_string (Scheme_Value obj);
+/* initialization */
+Scheme_Env *scheme_basic_env (void);
 
 /* environment */
 void scheme_add_global (char *name, Scheme_Value val, Scheme_Env *env);
@@ -229,25 +199,63 @@ Scheme_Value scheme_lookup_value (Scheme_Value symbol, Scheme_Env *env);
 Scheme_Value scheme_lookup_global (Scheme_Value symbol, Scheme_Env *env);
 extern Scheme_Env *scheme_env;
 
-/* symbols */
-Scheme_Value scheme_intern_symbol (char *name);
+/* alloc */
+Scheme_Value scheme_alloc_object (Scheme_Value type, size_t nbytes);
+void *scheme_malloc (size_t size);
+void *scheme_calloc (size_t num, size_t size);
+char *scheme_strdup (char *str);
 
-/* initialization */
-Scheme_Env *scheme_basic_env (void);
-
-/* misc */
+/* bool */
 SCHEME_FUN_CONST int scheme_eq (Scheme_Value obj1, Scheme_Value obj2);
 SCHEME_FUN_PURE  int scheme_eqv (Scheme_Value obj1, Scheme_Value obj2);
 SCHEME_FUN_PURE  int scheme_equal (Scheme_Value obj1, Scheme_Value obj2);
-SCHEME_FUN_PURE  int scheme_list_length (Scheme_Value list);
+
+/* eval */
+Scheme_Value scheme_eval (Scheme_Value obj, Scheme_Env *env);
+
+/* fun */
+Scheme_Value scheme_make_prim (Scheme_Prim *prim);
+Scheme_Value scheme_make_closure (Scheme_Env *env, Scheme_Value code);
+Scheme_Value scheme_make_cont ();
+Scheme_Value scheme_apply (Scheme_Value rator, int num_rands, Scheme_Value *rands);
+Scheme_Value scheme_apply_to_list (Scheme_Value rator, Scheme_Value rands);
+Scheme_Value scheme_apply_struct_proc (Scheme_Value rator, Scheme_Value rands);
+
+/* list */
+Scheme_Value scheme_make_pair (Scheme_Value car, Scheme_Value cdr);
 Scheme_Value scheme_alloc_list (int size);
+SCHEME_FUN_PURE  int scheme_list_length (Scheme_Value list);
 Scheme_Value scheme_map_1 (Scheme_Value (*fun)(Scheme_Object*), Scheme_Value lst);
 SCHEME_FUN_PURE  Scheme_Value scheme_car (Scheme_Value pair);
 SCHEME_FUN_PURE  Scheme_Value scheme_cdr (Scheme_Value pair);
 SCHEME_FUN_PURE  Scheme_Value scheme_cadr (Scheme_Value pair);
 SCHEME_FUN_PURE  Scheme_Value scheme_caddr (Scheme_Value pair);
-Scheme_Value scheme_vector_to_list (Scheme_Value vec);
+
+/* port */
+Scheme_Value scheme_make_file_input_port (FILE *fp);
+Scheme_Value scheme_make_file_output_port (FILE *fp);
+void scheme_close_input_port (Scheme_Value port);
+void scheme_close_output_port (Scheme_Value port);
+int scheme_getc (Scheme_Value port);
+void scheme_ungetc (int ch, Scheme_Value port);
+void scheme_puts (char *str, Scheme_Value port);
+
+/* print */
+void scheme_write (Scheme_Value obj, Scheme_Value port);
+void scheme_display (Scheme_Value obj, Scheme_Value port);
+//char *scheme_write_to_string (Scheme_Value obj);
+//char *scheme_display_to_string (Scheme_Value obj);
+
+/* read */
+Scheme_Value scheme_read (Scheme_Value port);
+
+/* symbol */
+Scheme_Value scheme_intern_symbol (char *name);
+
+/* vector */
+Scheme_Value scheme_make_vector (int size, Scheme_Value fill);
 Scheme_Value scheme_list_to_vector (Scheme_Value list);
+Scheme_Value scheme_vector_to_list (Scheme_Value vec);
 
 /* convenience macros */
 #define SCHEME_CHARP(obj)    (SCHEME_TYPE(obj) == scheme_char_type)
