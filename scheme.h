@@ -35,6 +35,7 @@ extern "C"
 {
 #endif
 
+/* attribute macros */
 #ifdef __GNUC__
 #define SCHEME_FUN_CONST    __attribute__((const))
 #define SCHEME_FUN_PURE     __attribute__((pure))
@@ -45,16 +46,24 @@ extern "C"
 #define SCHEME_FUN_NORETURN
 #endif
 
+/* struct forward declarations */
 struct Scheme_Object;
-typedef struct Scheme_Object Scheme_Object;
-typedef struct Scheme_Object * Scheme_Value;
-
 struct Scheme_Env;
-typedef struct Scheme_Env Scheme_Env;
-
 struct Scheme_Cont;
+
+/* struct typedefs */
+typedef struct Scheme_Object Scheme_Object;
+typedef struct Scheme_Env Scheme_Env;
 typedef struct Scheme_Cont Scheme_Cont;
 
+/* pointer types */
+typedef struct Scheme_Object * Scheme_Value;
+
+/* function types */
+typedef Scheme_Value (Scheme_Prim) (int argc, Scheme_Value argv[]);
+typedef Scheme_Value (Scheme_Syntax) (Scheme_Value form, struct Scheme_Env *env);
+
+/* struct types */
 struct Scheme_Object
 {
   union
@@ -100,22 +109,6 @@ struct Scheme_Object
 #define SCHEME_METH_DEF(obj) ((obj)->u.methods_val.def)
 #define SCHEME_METHS(obj)    ((obj)->u.methods_val.meths)
 
-typedef Scheme_Value
-(Scheme_Prim) (int argc, Scheme_Value argv[]);
-
-typedef Scheme_Value
-(Scheme_Syntax) (Scheme_Value form, struct Scheme_Env *env);
-
-/* error handling */
-extern jmp_buf scheme_error_buf;
-SCHEME_FUN_NORETURN void scheme_signal_error (char *msg, ...);
-void scheme_warning (char *msg, ...);
-void scheme_default_handler (void);
-#define SCHEME_CATCH_ERROR(try_expr, err_expr) \
-  (setjmp(scheme_error_buf) ? (err_expr) : (try_expr))
-#define SCHEME_ASSERT(expr,msg) \
-  ((expr) ? 0 : (scheme_signal_error(msg)))
-
 /* types */
 extern Scheme_Value scheme_type_type;
 extern Scheme_Value scheme_char_type;
@@ -140,7 +133,7 @@ extern Scheme_Value scheme_promise_type;
 extern Scheme_Value scheme_struct_proc_type;
 extern Scheme_Value scheme_pointer_type;
 
-/* common symbols */
+/* symbols */
 extern Scheme_Value scheme_quote_symbol;
 extern Scheme_Value scheme_quasiquote_symbol;
 extern Scheme_Value scheme_unquote_symbol;
@@ -153,9 +146,23 @@ extern Scheme_Value scheme_true;
 extern Scheme_Value scheme_false;
 
 /* globals */
+extern Scheme_Env *scheme_env;
+extern jmp_buf scheme_error_buf;
 extern Scheme_Value scheme_stdin_port;
 extern Scheme_Value scheme_stdout_port;
 extern Scheme_Value scheme_stderr_port;
+
+/* environment */
+Scheme_Env *scheme_basic_env (void);
+void scheme_add_global (char *name, Scheme_Value val, Scheme_Env *env);
+Scheme_Env *scheme_new_frame (int num_bindings);
+void scheme_add_binding (int index, Scheme_Value sym, Scheme_Value val, Scheme_Env *frame);
+Scheme_Env *scheme_extend_env (Scheme_Env *frame, Scheme_Env *env);
+Scheme_Env *scheme_add_frame (Scheme_Value syms, Scheme_Value vals, Scheme_Env *env);
+Scheme_Env *scheme_pop_frame (Scheme_Env *env);
+void scheme_set_value (Scheme_Value var, Scheme_Value val, Scheme_Env *env);
+Scheme_Value scheme_lookup_value (Scheme_Value symbol, Scheme_Env *env);
+Scheme_Value scheme_lookup_global (Scheme_Value symbol, Scheme_Env *env);
 
 /* constructors */
 Scheme_Value scheme_make_type (const char *name);
@@ -168,21 +175,6 @@ Scheme_Value scheme_make_syntax (Scheme_Syntax *syntax);
 Scheme_Value scheme_make_promise (Scheme_Value expr, Scheme_Env *env);
 Scheme_Value scheme_make_pointer (void *ptr);
 
-/* initialization */
-Scheme_Env *scheme_basic_env (void);
-
-/* environment */
-void scheme_add_global (char *name, Scheme_Value val, Scheme_Env *env);
-Scheme_Env *scheme_new_frame (int num_bindings);
-void scheme_add_binding (int index, Scheme_Value sym, Scheme_Value val, Scheme_Env *frame);
-Scheme_Env *scheme_extend_env (Scheme_Env *frame, Scheme_Env *env);
-Scheme_Env *scheme_add_frame (Scheme_Value syms, Scheme_Value vals, Scheme_Env *env);
-Scheme_Env *scheme_pop_frame (Scheme_Env *env);
-void scheme_set_value (Scheme_Value var, Scheme_Value val, Scheme_Env *env);
-Scheme_Value scheme_lookup_value (Scheme_Value symbol, Scheme_Env *env);
-Scheme_Value scheme_lookup_global (Scheme_Value symbol, Scheme_Env *env);
-extern Scheme_Env *scheme_env;
-
 /* alloc */
 Scheme_Value scheme_alloc_object (Scheme_Value type, size_t nbytes);
 void *scheme_malloc (size_t size);
@@ -193,6 +185,11 @@ char *scheme_strdup (char *str);
 SCHEME_FUN_CONST int scheme_eq (Scheme_Value obj1, Scheme_Value obj2);
 SCHEME_FUN_PURE  int scheme_eqv (Scheme_Value obj1, Scheme_Value obj2);
 SCHEME_FUN_PURE  int scheme_equal (Scheme_Value obj1, Scheme_Value obj2);
+
+/* error */
+SCHEME_FUN_NORETURN void scheme_signal_error (char *msg, ...);
+void scheme_warning (char *msg, ...);
+void scheme_default_handler (void);
 
 /* eval */
 Scheme_Value scheme_eval (Scheme_Value obj, Scheme_Env *env);
@@ -241,7 +238,7 @@ Scheme_Value scheme_make_vector (int size, Scheme_Value fill);
 Scheme_Value scheme_list_to_vector (Scheme_Value list);
 Scheme_Value scheme_vector_to_list (Scheme_Value vec);
 
-/* convenience macros */
+/* type macros */
 #define SCHEME_CHARP(obj)    (SCHEME_TYPE(obj) == scheme_char_type)
 #define SCHEME_INTP(obj)     (SCHEME_TYPE(obj) == scheme_integer_type)
 #define SCHEME_DBLP(obj)     (SCHEME_TYPE(obj) == scheme_double_type)
@@ -266,10 +263,17 @@ Scheme_Value scheme_vector_to_list (Scheme_Value vec);
 #define SCHEME_EOFP(obj)     (SCHEME_TYPE(obj) == scheme_eof_type)
 #define SCHEME_PROMP(obj)    (SCHEME_TYPE(obj) == scheme_promise_type)
 #define SCHEME_POINTERP(obj) (SCHEME_TYPE(obj) == scheme_pointer_type)
-/* other */
+
+/* list macros */
 #define SCHEME_CADR(obj)     (SCHEME_CAR (SCHEME_CDR (obj)))
 #define SCHEME_CAAR(obj)     (SCHEME_CAR (SCHEME_CAR (obj)))
 #define SCHEME_CDDR(obj)     (SCHEME_CDR (SCHEME_CDR (obj)))
+
+/* error macros */
+#define SCHEME_CATCH_ERROR(try_expr, err_expr) \
+  (setjmp(scheme_error_buf) ? (err_expr) : (try_expr))
+#define SCHEME_ASSERT(expr,msg) \
+  ((expr) ? 0 : (scheme_signal_error(msg)))
 
 /* constants */
 #define SCHEME_MAX_ARGS 256	/* max number of args to function */
