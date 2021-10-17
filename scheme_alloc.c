@@ -28,9 +28,11 @@
 #ifdef NO_GC
 #include <stdlib.h>
 #define MALLOC malloc
+#define CALLOC calloc
 #else
 #include <gc.h>
-#define MALLOC GC_malloc
+#define MALLOC      GC_malloc
+#define CALLOC(n,s) GC_malloc(n*s)
 #endif
 
 Scheme_Object *
@@ -62,10 +64,7 @@ scheme_calloc (size_t num, size_t size)
 {
   void *space;
 
-  space = MALLOC (num*size);
-#ifdef NO_GC
-  memset (space, 0, (num*size));
-#endif
+  space = CALLOC (num, size);
   SCHEME_ASSERT ((space != 0), "memory allocation failure");
   return (space);
 }
