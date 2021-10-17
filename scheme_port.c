@@ -579,12 +579,21 @@ load (int argc, Scheme_Value argv[])
 static Scheme_Value
 drain_input (int argc, Scheme_Value argv[])
 {
+  Scheme_Value port;
   Scheme_Port *ip;
 
-  SCHEME_ASSERT ((argc == 1), "drain-input: wrong number of args");
-  SCHEME_ASSERT (SCHEME_INPORTP(argv[0]), "drain-input: arg must be an input port");
+  SCHEME_ASSERT ((argc == 0 || argc == 1), "drain-input: wrong number of args");
+  if (argc == 1)
+    {
+      SCHEME_ASSERT (SCHEME_INPORTP(argv[0]), "drain-input: arg must be an input port");
+      port = argv[0];
+    }
+  else
+    {
+      port = cur_in_port;
+    }
 
-  ip = (Scheme_Port *) SCHEME_PTR_VAL (argv[0]);
+  ip = (Scheme_Port *) SCHEME_PTR_VAL (port);
   fflush(ip->stream);
 
   return (scheme_true);
@@ -593,12 +602,21 @@ drain_input (int argc, Scheme_Value argv[])
 static Scheme_Value
 flush_output (int argc, Scheme_Value argv[])
 {
+  Scheme_Value port;
   Scheme_Port *op;
 
-  SCHEME_ASSERT ((argc == 1), "flush-output: wrong number of args");
-  SCHEME_ASSERT (SCHEME_OUTPORTP(argv[0]), "flush-output: arg must be an output port");
+  SCHEME_ASSERT ((argc == 0 || argc == 1), "flush-output: wrong number of args");
+  if (argc == 1)
+    {
+      SCHEME_ASSERT (SCHEME_OUTPORTP(argv[0]), "flush-output: arg must be an output port");
+      port = argv[0];
+    }
+  else
+    {
+      port = cur_out_port;
+    }
 
-  op = (Scheme_Port *) SCHEME_PTR_VAL (argv[0]);
+  op = (Scheme_Port *) SCHEME_PTR_VAL (port);
   fflush(op->stream);
 
   return (scheme_true);
