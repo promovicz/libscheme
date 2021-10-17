@@ -57,7 +57,7 @@ scheme_init_symbol (Scheme_Env *env)
   scheme_add_global ("symbol->string", scheme_make_prim (symbol_to_string_prim), env);
 }
 
-Scheme_Value
+static Scheme_Value
 scheme_make_symbol (char *name)
 {
   Scheme_Value sym;
