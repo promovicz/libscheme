@@ -30,7 +30,7 @@
 #define MAX_NUMBER_SIZE 64
 #define MAX_SYMBOL_SIZE 255
 
-/* local function prototypes */
+/* static function declarations */
 
 static Scheme_Value read_char (Scheme_Value port);
 static Scheme_Value read_list (Scheme_Value port);
@@ -50,6 +50,8 @@ static void skip_whitespace_comments (Scheme_Value port);
 static int peek_char (Scheme_Value port);
 static int double_peek_char (Scheme_Value port);
 static int match_chars (Scheme_Value port, char *str);
+
+/* exported functions */
 
 Scheme_Value
 scheme_read (Scheme_Value port)
@@ -145,6 +147,9 @@ scheme_read (Scheme_Value port)
     }
 }
 
+/* static functions */
+
+/* read any character */
 static Scheme_Value
 read_char (Scheme_Value port)
 {
