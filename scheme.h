@@ -221,8 +221,6 @@ void scheme_puts (char *str, Scheme_Value port);
 /* print */
 void scheme_write (Scheme_Value obj, Scheme_Value port);
 void scheme_display (Scheme_Value obj, Scheme_Value port);
-//char *scheme_write_to_string (Scheme_Value obj);
-//char *scheme_display_to_string (Scheme_Value obj);
 
 /* read */
 Scheme_Value scheme_read (Scheme_Value port);

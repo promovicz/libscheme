@@ -64,12 +64,17 @@ static Scheme_Value display (int argc, Scheme_Value argv[]);
 static Scheme_Value newline (int argc, Scheme_Value argv[]);
 static Scheme_Value write_char (int argc, Scheme_Value argv[]);
 static Scheme_Value load (int argc, Scheme_Value argv[]);
+static Scheme_Value write_to_string (int argc, Scheme_Value argv[]);
+static Scheme_Value display_to_string (int argc, Scheme_Value argv[]);
 /* non-standard */
 static Scheme_Value drain_input (int argc, Scheme_Value argv[]);
 static Scheme_Value flush_output (int argc, Scheme_Value argv[]);
 static Scheme_Value port_string (int argc, Scheme_Value argv[]);
 //static Scheme_Value with_input_from_string (int argc, Scheme_Value argv[]);
 //static Scheme_Value open_input_string (int argc, Scheme_Value argv[]);
+
+/* internal functions */
+Scheme_Value get_port_string(Scheme_Value port);
 
 /* exported functions */
 
@@ -116,8 +121,8 @@ scheme_init_port (Scheme_Env *env)
   scheme_add_global ("newline", scheme_make_prim (newline), env);
   scheme_add_global ("write-char", scheme_make_prim (write_char), env);
   scheme_add_global ("load", scheme_make_prim (load), env);
-  //scheme_add_global ("write-to-string", scheme_make_prim (write_to_string), env);
-  //scheme_add_global ("display-to-string", scheme_make_prim (display_to_string), env);
+  scheme_add_global ("write-to-string", scheme_make_prim (write_to_string), env);
+  scheme_add_global ("display-to-string", scheme_make_prim (display_to_string), env);
 
   /* buffering */
   scheme_add_global ("drain-input", scheme_make_prim (drain_input), env);
@@ -636,6 +641,32 @@ load (int argc, Scheme_Value argv[])
 }
 
 static Scheme_Value
+write_to_string (int argc, Scheme_Value argv[])
+{
+  Scheme_Value port;
+
+  SCHEME_ASSERT ((argc==1), "write-to-string: wrong number of args");
+  port = scheme_make_string_output_port(2^16); // XXX
+  scheme_write (argv[0], port);
+  scheme_close_output_port(port);
+
+  return get_port_string(port);
+}
+
+static Scheme_Value
+display_to_string (int argc, Scheme_Value argv[])
+{
+  Scheme_Value port;
+
+  SCHEME_ASSERT ((argc==1), "display-to-string: wrong number of args");
+  port = scheme_make_string_output_port(2^16); // XXX
+  scheme_display (argv[0], port);
+  scheme_close_output_port(port);
+
+  return get_port_string(port);
+}
+
+static Scheme_Value
 drain_input (int argc, Scheme_Value argv[])
 {
   Scheme_Value port;
@@ -693,6 +724,16 @@ port_string (int argc, Scheme_Value argv[])
   p = (Scheme_Port *) SCHEME_PTR_VAL (port);
   SCHEME_ASSERT ((p->buf != NULL), "port-string: arg must be a string port");
 
+  return get_port_string(port);
+}
+
+/* internal functions */
+
+static Scheme_Value
+get_port_string(Scheme_Value port)
+{
+  Scheme_Port *p;
+  p = (Scheme_Port *) SCHEME_PTR_VAL (port);
   return scheme_make_string(p->buf);
 }
 
