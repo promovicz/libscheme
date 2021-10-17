@@ -193,9 +193,10 @@ scheme_char_ready (Scheme_Value port)
 }
 
 void
-scheme_write_string (char *str, Scheme_Value port)
+scheme_puts (char *str, Scheme_Value port)
 {
   Scheme_Port *op;
+
   op = (Scheme_Port *) SCHEME_PTR_VAL (port);
   fputs(str, op->stream);
 }
@@ -532,7 +533,7 @@ newline (int argc, Scheme_Value argv[])
     {
       port = cur_out_port;
     }
-  scheme_write_string ("\n", port);
+  scheme_puts ("\n", port);
   return (scheme_true);
 }
 
@@ -554,7 +555,7 @@ write_char (int argc, Scheme_Value argv[])
     }
   SCHEME_ASSERT (SCHEME_CHARP(argv[0]), "write-char: first arg must be a character");
   sprintf (buf, "%c", SCHEME_CHAR_VAL (argv[0]));
-  scheme_write_string (buf, port);
+  scheme_puts (buf, port);
   return (scheme_true);
 }
 

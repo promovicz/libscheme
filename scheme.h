@@ -238,7 +238,7 @@ void scheme_close_output_port (Scheme_Value port);
 int scheme_getc (Scheme_Value port);
 void scheme_ungetc (int ch, Scheme_Value port);
 int scheme_char_ready (Scheme_Value port);
-void scheme_write_string (char *str, Scheme_Value port);
+void scheme_puts (char *str, Scheme_Value port);
 
 /* read */
 
