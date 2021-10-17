@@ -122,6 +122,8 @@ scheme_init_port (Scheme_Env *env)
   scheme_add_global ("newline", scheme_make_prim (newline), env);
   scheme_add_global ("write-char", scheme_make_prim (write_char), env);
   scheme_add_global ("load", scheme_make_prim (load), env);
+
+  /* reading to/from strings */
   scheme_add_global ("read-from-string", scheme_make_prim (read_from_string), env);
   scheme_add_global ("write-to-string", scheme_make_prim (write_to_string), env);
   scheme_add_global ("display-to-string", scheme_make_prim (display_to_string), env);
