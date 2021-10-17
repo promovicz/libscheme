@@ -180,14 +180,7 @@ extern Scheme_Value scheme_true;
 extern Scheme_Value scheme_false;
 
 /* basics */
-Scheme_Value scheme_read (Scheme_Value port);
 Scheme_Value scheme_eval (Scheme_Value obj, Scheme_Env *env);
-void scheme_write (Scheme_Value obj, Scheme_Value port);
-void scheme_display (Scheme_Value obj, Scheme_Value port);
-void scheme_write_string (char *str, Scheme_Value port);
-char *scheme_write_to_string (Scheme_Value obj);
-char *scheme_display_to_string (Scheme_Value obj);
-void scheme_debug_print (Scheme_Value obj);
 Scheme_Value scheme_apply (Scheme_Value rator, int num_rands, Scheme_Value *rands);
 Scheme_Value scheme_apply_to_list (Scheme_Value rator, Scheme_Value rands);
 Scheme_Value scheme_apply_struct_proc (Scheme_Value rator, Scheme_Value rands);
@@ -218,57 +211,39 @@ Scheme_Value scheme_make_syntax (Scheme_Syntax *syntax);
 Scheme_Value scheme_make_promise (Scheme_Value expr, Scheme_Env *env);
 Scheme_Value scheme_make_pointer (void *ptr);
 
-/* generic port support */
+/* port */
 
-struct Scheme_Input_Port
+struct Scheme_Port
 {
   Scheme_Value sub_type;
-  void *port_data;
-  int (*getc_fun) (struct Scheme_Input_Port *port);
-  void (*ungetc_fun) (int ch, struct Scheme_Input_Port *port);
-  int (*char_ready_fun) (struct Scheme_Input_Port *port);
-  void (*close_fun) (struct Scheme_Input_Port *port);
+  FILE *stream;
 };
-typedef struct Scheme_Input_Port Scheme_Input_Port;
+typedef struct Scheme_Port Scheme_Port;
 
-struct Scheme_Output_Port
-{
-  Scheme_Value sub_type;
-  void *port_data;
-  void (*write_string_fun) (char *str, struct Scheme_Output_Port *);
-  void (*close_fun) (struct Scheme_Output_Port *);
-};
-typedef struct Scheme_Output_Port Scheme_Output_Port;
-
-int scheme_getc (Scheme_Value port);
-void scheme_ungetc (int ch, Scheme_Value port);
-int scheme_char_ready (Scheme_Value port);
-void scheme_close_input_port (Scheme_Value port);
-void scheme_close_output_port (Scheme_Value port);
-
-Scheme_Value
-scheme_make_input_port (
-  Scheme_Value subtype,
-  void *data,
-  int (*getc_fun) (Scheme_Input_Port*),
-  void (*ungetc_fun) (int, Scheme_Input_Port*),
-  int (*char_ready_fun) (Scheme_Input_Port*),
-  void (*close_fun) (Scheme_Input_Port*)
-);
-Scheme_Value
-scheme_make_output_port (
-  Scheme_Value subtype,
-  void *data,
-  void (*write_string_fun) (char *str, Scheme_Output_Port*),
-  void (*close_fun) (Scheme_Output_Port*)
-);
-Scheme_Value scheme_make_file_input_port (FILE *fp);
-Scheme_Value scheme_make_string_input_port (char *str);
-Scheme_Value scheme_make_file_output_port (FILE *fp);
-Scheme_Value scheme_make_string_output_port (char *str);
 extern Scheme_Value scheme_stdin_port;
 extern Scheme_Value scheme_stdout_port;
 extern Scheme_Value scheme_stderr_port;
+
+Scheme_Value scheme_make_file_input_port (FILE *fp);
+Scheme_Value scheme_make_file_output_port (FILE *fp);
+void scheme_close_input_port (Scheme_Value port);
+void scheme_close_output_port (Scheme_Value port);
+int scheme_getc (Scheme_Value port);
+void scheme_ungetc (int ch, Scheme_Value port);
+int scheme_char_ready (Scheme_Value port);
+void scheme_write_string (char *str, Scheme_Value port);
+
+/* read */
+
+Scheme_Value scheme_read (Scheme_Value port);
+
+/* print */
+
+void scheme_debug_print (Scheme_Value obj);
+void scheme_write (Scheme_Value obj, Scheme_Value port);
+void scheme_display (Scheme_Value obj, Scheme_Value port);
+//char *scheme_write_to_string (Scheme_Value obj);
+//char *scheme_display_to_string (Scheme_Value obj);
 
 /* environment */
 void scheme_add_global (char *name, Scheme_Value val, Scheme_Env *env);

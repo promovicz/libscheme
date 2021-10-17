@@ -25,17 +25,15 @@
 #include "scheme.h"
 #include <string.h>
 
-#define SCHEME_MAX_PRINT_SIZE 256000
-
-/* locals */
-static char print_buffer[SCHEME_MAX_PRINT_SIZE];
-
+/* static function declarations */
 static void print_to_port (Scheme_Value obj, Scheme_Value port, int escaped);
-static int print (char *str, int index, Scheme_Value obj, int escaped);
-static int print_string (char *str, int index, Scheme_Value string, int escaped);
-static int print_pair (char *str, int index, Scheme_Value pair, int escaped);
-static int print_vector (char *str, int index, Scheme_Value vec, int escaped);
-static int print_char (char *str, int index, Scheme_Value chobj, int escaped);
+static int print (FILE *os, Scheme_Value obj, int escaped);
+static int print_string (FILE *os, Scheme_Value string, int escaped);
+static int print_pair (FILE *os, Scheme_Value pair, int escaped);
+static int print_vector (FILE *os, Scheme_Value vec, int escaped);
+static int print_char (FILE *os, Scheme_Value chobj, int escaped);
+
+/* exported functions */
 
 void
 scheme_debug_print (Scheme_Value obj)
@@ -56,180 +54,139 @@ scheme_display (Scheme_Value obj, Scheme_Value port)
   print_to_port (obj, port, 0);
 }
 
-char *
-scheme_write_to_string (Scheme_Value obj)
-{
-  int index = 0;
-
-  index = print (print_buffer, index, obj, 1);
-  print_buffer[index] = '\0';
-  return (scheme_strdup (print_buffer));
-}
-
-char *
-scheme_display_to_string (Scheme_Value obj)
-{
-  int index = 0;
-
-  index = print (print_buffer, index, obj, 0);
-  print_buffer[index] = '\0';
-  return (scheme_strdup (print_buffer));
-}
-
-void
-scheme_write_string (char *str, Scheme_Value port)
-{
-  Scheme_Output_Port *op;
-  op = (Scheme_Output_Port *) SCHEME_PTR_VAL (port);
-  (op->write_string_fun) (str, op);
-}
+/* static functions */
 
 static void
 print_to_port (Scheme_Value obj, Scheme_Value port, int escaped)
 {
-  Scheme_Output_Port *op;
-  int index = 0;
+  Scheme_Port *op;
 
-  op = (Scheme_Output_Port *) SCHEME_PTR_VAL (port);
-  index = print (print_buffer, index, obj, escaped);
-  print_buffer[index] = '\0';
-
-  op = (Scheme_Output_Port *) SCHEME_PTR_VAL (port);
-  (op->write_string_fun) (print_buffer, op);
+  op = (Scheme_Port *) SCHEME_PTR_VAL (port);
+  print (op->stream, obj, escaped);
 }
 
 static int
-print (char *str, int index, Scheme_Value obj, int escaped)
+print (FILE *os, Scheme_Value obj, int escaped)
 {
   Scheme_Value type;
 
   type = SCHEME_TYPE (obj);
   if (type==scheme_type_type || type==scheme_symbol_type)
     {
-      sprintf ((str + index), "%s", SCHEME_STR_VAL (obj));
-      index += strlen (SCHEME_STR_VAL (obj));
+      fprintf (os, "%s", SCHEME_STR_VAL (obj));
     }
   else if (type==scheme_string_type)
     {
-      index = print_string (str, index, obj, escaped);
+      print_string (os, obj, escaped);
     }
   else if (type==scheme_char_type)
     {
-      index = print_char (str, index, obj, escaped);
+      print_char (os, obj, escaped);
     }
   else if (type==scheme_integer_type)
     {
-      sprintf ((str + index), "%d", SCHEME_INT_VAL (obj));
-      index += strlen (str + index);
+      fprintf (os, "%d", SCHEME_INT_VAL (obj));
     }
   else if (type==scheme_double_type)
     {
-      sprintf ((str + index), "%f", SCHEME_DBL_VAL (obj));
-      index += strlen (str + index);
+      fprintf (os, "%f", SCHEME_DBL_VAL (obj));
     }
   else if (type==scheme_null_type)
     {
-      sprintf ((str + index), "()");
-      index += 2;
+      fprintf (os, "()");
     }
   else if (type==scheme_pair_type)
     {
-      index = print_pair (str, index, obj, escaped);
+      print_pair (os, obj, escaped);
     }
   else if (type==scheme_vector_type)
     {
-      index = print_vector (str, index, obj, escaped);
+      print_vector (os, obj, escaped);
     }
   else if (type==scheme_true_type)
     {
-      sprintf ((str + index), "#t");
-      index += 2;
+      fprintf (os, "#t");
     }
   else if (type==scheme_false_type)
     {
-      sprintf ((str + index), "#f");
-      index += 2;
+      fprintf (os, "#f");
     }
   else
     {
-      sprintf ((str + index), "#%s", SCHEME_STR_VAL(SCHEME_TYPE(obj)));
-      index += strlen (str + index);
+      fprintf (os, "#%s", SCHEME_STR_VAL(SCHEME_TYPE(obj)));
     }
-  return (index);
+  return (0);
 }
 
 static int
-print_string (char *buf, int index, Scheme_Value string, int escaped)
+print_string (FILE *os, Scheme_Value string, int escaped)
 {
   char *str;
 
   str = SCHEME_STR_VAL (string);
   if ( escaped )
     {
-      buf[index++] = '"';
+      fputc('"', os);
     }
   while ( *str )
     {
       if (escaped && ((*str == '"') || (*str == '\\')))
 	{
-	  buf[index++] = '\\';
+	  fputc('\\', os);
 	}
-      buf[index++] = *str;
+      fputc(*str, os);
       str++;
     }
   if ( escaped )
     {
-      buf[index++] = '"';
+      fputc('"', os);
     }
-  return (index);
+  return (0);
 }
 
 static int
-print_pair (char *str, int index, Scheme_Value pair, int escaped)
+print_pair (FILE *os, Scheme_Value pair, int escaped)
 {
   Scheme_Value cdr;
 
-  str[index++] = '(';
-  index = print (str, index, SCHEME_CAR (pair), escaped);
+  fputc('(', os);
+  print (os, SCHEME_CAR (pair), escaped);
   cdr = SCHEME_CDR (pair);
   while ((cdr != scheme_null) && (SCHEME_TYPE(cdr) == scheme_pair_type))
     {
-      str[index++] = ' ';
-      index = print (str, index, SCHEME_CAR (cdr), escaped);
+      fputc(' ', os);
+      print (os, SCHEME_CAR (cdr), escaped);
       cdr = SCHEME_CDR (cdr);
     }
   if (cdr != scheme_null)
     {
-      str[index++] = ' ';
-      str[index++] = '.';
-      str[index++] = ' ';
-      index = print (str, index, cdr, escaped);
+      fputs(" . ", os);
+      print (os, cdr, escaped);
     }
-  str[index++] = ')';
-  return (index);
+  fputc(')', os);
+  return (0);
 }
 
 static int
-print_vector (char *str, int index, Scheme_Value vec, int escaped)
+print_vector (FILE *os, Scheme_Value vec, int escaped)
 {
   int i;
 
-  str[index++] = '#';
-  str[index++] = '(';
+  fputs("#(", os);
   for ( i=0 ; i<SCHEME_VEC_SIZE(vec) ; ++i )
     {
-      index = print (str, index, SCHEME_VEC_ELS(vec)[i], escaped);
+      print (os, SCHEME_VEC_ELS(vec)[i], escaped);
       if (i<SCHEME_VEC_SIZE(vec)-1)
 	{
-	  str[index++] = ' ';
+	  fputc(' ', os);
 	}
     }
-  str[index++] = ')';
-  return (index);
+  fputc(')', os);
+  return (0);
 }
 
 static int
-print_char (char *str, int index, Scheme_Value charobj, int escaped)
+print_char (FILE *os, Scheme_Value charobj, int escaped)
 {
   char ch;
 
@@ -239,38 +196,31 @@ print_char (char *str, int index, Scheme_Value charobj, int escaped)
       switch ( ch )
 	{
 	case '\n':
-	  sprintf ((str + index), "#\\newline");
-	  index += 9;
+	  fprintf (os, "#\\newline");
 	  break;
 	case '\t':
-	  sprintf ((str + index), "#\\tab");
-	  index += 5;
+	  fprintf (os, "#\\tab");
 	  break;
 	case ' ':
-	  sprintf ((str + index), "#\\space");
-	  index += 7;
+	  fprintf (os, "#\\space");
 	  break;
 	case '\r':
-	  sprintf ((str + index), "#\\return");
-	  index += 8;
+	  fprintf (os, "#\\return");
 	  break;
 	case '\f':
-	  sprintf ((str + index), "#\\page");
-	  index += 6;
+	  fprintf (os, "#\\page");
 	  break;
 	case '\b':
-	  sprintf ((str + index), "#\\backspace");
-	  index += 11;
+	  fprintf (os, "#\\backspace");
 	  break;
 	default:
-	  sprintf ((str + index), "#\\%c", ch);
-	  index += 3;
+	  fprintf (os, "#\\%c", ch);
 	  break;
 	}
     }
   else
     {
-      str[index++] = ch;
+      fputc(ch, os);
     }
-  return (index);
+  return (0);
 }
