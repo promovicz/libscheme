@@ -45,6 +45,10 @@ extern "C"
 #define SCHEME_FUN_NORETURN
 #endif
 
+struct Scheme_Object;
+typedef struct Scheme_Object Scheme_Object;
+typedef struct Scheme_Object * Scheme_Value;
+
 struct Scheme_Bucket
 {
   char *key;
@@ -101,7 +105,6 @@ struct Scheme_Object
     } u;
   struct Scheme_Object *type;
 };
-typedef struct Scheme_Object Scheme_Object;
 
 /* access macros */
 #define SCHEME_TYPE(obj)     ((obj)->type)
