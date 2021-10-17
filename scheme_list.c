@@ -29,7 +29,7 @@ Scheme_Value scheme_null;
 Scheme_Value scheme_null_type;
 Scheme_Value scheme_pair_type;
 
-/* static function declarations */
+/* primitive declarations */
 static Scheme_Value pair_p_prim (int argc, Scheme_Value argv[]);
 static Scheme_Value cons_prim (int argc, Scheme_Value argv[]);
 static Scheme_Value car_prim (int argc, Scheme_Value argv[]);
@@ -62,6 +62,9 @@ static Scheme_Value cdadr_prim (int argc, Scheme_Value argv[]);
 static Scheme_Value cddar_prim (int argc, Scheme_Value argv[]);
 static Scheme_Value caddr_prim (int argc, Scheme_Value argv[]);
 static Scheme_Value cdddr_prim (int argc, Scheme_Value argv[]);
+
+/* internal declarations */
+static Scheme_Value append (Scheme_Value lst1, Scheme_Value lst2);
 
 /* exported functions */
 
@@ -205,7 +208,7 @@ scheme_caddr (Scheme_Value pair)
   return (SCHEME_CAR (SCHEME_CDR (SCHEME_CDR (pair))));
 }
 
-/* static functions */
+/* primitive functions */
 
 static Scheme_Value
 pair_p_prim (int argc, Scheme_Value argv[])
@@ -329,8 +332,6 @@ length_prim (int argc, Scheme_Value argv[])
   return (scheme_make_integer (scheme_list_length (argv[0])));
 }
 
-static Scheme_Value append (Scheme_Value lst1, Scheme_Value lst2);
-
 static Scheme_Value
 append_prim (int argc, Scheme_Value argv[])
 {
@@ -343,20 +344,6 @@ append_prim (int argc, Scheme_Value argv[])
       res = append (res, argv[i]);
     }
   return (res);
-}
-
-static Scheme_Value
-append (Scheme_Value lst1, Scheme_Value lst2)
-{
-  if (SCHEME_NULLP(lst1))
-    {
-      return (lst2);
-    }
-  else
-    {
-      return (scheme_make_pair (SCHEME_CAR (lst1),
-				append (SCHEME_CDR (lst1), lst2)));
-    }
 }
 
 static Scheme_Value
@@ -555,4 +542,20 @@ cdddr_prim (int argc, Scheme_Value argv[])
   SCHEME_ASSERT((argc == 1), "cdddr: wrong number of args");
   SCHEME_ASSERT(SCHEME_PAIRP(argv[0]), "cdddr: arg must be a pair");
   return (SCHEME_CDR (SCHEME_CDR (SCHEME_CDR (argv[0]))));
+}
+
+/* internal functions */
+
+static Scheme_Value
+append (Scheme_Value lst1, Scheme_Value lst2)
+{
+  if (SCHEME_NULLP(lst1))
+    {
+      return (lst2);
+    }
+  else
+    {
+      return (scheme_make_pair (SCHEME_CAR (lst1),
+				append (SCHEME_CDR (lst1), lst2)));
+    }
 }
