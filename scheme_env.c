@@ -25,9 +25,6 @@
 #include "scheme_private.h"
 #include <ctype.h>
 
-#define GLOBAL_TABLE_SIZE 100313
-#define MAX_SYMBOL_SIZE 1023
-
 /* globals */
 Scheme_Env *scheme_env;
 
@@ -68,7 +65,7 @@ scheme_make_env (void)
   Scheme_Env *env;
 
   env = (Scheme_Env *) scheme_malloc (sizeof (Scheme_Env));
-  env->globals = scheme_make_hash_table (GLOBAL_TABLE_SIZE);
+  env->globals = scheme_make_hash_table (SCHEME_GLOBAL_BUCKETS);
   env->next = NULL;
   return (env);
 }
@@ -76,7 +73,7 @@ scheme_make_env (void)
 void
 scheme_add_global (char *name, Scheme_Value obj, Scheme_Env *env)
 {
-  char lower_name[MAX_SYMBOL_SIZE];
+  char lower_name[SCHEME_MAX_SYM];
   int i;
 
   i = 0;

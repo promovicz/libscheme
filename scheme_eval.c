@@ -22,7 +22,7 @@
   MODIFICATIONS.
 */
 
-#include "scheme.h"
+#include "scheme_private.h"
 
 /* locals */
 static Scheme_Value scheme_eval_combination (Scheme_Value comb, Scheme_Env *env);

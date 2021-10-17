@@ -275,9 +275,6 @@ Scheme_Value scheme_vector_to_list (Scheme_Value vec);
 #define SCHEME_ASSERT(expr,msg) \
   ((expr) ? 0 : (scheme_signal_error(msg)))
 
-/* constants */
-#define SCHEME_MAX_ARGS 256	/* max number of args to function */
-
 #ifdef __cplusplus
 }
 #endif

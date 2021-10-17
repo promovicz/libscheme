@@ -30,6 +30,7 @@
 #endif
 
 #include "scheme.h"
+#include "scheme_config.h"
 
 #ifdef __cplusplus
 extern "C"

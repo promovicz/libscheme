@@ -26,9 +26,6 @@
 #include <string.h>
 #include <ctype.h>
 
-/* configuration */
-#define HASH_TABLE_SIZE 1023
-
 /* globals */
 Scheme_Value scheme_symbol_type;
 Scheme_Value scheme_quote_symbol;
@@ -55,7 +52,7 @@ scheme_init_symbol (Scheme_Env *env)
 {
   scheme_symbol_type = scheme_make_type ("<symbol>");
   scheme_add_global ("<symbol>", scheme_symbol_type, env);
-  symbol_table = scheme_make_hash_table (HASH_TABLE_SIZE);
+  symbol_table = scheme_make_hash_table (SCHEME_SYMBOL_BUCKETS);
   scheme_quote_symbol = scheme_intern_symbol ("quote");
   scheme_quasiquote_symbol = scheme_intern_symbol ("quasiquote");
   scheme_unquote_symbol = scheme_intern_symbol ("unquote");
