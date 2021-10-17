@@ -27,7 +27,7 @@
 /* globals */
 Scheme_Value scheme_vector_type;
 
-/* locals */
+/* primitive declarations */
 static Scheme_Value vector_p (int argc, Scheme_Value argv[]);
 static Scheme_Value make_vector (int argc, Scheme_Value argv[]);
 static Scheme_Value vector (int argc, Scheme_Value argv[]);
@@ -121,7 +121,7 @@ scheme_vector_to_list (Scheme_Value vec)
   return (first);
 }
 
-/* static functions */
+/* primitive functions */
 
 static Scheme_Value
 vector_p (int argc, Scheme_Value argv[])
