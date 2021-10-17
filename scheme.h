@@ -154,17 +154,25 @@ void scheme_default_handler (void);
 /* types */
 extern Scheme_Value scheme_type_type;
 extern Scheme_Value scheme_char_type;
-extern Scheme_Value scheme_integer_type, scheme_double_type;
-extern Scheme_Value scheme_string_type, scheme_symbol_type;
-extern Scheme_Value scheme_null_type, scheme_pair_type;
+extern Scheme_Value scheme_integer_type;
+extern Scheme_Value scheme_double_type;
+extern Scheme_Value scheme_string_type;
+extern Scheme_Value scheme_symbol_type;
+extern Scheme_Value scheme_null_type;
+extern Scheme_Value scheme_pair_type;
 extern Scheme_Value scheme_vector_type;
-extern Scheme_Value scheme_prim_type, scheme_closure_type;
+extern Scheme_Value scheme_prim_type;
+extern Scheme_Value scheme_closure_type;
 extern Scheme_Value scheme_cont_type;
-extern Scheme_Value scheme_input_port_type, scheme_output_port_type;
+extern Scheme_Value scheme_input_port_type;
+extern Scheme_Value scheme_output_port_type;
 extern Scheme_Value scheme_eof_type;
-extern Scheme_Value scheme_true_type, scheme_false_type;
-extern Scheme_Value scheme_syntax_type, scheme_macro_type;
-extern Scheme_Value scheme_promise_type, scheme_struct_proc_type;
+extern Scheme_Value scheme_true_type;
+extern Scheme_Value scheme_false_type;
+extern Scheme_Value scheme_syntax_type;
+extern Scheme_Value scheme_macro_type;
+extern Scheme_Value scheme_promise_type;
+extern Scheme_Value scheme_struct_proc_type;
 extern Scheme_Value scheme_pointer_type;
 
 /* common symbols */
