@@ -64,6 +64,7 @@ static Scheme_Value display (int argc, Scheme_Value argv[]);
 static Scheme_Value newline (int argc, Scheme_Value argv[]);
 static Scheme_Value write_char (int argc, Scheme_Value argv[]);
 static Scheme_Value load (int argc, Scheme_Value argv[]);
+static Scheme_Value read_from_string (int argc, Scheme_Value argv[]);
 static Scheme_Value write_to_string (int argc, Scheme_Value argv[]);
 static Scheme_Value display_to_string (int argc, Scheme_Value argv[]);
 /* non-standard */
@@ -121,6 +122,7 @@ scheme_init_port (Scheme_Env *env)
   scheme_add_global ("newline", scheme_make_prim (newline), env);
   scheme_add_global ("write-char", scheme_make_prim (write_char), env);
   scheme_add_global ("load", scheme_make_prim (load), env);
+  scheme_add_global ("read-from-string", scheme_make_prim (read_from_string), env);
   scheme_add_global ("write-to-string", scheme_make_prim (write_to_string), env);
   scheme_add_global ("display-to-string", scheme_make_prim (display_to_string), env);
 
@@ -638,6 +640,23 @@ load (int argc, Scheme_Value argv[])
   printf ("; done loading %s\n", filename);
   fclose (fp);
   return (ret);
+}
+
+static Scheme_Value
+read_from_string (int argc, Scheme_Value argv[])
+{
+  Scheme_Value port;
+  char *str;
+  size_t len;
+
+  SCHEME_ASSERT ((argc==1), "read-from-string: wrong number of args");
+  SCHEME_ASSERT (SCHEME_STRINGP(argv[0]), "read-from-string: arg must be a string");
+
+  str = SCHEME_STR_VAL(argv[0]);
+  len = strlen(str);
+  port = scheme_make_string_input_port(str, len);
+
+  return (scheme_read (port));
 }
 
 static Scheme_Value
