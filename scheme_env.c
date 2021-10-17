@@ -74,7 +74,7 @@ scheme_make_env (void)
 }
 
 void
-scheme_add_global (char *name, Scheme_Object *obj, Scheme_Env *env)
+scheme_add_global (char *name, Scheme_Value obj, Scheme_Env *env)
 {
   char lower_name[MAX_SYMBOL_SIZE];
   int i;
@@ -96,13 +96,13 @@ scheme_new_frame (int num_bindings)
 
   frame = (Scheme_Env *) scheme_malloc (sizeof (Scheme_Env));
   frame->num_bindings = num_bindings;
-  frame->symbols = (Scheme_Object **) scheme_malloc (num_bindings * sizeof (Scheme_Object*));
-  frame->values = (Scheme_Object **) scheme_malloc (num_bindings * sizeof (Scheme_Object*));
+  frame->symbols = (Scheme_Value *) scheme_malloc (num_bindings * sizeof (Scheme_Object*));
+  frame->values = (Scheme_Value *) scheme_malloc (num_bindings * sizeof (Scheme_Object*));
   return (frame);
 }
 
 void
-scheme_add_binding (int index, Scheme_Object *sym, Scheme_Object *val, Scheme_Env *frame)
+scheme_add_binding (int index, Scheme_Value sym, Scheme_Value val, Scheme_Env *frame)
 {
   if ((index >= frame->num_bindings) || (index < 0))
     {
@@ -121,7 +121,7 @@ scheme_extend_env (Scheme_Env *frame, Scheme_Env *env)
 }
 
 Scheme_Env *
-scheme_add_frame (Scheme_Object *syms, Scheme_Object *vals, Scheme_Env *env)
+scheme_add_frame (Scheme_Value syms, Scheme_Value vals, Scheme_Env *env)
 {
   Scheme_Env *frame;
   int len, i;
@@ -129,8 +129,8 @@ scheme_add_frame (Scheme_Object *syms, Scheme_Object *vals, Scheme_Env *env)
   frame = (Scheme_Env *) scheme_malloc (sizeof (Scheme_Env));
   len = scheme_list_length (syms);
   frame->num_bindings = len;
-  frame->symbols = (Scheme_Object **) scheme_malloc (len * sizeof (Scheme_Object*));
-  frame->values = (Scheme_Object **) scheme_malloc (len * sizeof (Scheme_Object*));
+  frame->symbols = (Scheme_Value *) scheme_malloc (len * sizeof (Scheme_Object*));
+  frame->values = (Scheme_Value *) scheme_malloc (len * sizeof (Scheme_Object*));
   for ( i=0 ; i<len ; ++i )
     {
       if (SCHEME_SYMBOLP(syms))
@@ -161,7 +161,7 @@ scheme_pop_frame (Scheme_Env *env)
 }
 
 void
-scheme_set_value (Scheme_Object *symbol, Scheme_Object *val, Scheme_Env *env)
+scheme_set_value (Scheme_Value symbol, Scheme_Value val, Scheme_Env *env)
 {
   Scheme_Env *frame;
 
@@ -190,8 +190,8 @@ scheme_set_value (Scheme_Object *symbol, Scheme_Object *val, Scheme_Env *env)
     }
 }
 
-Scheme_Object *
-scheme_lookup_value (Scheme_Object *symbol, Scheme_Env *env)
+Scheme_Value
+scheme_lookup_value (Scheme_Value symbol, Scheme_Env *env)
 {
   Scheme_Env *frame;
 
@@ -212,8 +212,8 @@ scheme_lookup_value (Scheme_Object *symbol, Scheme_Env *env)
   return (scheme_lookup_global (symbol, frame));
 }
 
-Scheme_Object *
-scheme_lookup_global (Scheme_Object *symbol, Scheme_Env *env)
+Scheme_Value
+scheme_lookup_global (Scheme_Value symbol, Scheme_Env *env)
 {
   return (scheme_lookup_in_table (env->globals, SCHEME_STR_VAL(symbol)));
 }

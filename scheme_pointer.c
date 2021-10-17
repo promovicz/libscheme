@@ -25,11 +25,11 @@
 #include "scheme.h"
 
 /* globals */
-Scheme_Object *scheme_pointer_type;
+Scheme_Value scheme_pointer_type;
 
 /* locals */
-static Scheme_Object *pointer_p (int argc, Scheme_Object *argv[]);
-static Scheme_Object *pointer_eq (int argc, Scheme_Object *argv[]);
+static Scheme_Value pointer_p (int argc, Scheme_Value argv[]);
+static Scheme_Value pointer_eq (int argc, Scheme_Value argv[]);
 
 void
 scheme_init_pointer (Scheme_Env *env)
@@ -40,10 +40,10 @@ scheme_init_pointer (Scheme_Env *env)
   scheme_add_global ("pointer=?", scheme_make_prim (pointer_eq), env);
 }
 
-Scheme_Object *
+Scheme_Value
 scheme_make_pointer (void *pointer)
 {
-  Scheme_Object *sc;
+  Scheme_Value sc;
 
   sc = scheme_alloc_object (scheme_pointer_type, 0);
   SCHEME_PTR_VAL (sc) = pointer;
@@ -52,15 +52,15 @@ scheme_make_pointer (void *pointer)
 
 /* locals */
 
-static Scheme_Object *
-pointer_p (int argc, Scheme_Object *argv[])
+static Scheme_Value
+pointer_p (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT (argc == 1, "pointer?: wrong number of args");
   return (SCHEME_POINTERP(argv[0]) ? scheme_true : scheme_false);
 }
 
-static Scheme_Object *
-pointer_eq (int argc, Scheme_Object *argv[])
+static Scheme_Value
+pointer_eq (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT (argc == 2, "pointer=?: wrong number of args");
   SCHEME_ASSERT (SCHEME_POINTERP(argv[0]) && SCHEME_POINTERP(argv[1]),

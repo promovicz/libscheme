@@ -25,43 +25,44 @@
 #include "scheme.h"
 
 /* globals */
-Scheme_Object *scheme_null;
-Scheme_Object *scheme_null_type, *scheme_pair_type;
+Scheme_Value scheme_null;
+Scheme_Value scheme_null_type;
+Scheme_Value scheme_pair_type;
 
 /* locals */
-static Scheme_Object *scheme_make_null (void);
-static Scheme_Object *pair_p_prim (int argc, Scheme_Object *argv[]);
-static Scheme_Object *cons_prim (int argc, Scheme_Object *argv[]);
-static Scheme_Object *car_prim (int argc, Scheme_Object *argv[]);
-static Scheme_Object *cdr_prim (int argc, Scheme_Object *argv[]);
-static Scheme_Object *set_car_prim (int argc, Scheme_Object *argv[]);
-static Scheme_Object *set_cdr_prim (int argc, Scheme_Object *argv[]);
-static Scheme_Object *null_p_prim (int argc, Scheme_Object *argv[]);
-static Scheme_Object *list_p_prim (int argc, Scheme_Object *argv[]);
-static Scheme_Object *list_prim (int argc, Scheme_Object *argv[]);
-static Scheme_Object *length_prim (int argc, Scheme_Object *argv[]);
-static Scheme_Object *append_prim (int argc, Scheme_Object *argv[]);
-static Scheme_Object *reverse_prim (int argc, Scheme_Object *argv[]);
-static Scheme_Object *list_tail_prim (int argc, Scheme_Object *argv[]);
-static Scheme_Object *list_ref_prim (int argc, Scheme_Object *argv[]);
-static Scheme_Object *memv (int argc, Scheme_Object *argv[]);
-static Scheme_Object *memq (int argc, Scheme_Object *argv[]);
-static Scheme_Object *member (int argc, Scheme_Object *argv[]);
-static Scheme_Object *assv (int argc, Scheme_Object *argv[]);
-static Scheme_Object *assq (int argc, Scheme_Object *argv[]);
-static Scheme_Object *assoc (int argc, Scheme_Object *argv[]);
-static Scheme_Object *caar_prim (int argc, Scheme_Object *argv[]);
-static Scheme_Object *cadr_prim (int argc, Scheme_Object *argv[]);
-static Scheme_Object *cdar_prim (int argc, Scheme_Object *argv[]);
-static Scheme_Object *cddr_prim (int argc, Scheme_Object *argv[]);
-static Scheme_Object *caaar_prim (int argc, Scheme_Object *argv[]);
-static Scheme_Object *caadr_prim (int argc, Scheme_Object *argv[]);
-static Scheme_Object *cadar_prim (int argc, Scheme_Object *argv[]);
-static Scheme_Object *cdaar_prim (int argc, Scheme_Object *argv[]);
-static Scheme_Object *cdadr_prim (int argc, Scheme_Object *argv[]);
-static Scheme_Object *cddar_prim (int argc, Scheme_Object *argv[]);
-static Scheme_Object *caddr_prim (int argc, Scheme_Object *argv[]);
-static Scheme_Object *cdddr_prim (int argc, Scheme_Object *argv[]);
+static Scheme_Value scheme_make_null (void);
+static Scheme_Value pair_p_prim (int argc, Scheme_Value argv[]);
+static Scheme_Value cons_prim (int argc, Scheme_Value argv[]);
+static Scheme_Value car_prim (int argc, Scheme_Value argv[]);
+static Scheme_Value cdr_prim (int argc, Scheme_Value argv[]);
+static Scheme_Value set_car_prim (int argc, Scheme_Value argv[]);
+static Scheme_Value set_cdr_prim (int argc, Scheme_Value argv[]);
+static Scheme_Value null_p_prim (int argc, Scheme_Value argv[]);
+static Scheme_Value list_p_prim (int argc, Scheme_Value argv[]);
+static Scheme_Value list_prim (int argc, Scheme_Value argv[]);
+static Scheme_Value length_prim (int argc, Scheme_Value argv[]);
+static Scheme_Value append_prim (int argc, Scheme_Value argv[]);
+static Scheme_Value reverse_prim (int argc, Scheme_Value argv[]);
+static Scheme_Value list_tail_prim (int argc, Scheme_Value argv[]);
+static Scheme_Value list_ref_prim (int argc, Scheme_Value argv[]);
+static Scheme_Value memv (int argc, Scheme_Value argv[]);
+static Scheme_Value memq (int argc, Scheme_Value argv[]);
+static Scheme_Value member (int argc, Scheme_Value argv[]);
+static Scheme_Value assv (int argc, Scheme_Value argv[]);
+static Scheme_Value assq (int argc, Scheme_Value argv[]);
+static Scheme_Value assoc (int argc, Scheme_Value argv[]);
+static Scheme_Value caar_prim (int argc, Scheme_Value argv[]);
+static Scheme_Value cadr_prim (int argc, Scheme_Value argv[]);
+static Scheme_Value cdar_prim (int argc, Scheme_Value argv[]);
+static Scheme_Value cddr_prim (int argc, Scheme_Value argv[]);
+static Scheme_Value caaar_prim (int argc, Scheme_Value argv[]);
+static Scheme_Value caadr_prim (int argc, Scheme_Value argv[]);
+static Scheme_Value cadar_prim (int argc, Scheme_Value argv[]);
+static Scheme_Value cdaar_prim (int argc, Scheme_Value argv[]);
+static Scheme_Value cdadr_prim (int argc, Scheme_Value argv[]);
+static Scheme_Value cddar_prim (int argc, Scheme_Value argv[]);
+static Scheme_Value caddr_prim (int argc, Scheme_Value argv[]);
+static Scheme_Value cdddr_prim (int argc, Scheme_Value argv[]);
 
 void
 scheme_init_list (Scheme_Env *env)
@@ -105,16 +106,16 @@ scheme_init_list (Scheme_Env *env)
   scheme_add_global ("cdddr", scheme_make_prim (cdddr_prim), env);
 }
 
-static Scheme_Object *
+static Scheme_Value
 scheme_make_null (void)
 {
   return scheme_alloc_object (scheme_null_type, 0);
 }
 
-Scheme_Object *
-scheme_make_pair (Scheme_Object *car, Scheme_Object *cdr)
+Scheme_Value
+scheme_make_pair (Scheme_Value car, Scheme_Value cdr)
 {
-  Scheme_Object *cons;
+  Scheme_Value cons;
 
   cons = scheme_alloc_object (scheme_pair_type, 0);
   SCHEME_CAR(cons) = car;
@@ -122,10 +123,10 @@ scheme_make_pair (Scheme_Object *car, Scheme_Object *cdr)
   return (cons);
 }
 
-Scheme_Object *
+Scheme_Value
 scheme_alloc_list (int size)
 {
-  Scheme_Object *first, *last, *pair;
+  Scheme_Value first, last, pair;
   int i;
 
   first = last = scheme_null;
@@ -147,7 +148,7 @@ scheme_alloc_list (int size)
 
 SCHEME_FUN_PURE
 int
-scheme_list_length (Scheme_Object *list)
+scheme_list_length (Scheme_Value list)
 {
   int len;
 
@@ -167,8 +168,8 @@ scheme_list_length (Scheme_Object *list)
   return (len);
 }
 
-Scheme_Object *
-scheme_map_1 (Scheme_Object *(*fun)(Scheme_Object*), Scheme_Object *lst)
+Scheme_Value
+scheme_map_1 (Scheme_Value (*fun)(Scheme_Object*), Scheme_Value lst)
 {
   if (lst == scheme_null)
     {
@@ -182,70 +183,70 @@ scheme_map_1 (Scheme_Object *(*fun)(Scheme_Object*), Scheme_Object *lst)
 }
 
 SCHEME_FUN_PURE
-Scheme_Object *
-scheme_car (Scheme_Object *pair)
+Scheme_Value
+scheme_car (Scheme_Value pair)
 {
   return (SCHEME_CAR (pair));
 }
 
 SCHEME_FUN_PURE
-Scheme_Object *
-scheme_cdr (Scheme_Object *pair)
+Scheme_Value
+scheme_cdr (Scheme_Value pair)
 {
   return (SCHEME_CDR (pair));
 }
 
 SCHEME_FUN_PURE
-Scheme_Object *
-scheme_cadr (Scheme_Object *pair)
+Scheme_Value
+scheme_cadr (Scheme_Value pair)
 {
   return (SCHEME_CAR (SCHEME_CDR (pair)));
 }
 
 SCHEME_FUN_PURE
-Scheme_Object *
-scheme_caddr (Scheme_Object *pair)
+Scheme_Value
+scheme_caddr (Scheme_Value pair)
 {
   return (SCHEME_CAR (SCHEME_CDR (SCHEME_CDR (pair))));
 }
 
 /* local functions */
 
-static Scheme_Object *
-pair_p_prim (int argc, Scheme_Object *argv[])
+static Scheme_Value
+pair_p_prim (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "pair?: wrong number of args");
   return ((SCHEME_TYPE (argv[0]) == scheme_pair_type) ? scheme_true : scheme_false);
 }
 
-static Scheme_Object *
-cons_prim (int argc, Scheme_Object *argv[])
+static Scheme_Value
+cons_prim (int argc, Scheme_Value argv[])
 {
-  Scheme_Object *cons;
+  Scheme_Value cons;
 
   SCHEME_ASSERT ((argc == 2), "cons: wrong number of args");
   cons = scheme_make_pair (argv[0], argv[1]);
   return (cons);
 }
 
-static Scheme_Object *
-car_prim (int argc, Scheme_Object *argv[])
+static Scheme_Value
+car_prim (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "car: wrong number of args");
   SCHEME_ASSERT (SCHEME_TYPE(argv[0])==scheme_pair_type, "car: arg must be pair");
   return (SCHEME_CAR (argv[0]));
 }
 
-static Scheme_Object *
-cdr_prim (int argc, Scheme_Object *argv[])
+static Scheme_Value
+cdr_prim (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "cdr: wrong number of args");
   SCHEME_ASSERT (SCHEME_TYPE(argv[0])==scheme_pair_type, "cdr: arg must be pair");
   return (SCHEME_CDR (argv[0]));
 }
 
-static Scheme_Object *
-set_car_prim (int argc, Scheme_Object *argv[])
+static Scheme_Value
+set_car_prim (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 2), "set-car!: wrong number of args");
   SCHEME_ASSERT (SCHEME_TYPE(argv[0])==scheme_pair_type, "set-car!: first arg must be pair");
@@ -253,8 +254,8 @@ set_car_prim (int argc, Scheme_Object *argv[])
   return (argv[1]);
 }
 
-static Scheme_Object *
-set_cdr_prim (int argc, Scheme_Object *argv[])
+static Scheme_Value
+set_cdr_prim (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 2), "set-cdr!: wrong number of args");
   SCHEME_ASSERT (SCHEME_TYPE(argv[0])==scheme_pair_type, "set-cdr!: first arg must be pair");
@@ -262,17 +263,17 @@ set_cdr_prim (int argc, Scheme_Object *argv[])
   return (argv[1]);
 }
 
-static Scheme_Object *
-null_p_prim (int argc, Scheme_Object *argv[])
+static Scheme_Value
+null_p_prim (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "null?: wrong number of args");
   return ((argv[0] == scheme_null) ? scheme_true : scheme_false);
 }
 
-static Scheme_Object *
-list_p_prim (int argc, Scheme_Object *argv[])
+static Scheme_Value
+list_p_prim (int argc, Scheme_Value argv[])
 {
-  Scheme_Object *obj1, *obj2;
+  Scheme_Value obj1, obj2;
 
   SCHEME_ASSERT ((argc == 1), "list?: wrong number of args");
   obj1 = obj2 = argv[0];
@@ -302,11 +303,11 @@ list_p_prim (int argc, Scheme_Object *argv[])
   return (scheme_false);
 }
 
-static Scheme_Object *
-list_prim (int argc, Scheme_Object *argv[])
+static Scheme_Value
+list_prim (int argc, Scheme_Value argv[])
 {
   int i;
-  Scheme_Object *first, *last, *pair;
+  Scheme_Value first, last, pair;
 
   first = last = scheme_null;
   for ( i=0 ; i<argc ; ++i )
@@ -325,20 +326,20 @@ list_prim (int argc, Scheme_Object *argv[])
   return (first);
 }
 
-static Scheme_Object *
-length_prim (int argc, Scheme_Object *argv[])
+static Scheme_Value
+length_prim (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "length: wrong number of args");
   SCHEME_ASSERT (SCHEME_LISTP(argv[0]), "length: arg must be a list");
   return (scheme_make_integer (scheme_list_length (argv[0])));
 }
 
-static Scheme_Object *append (Scheme_Object *lst1, Scheme_Object *lst2);
+static Scheme_Value append (Scheme_Value lst1, Scheme_Value lst2);
 
-static Scheme_Object *
-append_prim (int argc, Scheme_Object *argv[])
+static Scheme_Value
+append_prim (int argc, Scheme_Value argv[])
 {
-  Scheme_Object *res;
+  Scheme_Value res;
   int i;
 
   res = scheme_null;
@@ -349,8 +350,8 @@ append_prim (int argc, Scheme_Object *argv[])
   return (res);
 }
 
-static Scheme_Object *
-append (Scheme_Object *lst1, Scheme_Object *lst2)
+static Scheme_Value
+append (Scheme_Value lst1, Scheme_Value lst2)
 {
   if (SCHEME_NULLP(lst1))
     {
@@ -363,10 +364,10 @@ append (Scheme_Object *lst1, Scheme_Object *lst2)
     }
 }
 
-static Scheme_Object *
-reverse_prim (int argc, Scheme_Object *argv[])
+static Scheme_Value
+reverse_prim (int argc, Scheme_Value argv[])
 {
-  Scheme_Object *lst, *last;
+  Scheme_Value lst, last;
 
   SCHEME_ASSERT ((argc == 1), "reverse: wrong number of args");
   last = scheme_null;
@@ -379,11 +380,11 @@ reverse_prim (int argc, Scheme_Object *argv[])
   return (last);
 }
 
-static Scheme_Object *
-list_tail_prim (int argc, Scheme_Object *argv[])
+static Scheme_Value
+list_tail_prim (int argc, Scheme_Value argv[])
 {
   int i, k;
-  Scheme_Object *lst;
+  Scheme_Value lst;
 
   SCHEME_ASSERT ((argc == 2), "list-tail: wrong number of args");
   SCHEME_ASSERT (SCHEME_LISTP(argv[0]), "list-tail: first arg must be a list");
@@ -398,11 +399,11 @@ list_tail_prim (int argc, Scheme_Object *argv[])
   return (lst);
 }
 
-static Scheme_Object *
-list_ref_prim (int argc, Scheme_Object *argv[])
+static Scheme_Value
+list_ref_prim (int argc, Scheme_Value argv[])
 {
   int i, k;
-  Scheme_Object *lst;
+  Scheme_Value lst;
 
   SCHEME_ASSERT ((argc == 2), "list-ref: wrong number of args");
   SCHEME_ASSERT (SCHEME_LISTP(argv[0]), "list-ref: first arg must be a list");
@@ -418,10 +419,10 @@ list_ref_prim (int argc, Scheme_Object *argv[])
 }
 
 #define GEN_MEM(name, scheme_name, comp) \
-static Scheme_Object * \
-name (int argc, Scheme_Object *argv[]) \
+static Scheme_Value  \
+name (int argc, Scheme_Value argv[]) \
 { \
-  Scheme_Object *list; \
+  Scheme_Value list; \
   SCHEME_ASSERT ((argc == 2), #scheme_name ": wrong number of args"); \
   SCHEME_ASSERT (SCHEME_LISTP(argv[1]), #scheme_name ": second arg must be list"); \
   list = argv[1]; \
@@ -441,10 +442,10 @@ GEN_MEM(memq, memq, scheme_eq)
 GEN_MEM(member, member, scheme_equal)
 
 #define GEN_ASS(name, scheme_name, comp) \
-static Scheme_Object * \
-name (int argc, Scheme_Object *argv[]) \
+static Scheme_Value  \
+name (int argc, Scheme_Value argv[]) \
 { \
-  Scheme_Object *pair, *list; \
+  Scheme_Value pair, list; \
   SCHEME_ASSERT ((argc == 2), #scheme_name ": wrong number of args"); \
   SCHEME_ASSERT (SCHEME_LISTP(argv[1]), #scheme_name ": second arg must be list"); \
   list = argv[1]; \
@@ -465,96 +466,96 @@ GEN_ASS(assv, assv, scheme_eqv)
 GEN_ASS(assq, assq, scheme_eq)
 GEN_ASS(assoc, assoc, scheme_equal)
 
-static Scheme_Object *
-caar_prim (int argc, Scheme_Object *argv[])
+static Scheme_Value
+caar_prim (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT((argc == 1), "caar: wrong number of args");
   SCHEME_ASSERT(SCHEME_PAIRP(argv[0]), "caar: arg must be a pair");
   return (SCHEME_CAR (SCHEME_CAR (argv[0])));
 }
 
-static Scheme_Object *
-cadr_prim (int argc, Scheme_Object *argv[])
+static Scheme_Value
+cadr_prim (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT((argc == 1), "cadr: wrong number of args");
   SCHEME_ASSERT(SCHEME_PAIRP(argv[0]), "cadr: arg must be a pair");
   return (SCHEME_CAR (SCHEME_CDR (argv[0])));
 }
 
-static Scheme_Object *
-cdar_prim (int argc, Scheme_Object *argv[])
+static Scheme_Value
+cdar_prim (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT((argc == 1), "cdar: wrong number of args");
   SCHEME_ASSERT(SCHEME_PAIRP(argv[0]), "cdar: arg must be a pair");
   return (SCHEME_CDR (SCHEME_CAR (argv[0])));
 }
 
-static Scheme_Object *
-cddr_prim (int argc, Scheme_Object *argv[])
+static Scheme_Value
+cddr_prim (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT((argc == 1), "cddr: wrong number of args");
   SCHEME_ASSERT(SCHEME_PAIRP(argv[0]), "cddr: arg must be a pair");
   return (SCHEME_CDR (SCHEME_CDR (argv[0])));
 }
 
-static Scheme_Object *
-caaar_prim (int argc, Scheme_Object *argv[])
+static Scheme_Value
+caaar_prim (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT((argc == 1), "caaar: wrong number of args");
   SCHEME_ASSERT(SCHEME_PAIRP(argv[0]), "caaar: arg must be a pair");
   return (SCHEME_CAR (SCHEME_CAR (SCHEME_CAR (argv[0]))));
 }
 
-static Scheme_Object *
-caadr_prim (int argc, Scheme_Object *argv[])
+static Scheme_Value
+caadr_prim (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT((argc == 1), "caadr: wrong number of args");
   SCHEME_ASSERT(SCHEME_PAIRP(argv[0]), "caadr: arg must be a pair");
   return (SCHEME_CAR (SCHEME_CAR (SCHEME_CDR (argv[0]))));
 }
 
-static Scheme_Object *
-cadar_prim (int argc, Scheme_Object *argv[])
+static Scheme_Value
+cadar_prim (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT((argc == 1), "cadar: wrong number of args");
   SCHEME_ASSERT(SCHEME_PAIRP(argv[0]), "cadar: arg must be a pair");
   return (SCHEME_CAR (SCHEME_CDR (SCHEME_CAR (argv[0]))));
 }
 
-static Scheme_Object *
-cdaar_prim (int argc, Scheme_Object *argv[])
+static Scheme_Value
+cdaar_prim (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT((argc == 1), "cdaar: wrong number of args");
   SCHEME_ASSERT(SCHEME_PAIRP(argv[0]), "cdaar: arg must be a pair");
   return (SCHEME_CDR (SCHEME_CAR (SCHEME_CAR (argv[0]))));
 }
 
-static Scheme_Object *
-cdadr_prim (int argc, Scheme_Object *argv[])
+static Scheme_Value
+cdadr_prim (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT((argc == 1), "cdadr: wrong number of args");
   SCHEME_ASSERT(SCHEME_PAIRP(argv[0]), "cdadr: arg must be a pair");
   return (SCHEME_CDR (SCHEME_CAR (SCHEME_CDR (argv[0]))));
 }
 
-static Scheme_Object *
-cddar_prim (int argc, Scheme_Object *argv[])
+static Scheme_Value
+cddar_prim (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT((argc == 1), "cddar: wrong number of args");
   SCHEME_ASSERT(SCHEME_PAIRP(argv[0]), "cddar: arg must be a pair");
   return (SCHEME_CDR (SCHEME_CDR (SCHEME_CDR (argv[0]))));
 }
 
-static Scheme_Object *
-caddr_prim (int argc, Scheme_Object *argv[])
+static Scheme_Value
+caddr_prim (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT((argc == 1), "caddr: wrong number of args");
   SCHEME_ASSERT(SCHEME_PAIRP(argv[0]), "caddr: arg must be a pair");
   return (SCHEME_CAR (SCHEME_CDR (SCHEME_CDR (argv[0]))));
 }
 
-static Scheme_Object *
-cdddr_prim (int argc, Scheme_Object *argv[])
+static Scheme_Value
+cdddr_prim (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT((argc == 1), "cdddr: wrong number of args");
   SCHEME_ASSERT(SCHEME_PAIRP(argv[0]), "cdddr: arg must be a pair");

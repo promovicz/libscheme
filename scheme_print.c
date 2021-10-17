@@ -30,34 +30,34 @@
 /* locals */
 static char print_buffer[SCHEME_MAX_PRINT_SIZE];
 
-static void print_to_port (Scheme_Object *obj, Scheme_Object *port, int escaped);
-static int print (char *str, int index, Scheme_Object *obj, int escaped);
-static int print_string (char *str, int index, Scheme_Object *string, int escaped);
-static int print_pair (char *str, int index, Scheme_Object *pair, int escaped);
-static int print_vector (char *str, int index, Scheme_Object *vec, int escaped);
-static int print_char (char *str, int index, Scheme_Object *chobj, int escaped);
+static void print_to_port (Scheme_Value obj, Scheme_Value port, int escaped);
+static int print (char *str, int index, Scheme_Value obj, int escaped);
+static int print_string (char *str, int index, Scheme_Value string, int escaped);
+static int print_pair (char *str, int index, Scheme_Value pair, int escaped);
+static int print_vector (char *str, int index, Scheme_Value vec, int escaped);
+static int print_char (char *str, int index, Scheme_Value chobj, int escaped);
 
 void
-scheme_debug_print (Scheme_Object *obj)
+scheme_debug_print (Scheme_Value obj)
 {
   scheme_write (obj, scheme_stdout_port);
   fflush (stdout);
 }
 
 void
-scheme_write (Scheme_Object *obj, Scheme_Object *port)
+scheme_write (Scheme_Value obj, Scheme_Value port)
 {
   print_to_port (obj, port, 1);
 }
 
 void
-scheme_display (Scheme_Object *obj, Scheme_Object *port)
+scheme_display (Scheme_Value obj, Scheme_Value port)
 {
   print_to_port (obj, port, 0);
 }
 
 char *
-scheme_write_to_string (Scheme_Object *obj)
+scheme_write_to_string (Scheme_Value obj)
 {
   int index = 0;
 
@@ -67,7 +67,7 @@ scheme_write_to_string (Scheme_Object *obj)
 }
 
 char *
-scheme_display_to_string (Scheme_Object *obj)
+scheme_display_to_string (Scheme_Value obj)
 {
   int index = 0;
 
@@ -77,7 +77,7 @@ scheme_display_to_string (Scheme_Object *obj)
 }
 
 void
-scheme_write_string (char *str, Scheme_Object *port)
+scheme_write_string (char *str, Scheme_Value port)
 {
   Scheme_Output_Port *op;
   op = (Scheme_Output_Port *) SCHEME_PTR_VAL (port);
@@ -85,7 +85,7 @@ scheme_write_string (char *str, Scheme_Object *port)
 }
 
 static void
-print_to_port (Scheme_Object *obj, Scheme_Object *port, int escaped)
+print_to_port (Scheme_Value obj, Scheme_Value port, int escaped)
 {
   Scheme_Output_Port *op;
   int index = 0;
@@ -99,9 +99,9 @@ print_to_port (Scheme_Object *obj, Scheme_Object *port, int escaped)
 }
 
 static int
-print (char *str, int index, Scheme_Object *obj, int escaped)
+print (char *str, int index, Scheme_Value obj, int escaped)
 {
-  Scheme_Object *type;
+  Scheme_Value type;
 
   type = SCHEME_TYPE (obj);
   if (type==scheme_type_type || type==scheme_symbol_type)
@@ -159,7 +159,7 @@ print (char *str, int index, Scheme_Object *obj, int escaped)
 }
 
 static int
-print_string (char *buf, int index, Scheme_Object *string, int escaped)
+print_string (char *buf, int index, Scheme_Value string, int escaped)
 {
   char *str;
 
@@ -185,9 +185,9 @@ print_string (char *buf, int index, Scheme_Object *string, int escaped)
 }
 
 static int
-print_pair (char *str, int index, Scheme_Object *pair, int escaped)
+print_pair (char *str, int index, Scheme_Value pair, int escaped)
 {
-  Scheme_Object *cdr;
+  Scheme_Value cdr;
 
   str[index++] = '(';
   index = print (str, index, SCHEME_CAR (pair), escaped);
@@ -210,7 +210,7 @@ print_pair (char *str, int index, Scheme_Object *pair, int escaped)
 }
 
 static int
-print_vector (char *str, int index, Scheme_Object *vec, int escaped)
+print_vector (char *str, int index, Scheme_Value vec, int escaped)
 {
   int i;
 
@@ -229,7 +229,7 @@ print_vector (char *str, int index, Scheme_Object *vec, int escaped)
 }
 
 static int
-print_char (char *str, int index, Scheme_Object *charobj, int escaped)
+print_char (char *str, int index, Scheme_Value charobj, int escaped)
 {
   char ch;
 

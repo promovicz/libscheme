@@ -25,20 +25,20 @@
 #include "scheme.h"
 
 /* globals */
-Scheme_Object *scheme_vector_type;
+Scheme_Value scheme_vector_type;
 
 /* locals */
-static Scheme_Object *vector_p (int argc, Scheme_Object *argv[]);
-static Scheme_Object *make_vector (int argc, Scheme_Object *argv[]);
-static Scheme_Object *vector (int argc, Scheme_Object *argv[]);
-static Scheme_Object *vector_length (int argc, Scheme_Object *argv[]);
-static Scheme_Object *vector_ref (int argc, Scheme_Object *argv[]);
-static Scheme_Object *vector_set (int argc, Scheme_Object *argv[]);
-static Scheme_Object *vector_to_list (int argc, Scheme_Object *argv[]);
-static Scheme_Object *list_to_vector (int argc, Scheme_Object *argv[]);
-static Scheme_Object *vector_fill (int argc, Scheme_Object *argv[]);
+static Scheme_Value vector_p (int argc, Scheme_Value argv[]);
+static Scheme_Value make_vector (int argc, Scheme_Value argv[]);
+static Scheme_Value vector (int argc, Scheme_Value argv[]);
+static Scheme_Value vector_length (int argc, Scheme_Value argv[]);
+static Scheme_Value vector_ref (int argc, Scheme_Value argv[]);
+static Scheme_Value vector_set (int argc, Scheme_Value argv[]);
+static Scheme_Value vector_to_list (int argc, Scheme_Value argv[]);
+static Scheme_Value list_to_vector (int argc, Scheme_Value argv[]);
+static Scheme_Value vector_fill (int argc, Scheme_Value argv[]);
 
-static Scheme_Object *vector_append (int argc, Scheme_Object *argv[]);
+static Scheme_Value vector_append (int argc, Scheme_Value argv[]);
 
 void
 scheme_init_vector (Scheme_Env *env)
@@ -58,15 +58,15 @@ scheme_init_vector (Scheme_Env *env)
   scheme_add_global ("vector-append", scheme_make_prim (vector_append), env);
 }
 
-Scheme_Object *
-scheme_make_vector (int size, Scheme_Object *fill)
+Scheme_Value
+scheme_make_vector (int size, Scheme_Value fill)
 {
   int i;
-  Scheme_Object *vec, **els;
+  Scheme_Value vec, *els;
   size_t nbytes = sizeof(Scheme_Object) + sizeof(Scheme_Object*) * size;
 
-  vec = (Scheme_Object *)scheme_malloc(nbytes);
-  els = (Scheme_Object **)(&vec[1]);
+  vec = (Scheme_Value)scheme_malloc(nbytes);
+  els = (Scheme_Value *)(&vec[1]);
 
   SCHEME_TYPE(vec) = scheme_vector_type;
   SCHEME_VEC_SIZE(vec) = size;
@@ -81,17 +81,17 @@ scheme_make_vector (int size, Scheme_Object *fill)
 
 /* locals */
 
-static Scheme_Object *
-vector_p (int argc, Scheme_Object *argv[])
+static Scheme_Value
+vector_p (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "vector?: wrong number of args");
   return (SCHEME_VECTORP(argv[0]) ? scheme_true : scheme_false);
 }
 
-static Scheme_Object *
-make_vector (int argc, Scheme_Object *argv[])
+static Scheme_Value
+make_vector (int argc, Scheme_Value argv[])
 {
-  Scheme_Object *vec, *fill;
+  Scheme_Value vec, fill;
   int len;
 
   SCHEME_ASSERT ((argc==1 || argc==2), "make-vector: wrong number of args");
@@ -109,10 +109,10 @@ make_vector (int argc, Scheme_Object *argv[])
   return (vec);
 }
 
-static Scheme_Object *
-vector (int argc, Scheme_Object *argv[])
+static Scheme_Value
+vector (int argc, Scheme_Value argv[])
 {
-  Scheme_Object *vec;
+  Scheme_Value vec;
   int i;
 
   vec = scheme_make_vector (argc, 0);
@@ -123,16 +123,16 @@ vector (int argc, Scheme_Object *argv[])
   return (vec);
 }
 
-static Scheme_Object *
-vector_length (int argc, Scheme_Object *argv[])
+static Scheme_Value
+vector_length (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "vector-length: wrong number of args");
   SCHEME_ASSERT (SCHEME_VECTORP (argv[0]), "vector-length: arg must be a vector");
   return (scheme_make_integer (SCHEME_VEC_SIZE (argv[0])));
 }
 
-static Scheme_Object *
-vector_ref (int argc, Scheme_Object *argv[])
+static Scheme_Value
+vector_ref (int argc, Scheme_Value argv[])
 {
   int i;
 
@@ -145,8 +145,8 @@ vector_ref (int argc, Scheme_Object *argv[])
   return (SCHEME_VEC_ELS(argv[0])[i]);
 }
 
-static Scheme_Object *
-vector_set (int argc, Scheme_Object *argv[])
+static Scheme_Value
+vector_set (int argc, Scheme_Value argv[])
 {
   int i;
 
@@ -160,19 +160,19 @@ vector_set (int argc, Scheme_Object *argv[])
   return (argv[0]);
 }
 
-static Scheme_Object *
-vector_to_list (int argc, Scheme_Object *argv[])
+static Scheme_Value
+vector_to_list (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "vector->list: wrong number of args");
   SCHEME_ASSERT (SCHEME_VECTORP(argv[0]), "vector->list: arg must be a vector");
   return (scheme_vector_to_list (argv[0]));
 }
 
-Scheme_Object *
-scheme_vector_to_list (Scheme_Object *vec)
+Scheme_Value
+scheme_vector_to_list (Scheme_Value vec)
 {
   int len, i;
-  Scheme_Object *first, *last, *pair;
+  Scheme_Value first, last, pair;
 
   len = SCHEME_VEC_SIZE (vec);
   first = last = scheme_null;
@@ -192,19 +192,19 @@ scheme_vector_to_list (Scheme_Object *vec)
   return (first);
 }
 
-static Scheme_Object *
-list_to_vector (int argc, Scheme_Object *argv[])
+static Scheme_Value
+list_to_vector (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "list->vector: wrong number of args");
   SCHEME_ASSERT (SCHEME_LISTP(argv[0]), "list->vector: arg must be a list");
   return (scheme_list_to_vector (argv[0]));
 }
 
-Scheme_Object *
-scheme_list_to_vector (Scheme_Object *list)
+Scheme_Value
+scheme_list_to_vector (Scheme_Value list)
 {
   int len, i;
-  Scheme_Object *vec;
+  Scheme_Value vec;
 
   len = scheme_list_length (list);
   vec = scheme_make_vector (len, 0);
@@ -218,8 +218,8 @@ scheme_list_to_vector (Scheme_Object *list)
   return (vec);
 }
 
-static Scheme_Object *
-vector_fill (int argc, Scheme_Object *argv[])
+static Scheme_Value
+vector_fill (int argc, Scheme_Value argv[])
 {
   int i;
 
@@ -232,11 +232,11 @@ vector_fill (int argc, Scheme_Object *argv[])
   return (argv[0]);
 }
 
-static Scheme_Object *
-vector_append (int argc, Scheme_Object *argv[])
+static Scheme_Value
+vector_append (int argc, Scheme_Value argv[])
 {
   int len1, len2, i;
-  Scheme_Object *new;
+  Scheme_Value new;
 
   SCHEME_ASSERT ((argc == 2), "vector-append: wrong number of args");
   SCHEME_ASSERT (SCHEME_VECTORP (argv[0]) && SCHEME_VECTORP (argv[1]),

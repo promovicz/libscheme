@@ -27,23 +27,23 @@
 
 struct Scheme_Struct_Proc
 {
-  Scheme_Object *struct_type;
+  Scheme_Value struct_type;
   enum {SCHEME_CONSTR, SCHEME_PRED, SCHEME_GETTER, SCHEME_SETTER} proc_type;
   int slot_num;
 };
 typedef struct Scheme_Struct_Proc Scheme_Struct_Proc;
 
 /* globals */
-Scheme_Object *scheme_struct_proc_type;
+Scheme_Value scheme_struct_proc_type;
 
 /* locals */
-static Scheme_Object *define_struct_syntax (Scheme_Object *form, Scheme_Env *env);
-static Scheme_Object *scheme_make_instance (Scheme_Object *type, int num_fields);
-static Scheme_Object *scheme_make_struct_proc (Scheme_Object *type, int proc_type, int field_num);
-static Scheme_Object *scheme_make_constructor (Scheme_Object *type, int num_fields);
-static Scheme_Object *scheme_make_pred (Scheme_Object *type);
-static Scheme_Object *scheme_make_getter (Scheme_Object *type, int field);
-static Scheme_Object *scheme_make_setter (Scheme_Object *type, int field);
+static Scheme_Value define_struct_syntax (Scheme_Value form, Scheme_Env *env);
+static Scheme_Value scheme_make_instance (Scheme_Value type, int num_fields);
+static Scheme_Value scheme_make_struct_proc (Scheme_Value type, int proc_type, int field_num);
+static Scheme_Value scheme_make_constructor (Scheme_Value type, int num_fields);
+static Scheme_Value scheme_make_pred (Scheme_Value type);
+static Scheme_Value scheme_make_getter (Scheme_Value type, int field);
+static Scheme_Value scheme_make_setter (Scheme_Value type, int field);
 static char *type_name (char *struct_name);
 static char *constructor_name (char *struct_name);
 static char *pred_name (char *struct_name);
@@ -57,8 +57,8 @@ scheme_init_struct (Scheme_Env *env)
   scheme_add_global ("define-struct", scheme_make_syntax (define_struct_syntax), env);
 }
 
-Scheme_Object *
-scheme_apply_struct_proc (Scheme_Object *sp, Scheme_Object *args)
+Scheme_Value
+scheme_apply_struct_proc (Scheme_Value sp, Scheme_Value args)
 {
   Scheme_Struct_Proc *proc;
 
@@ -67,7 +67,7 @@ scheme_apply_struct_proc (Scheme_Object *sp, Scheme_Object *args)
     {
     case SCHEME_CONSTR:
       {
-	Scheme_Object *inst;
+	Scheme_Value inst;
 	int i;
 
 	inst = scheme_make_instance (proc->struct_type, proc->slot_num);
@@ -93,7 +93,7 @@ scheme_apply_struct_proc (Scheme_Object *sp, Scheme_Object *args)
 	}
     case SCHEME_GETTER:
       {
-	Scheme_Object *inst;
+	Scheme_Value inst;
 
 	inst = SCHEME_CAR (args);
 	SCHEME_ASSERT ((SCHEME_TYPE (inst)==proc->struct_type), "wrong type to getter function");
@@ -101,7 +101,7 @@ scheme_apply_struct_proc (Scheme_Object *sp, Scheme_Object *args)
       }
     case SCHEME_SETTER:
       {
-	Scheme_Object *inst;
+	Scheme_Value inst;
 
 	inst = SCHEME_CAR (args);
 	SCHEME_ASSERT ((SCHEME_TYPE (inst)==proc->struct_type), "wrong type to getter function");
@@ -114,12 +114,12 @@ scheme_apply_struct_proc (Scheme_Object *sp, Scheme_Object *args)
 	return scheme_null;
 }
 
-static Scheme_Object *
-define_struct_syntax (Scheme_Object *form, Scheme_Env *env)
+static Scheme_Value
+define_struct_syntax (Scheme_Value form, Scheme_Env *env)
 {
-  Scheme_Object *field_symbols;
-  Scheme_Object *struct_symbol;
-  Scheme_Object *type_obj;
+  Scheme_Value field_symbols;
+  Scheme_Value struct_symbol;
+  Scheme_Value type_obj;
   char *struct_name, *struct_type_name, *field_name;
   int slot_num;
 
@@ -148,23 +148,23 @@ define_struct_syntax (Scheme_Object *form, Scheme_Env *env)
   return (struct_symbol);
 }
 
-static Scheme_Object *
-scheme_make_instance (Scheme_Object *type, int num_fields)
+static Scheme_Value
+scheme_make_instance (Scheme_Value type, int num_fields)
 {
-  Scheme_Object *inst;
-  Scheme_Object **els;
+  Scheme_Value inst;
+  Scheme_Value *els;
 
   inst = scheme_alloc_object (type, num_fields * sizeof(Scheme_Object*));
-  els = (Scheme_Object **) SCHEME_PTR_VAL(inst);
+  els = (Scheme_Value *) SCHEME_PTR_VAL(inst);
   SCHEME_VEC_SIZE (inst) = num_fields;
   SCHEME_VEC_ELS (inst) = els;
   return (inst);
 }
 
-static Scheme_Object *
-scheme_make_struct_proc (Scheme_Object *type, int proc_type, int field_num)
+static Scheme_Value
+scheme_make_struct_proc (Scheme_Value type, int proc_type, int field_num)
 {
-  Scheme_Object *obj;
+  Scheme_Value obj;
   Scheme_Struct_Proc *proc;
 
   obj = scheme_alloc_object (scheme_struct_proc_type, sizeof(Scheme_Struct_Proc));
@@ -175,26 +175,26 @@ scheme_make_struct_proc (Scheme_Object *type, int proc_type, int field_num)
   return (obj);
 }
 
-static Scheme_Object *
-scheme_make_constructor (Scheme_Object *type, int num_fields)
+static Scheme_Value
+scheme_make_constructor (Scheme_Value type, int num_fields)
 {
   return (scheme_make_struct_proc (type, SCHEME_CONSTR, num_fields));
 }
 
-static Scheme_Object *
-scheme_make_pred (Scheme_Object *type)
+static Scheme_Value
+scheme_make_pred (Scheme_Value type)
 {
   return (scheme_make_struct_proc (type, SCHEME_PRED, 0));
 }
 
-static Scheme_Object *
-scheme_make_getter (Scheme_Object *type, int field)
+static Scheme_Value
+scheme_make_getter (Scheme_Value type, int field)
 {
   return (scheme_make_struct_proc (type, SCHEME_GETTER, field));
 }
 
-static Scheme_Object *
-scheme_make_setter (Scheme_Object *type, int field)
+static Scheme_Value
+scheme_make_setter (Scheme_Value type, int field)
 {
   return (scheme_make_struct_proc (type, SCHEME_SETTER, field));
 }

@@ -27,31 +27,31 @@
 #include <ctype.h>
 
 /* globals */
-Scheme_Object *scheme_string_type;
+Scheme_Value scheme_string_type;
 
 /* locals */
-static Scheme_Object *string_p (int argc, Scheme_Object *argv[]);
-static Scheme_Object *make_string (int argc, Scheme_Object *argv[]);
-static Scheme_Object *string (int argc, Scheme_Object *argv[]);
-static Scheme_Object *string_length (int argc, Scheme_Object *argv[]);
-static Scheme_Object *string_ref (int argc, Scheme_Object *argv[]);
-static Scheme_Object *string_set (int argc, Scheme_Object *argv[]);
-static Scheme_Object *string_eq (int argc, Scheme_Object *argv[]);
-static Scheme_Object *string_ci_eq (int argc, Scheme_Object *argv[]);
-static Scheme_Object *string_lt (int argc, Scheme_Object *argv[]);
-static Scheme_Object *string_gt (int argc, Scheme_Object *argv[]);
-static Scheme_Object *string_lt_eq (int argc, Scheme_Object *argv[]);
-static Scheme_Object *string_gt_eq (int argc, Scheme_Object *argv[]);
-static Scheme_Object *string_ci_lt (int argc, Scheme_Object *argv[]);
-static Scheme_Object *string_ci_gt (int argc, Scheme_Object *argv[]);
-static Scheme_Object *string_ci_lt_eq (int argc, Scheme_Object *argv[]);
-static Scheme_Object *string_ci_gt_eq (int argc, Scheme_Object *argv[]);
-static Scheme_Object *substring (int argc, Scheme_Object *argv[]);
-static Scheme_Object *string_append (int argc, Scheme_Object *argv[]);
-static Scheme_Object *string_to_list (int argc, Scheme_Object *argv[]);
-static Scheme_Object *list_to_string (int argc, Scheme_Object *argv[]);
-static Scheme_Object *string_copy (int argc, Scheme_Object *argv[]);
-static Scheme_Object *string_fill (int argc, Scheme_Object *argv[]);
+static Scheme_Value string_p (int argc, Scheme_Value argv[]);
+static Scheme_Value make_string (int argc, Scheme_Value argv[]);
+static Scheme_Value string (int argc, Scheme_Value argv[]);
+static Scheme_Value string_length (int argc, Scheme_Value argv[]);
+static Scheme_Value string_ref (int argc, Scheme_Value argv[]);
+static Scheme_Value string_set (int argc, Scheme_Value argv[]);
+static Scheme_Value string_eq (int argc, Scheme_Value argv[]);
+static Scheme_Value string_ci_eq (int argc, Scheme_Value argv[]);
+static Scheme_Value string_lt (int argc, Scheme_Value argv[]);
+static Scheme_Value string_gt (int argc, Scheme_Value argv[]);
+static Scheme_Value string_lt_eq (int argc, Scheme_Value argv[]);
+static Scheme_Value string_gt_eq (int argc, Scheme_Value argv[]);
+static Scheme_Value string_ci_lt (int argc, Scheme_Value argv[]);
+static Scheme_Value string_ci_gt (int argc, Scheme_Value argv[]);
+static Scheme_Value string_ci_lt_eq (int argc, Scheme_Value argv[]);
+static Scheme_Value string_ci_gt_eq (int argc, Scheme_Value argv[]);
+static Scheme_Value substring (int argc, Scheme_Value argv[]);
+static Scheme_Value string_append (int argc, Scheme_Value argv[]);
+static Scheme_Value string_to_list (int argc, Scheme_Value argv[]);
+static Scheme_Value list_to_string (int argc, Scheme_Value argv[]);
+static Scheme_Value string_copy (int argc, Scheme_Value argv[]);
+static Scheme_Value string_fill (int argc, Scheme_Value argv[]);
 
 static int strcmp_ci (char *str1, char *str2);
 
@@ -84,10 +84,10 @@ scheme_init_string (Scheme_Env *env)
   scheme_add_global ("string-fill!", scheme_make_prim (string_fill), env);
 }
 
-Scheme_Object *
+Scheme_Value
 scheme_make_string (const char *chars)
 {
-  Scheme_Object *str;
+  Scheme_Value str;
   size_t len = strlen(chars);
   char *new;
 
@@ -101,12 +101,12 @@ scheme_make_string (const char *chars)
   return (str);
 }
 
-Scheme_Object *
+Scheme_Value
 scheme_alloc_string (int size, char fill)
 {
   int i;
   size_t nbytes = sizeof(Scheme_Object) + (size + 1) * sizeof(char);
-  Scheme_Object *str;
+  Scheme_Value str;
   char *val;
 
   str = scheme_malloc (nbytes);
@@ -124,19 +124,19 @@ scheme_alloc_string (int size, char fill)
 
 /* locals */
 
-static Scheme_Object *
-string_p (int argc, Scheme_Object *argv[])
+static Scheme_Value
+string_p (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "string?: wrong number of args");
   return (SCHEME_STRINGP(argv[0]) ? scheme_true : scheme_false);
 }
 
-static Scheme_Object *
-make_string (int argc, Scheme_Object *argv[])
+static Scheme_Value
+make_string (int argc, Scheme_Value argv[])
 {
   int len;
   char fill;
-  Scheme_Object *str;
+  Scheme_Value str;
 
   SCHEME_ASSERT ((argc == 1) || (argc == 2), "make-string: wrong number of args");
   SCHEME_ASSERT (SCHEME_INTP (argv[0]), "make-string: first arg must be integer");
@@ -154,10 +154,10 @@ make_string (int argc, Scheme_Object *argv[])
   return (str);
 }
 
-static Scheme_Object *
-string (int argc, Scheme_Object *argv[])
+static Scheme_Value
+string (int argc, Scheme_Value argv[])
 {
-  Scheme_Object *str;
+  Scheme_Value str;
   int i;
 
   str = scheme_alloc_string (argc, 0);
@@ -169,16 +169,16 @@ string (int argc, Scheme_Object *argv[])
   return (str);
 }
 
-static Scheme_Object *
-string_length (int argc, Scheme_Object *argv[])
+static Scheme_Value
+string_length (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "string-length: wrong number of args");
   SCHEME_ASSERT (SCHEME_STRINGP (argv[0]), "string-length: arg must be a string");
   return (scheme_make_integer (strlen (SCHEME_STR_VAL (argv[0]))));
 }
 
-static Scheme_Object *
-string_ref (int argc, Scheme_Object *argv[])
+static Scheme_Value
+string_ref (int argc, Scheme_Value argv[])
 {
   int i, len;
   char *str;
@@ -196,8 +196,8 @@ string_ref (int argc, Scheme_Object *argv[])
   return (scheme_make_char (str[i]));
 }
 
-static Scheme_Object *
-string_set (int argc, Scheme_Object *argv[])
+static Scheme_Value
+string_set (int argc, Scheme_Value argv[])
 {
   int i, len;
   char *str;
@@ -220,8 +220,8 @@ string_set (int argc, Scheme_Object *argv[])
 /* comparisons */
 
 #define GEN_STRING_COMP(name, scheme_name, comp, op) \
-static Scheme_Object * \
-name (int argc, Scheme_Object *argv[]) \
+static Scheme_Value  \
+name (int argc, Scheme_Value argv[]) \
 { \
   SCHEME_ASSERT ((argc == 2), #scheme_name ": wrong number of args"); \
   SCHEME_ASSERT ((SCHEME_STRINGP(argv[0]) && SCHEME_STRINGP(argv[1])), \
@@ -241,12 +241,12 @@ GEN_STRING_COMP(string_ci_gt, "string-ci>?", strcmp_ci, >)
 GEN_STRING_COMP(string_ci_lt_eq, "string-ci<=?", strcmp_ci, <=)
 GEN_STRING_COMP(string_ci_gt_eq, "string-ci>=?", strcmp_ci, >=)
 
-static Scheme_Object *
-substring (int argc, Scheme_Object *argv[])
+static Scheme_Value
+substring (int argc, Scheme_Value argv[])
 {
   int len, start, finish, i;
   char *chars;
-  Scheme_Object *str;
+  Scheme_Value str;
 
   SCHEME_ASSERT ((argc == 3), "substring: wrong number of args");
   SCHEME_ASSERT (SCHEME_STRINGP(argv[0]), "substring: first arg must be a string");
@@ -266,12 +266,12 @@ substring (int argc, Scheme_Object *argv[])
   return (str);
 }
 
-static Scheme_Object *append_2 (Scheme_Object *str1, Scheme_Object *str2);
+static Scheme_Value append_2 (Scheme_Value str1, Scheme_Value str2);
 
-static Scheme_Object *
-string_append (int argc, Scheme_Object *argv[])
+static Scheme_Value
+string_append (int argc, Scheme_Value argv[])
 {
-  Scheme_Object *new;
+  Scheme_Value new;
   int i;
 
   new = scheme_alloc_string (0, 0);
@@ -282,12 +282,12 @@ string_append (int argc, Scheme_Object *argv[])
   return (new);
 }
 
-static Scheme_Object *
-append_2 (Scheme_Object *str1, Scheme_Object *str2)
+static Scheme_Value
+append_2 (Scheme_Value str1, Scheme_Value str2)
 {
   int len1, len2, i;
   char *chars1, *chars2;
-  Scheme_Object *new;
+  Scheme_Value new;
 
   SCHEME_ASSERT (SCHEME_STRINGP(str1) && SCHEME_STRINGP(str2),
 		 "string-append: arguments must be strings");
@@ -309,12 +309,12 @@ append_2 (Scheme_Object *str1, Scheme_Object *str2)
 }
 
 
-static Scheme_Object *
-string_to_list (int argc, Scheme_Object *argv[])
+static Scheme_Value
+string_to_list (int argc, Scheme_Value argv[])
 {
   int len, i;
   char *chars;
-  Scheme_Object *first, *last, *pair;
+  Scheme_Value first, last, pair;
 
   SCHEME_ASSERT (argc == 1, "string->list: wrong number of args");
   SCHEME_ASSERT (SCHEME_STRINGP(argv[0]), "string->list: arg must be a string");
@@ -337,11 +337,11 @@ string_to_list (int argc, Scheme_Object *argv[])
   return (first);
 }
 
-static Scheme_Object *
-list_to_string (int argc, Scheme_Object *argv[])
+static Scheme_Value
+list_to_string (int argc, Scheme_Value argv[])
 {
   int len, i;
-  Scheme_Object *list, *str, *ch;
+  Scheme_Value list, str, ch;
 
   SCHEME_ASSERT ((argc == 1), "list->string: wrong number of args");
   SCHEME_ASSERT (SCHEME_LISTP(argv[0]), "list->string: arg must be a list");
@@ -360,10 +360,10 @@ list_to_string (int argc, Scheme_Object *argv[])
   return (str);
 }
 
-static Scheme_Object *
-string_copy (int argc, Scheme_Object *argv[])
+static Scheme_Value
+string_copy (int argc, Scheme_Value argv[])
 {
-  Scheme_Object *new;
+  Scheme_Value new;
 
   SCHEME_ASSERT ((argc == 1), "string-copy: wrong number of args");
   SCHEME_ASSERT (SCHEME_STRINGP (argv[0]), "string-copy: arg must be a string");
@@ -371,8 +371,8 @@ string_copy (int argc, Scheme_Object *argv[])
   return (new);
 }
 
-static Scheme_Object *
-string_fill (int argc, Scheme_Object *argv[])
+static Scheme_Value
+string_fill (int argc, Scheme_Value argv[])
 {
   int len, i;
   char *chars, ch;

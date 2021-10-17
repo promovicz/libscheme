@@ -30,7 +30,7 @@
 #include <stdio.h>
 
 void load_file(Scheme_Env *env, const char *path) {
-  Scheme_Object *in_port, *obj;
+  Scheme_Value in_port, obj;
   FILE *fp;
 
   fp = fopen (path, "r");
@@ -53,7 +53,7 @@ void load_file(Scheme_Env *env, const char *path) {
 }
 
 void read_eval_print(Scheme_Env *env) {
-  Scheme_Object *obj;
+  Scheme_Value obj;
   do
     {
       printf ("> ");

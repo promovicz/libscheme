@@ -38,49 +38,50 @@ struct Scheme_Indexed_String
 typedef struct Scheme_Indexed_String Scheme_Indexed_String;
 
 /* globals */
-Scheme_Object *scheme_eof;
-Scheme_Object *scheme_eof_type;
-Scheme_Object *scheme_input_port_type, *scheme_output_port_type;
-Scheme_Object *scheme_stdin_port;
-Scheme_Object *scheme_stdout_port;
-Scheme_Object *scheme_stderr_port;
+Scheme_Value scheme_eof;
+Scheme_Value scheme_eof_type;
+Scheme_Value scheme_input_port_type;
+Scheme_Value scheme_output_port_type;
+Scheme_Value scheme_stdin_port;
+Scheme_Value scheme_stdout_port;
+Scheme_Value scheme_stderr_port;
 
 /* locals */
-static Scheme_Object *cur_in_port;
-static Scheme_Object *cur_out_port;
-static Scheme_Object *scheme_file_input_port_type;
-static Scheme_Object *scheme_string_input_port_type;
-static Scheme_Object *scheme_file_output_port_type;
+static Scheme_Value cur_in_port;
+static Scheme_Value cur_out_port;
+static Scheme_Value scheme_file_input_port_type;
+static Scheme_Value scheme_string_input_port_type;
+static Scheme_Value scheme_file_output_port_type;
 
 /* generic ports */
 
-static Scheme_Object *scheme_make_eof (void);
-static Scheme_Object *call_with_input_file (int argc, Scheme_Object *argv[]);
-static Scheme_Object *call_with_output_file (int argc, Scheme_Object *argv[]);
-static Scheme_Object *input_port_p (int argc, Scheme_Object *argv[]);
-static Scheme_Object *output_port_p (int argc, Scheme_Object *argv[]);
-static Scheme_Object *current_input_port (int argc, Scheme_Object *argv[]);
-static Scheme_Object *current_output_port (int argc, Scheme_Object *argv[]);
-static Scheme_Object *with_input_from_file (int argc, Scheme_Object *argv[]);
-static Scheme_Object *with_output_to_file (int argc, Scheme_Object *argv[]);
-static Scheme_Object *open_input_file (int argc, Scheme_Object *argv[]);
-static Scheme_Object *open_output_file (int argc, Scheme_Object *argv[]);
-static Scheme_Object *close_input_port (int argc, Scheme_Object *argv[]);
-static Scheme_Object *close_output_port (int argc, Scheme_Object *argv[]);
-static Scheme_Object *read (int argc, Scheme_Object *argv[]);
-static Scheme_Object *read_char (int argc, Scheme_Object *argv[]);
-static Scheme_Object *peek_char (int argc, Scheme_Object *argv[]);
-static Scheme_Object *eof_object_p (int argc, Scheme_Object *argv[]);
-static Scheme_Object *char_ready_p (int argc, Scheme_Object *argv[]);
-static Scheme_Object *write (int argc, Scheme_Object *argv[]);
-static Scheme_Object *display (int argc, Scheme_Object *argv[]);
-static Scheme_Object *newline (int argc, Scheme_Object *argv[]);
-static Scheme_Object *write_char (int argc, Scheme_Object *argv[]);
-static Scheme_Object *load (int argc, Scheme_Object *argv[]);
+static Scheme_Value scheme_make_eof (void);
+static Scheme_Value call_with_input_file (int argc, Scheme_Value argv[]);
+static Scheme_Value call_with_output_file (int argc, Scheme_Value argv[]);
+static Scheme_Value input_port_p (int argc, Scheme_Value argv[]);
+static Scheme_Value output_port_p (int argc, Scheme_Value argv[]);
+static Scheme_Value current_input_port (int argc, Scheme_Value argv[]);
+static Scheme_Value current_output_port (int argc, Scheme_Value argv[]);
+static Scheme_Value with_input_from_file (int argc, Scheme_Value argv[]);
+static Scheme_Value with_output_to_file (int argc, Scheme_Value argv[]);
+static Scheme_Value open_input_file (int argc, Scheme_Value argv[]);
+static Scheme_Value open_output_file (int argc, Scheme_Value argv[]);
+static Scheme_Value close_input_port (int argc, Scheme_Value argv[]);
+static Scheme_Value close_output_port (int argc, Scheme_Value argv[]);
+static Scheme_Value read (int argc, Scheme_Value argv[]);
+static Scheme_Value read_char (int argc, Scheme_Value argv[]);
+static Scheme_Value peek_char (int argc, Scheme_Value argv[]);
+static Scheme_Value eof_object_p (int argc, Scheme_Value argv[]);
+static Scheme_Value char_ready_p (int argc, Scheme_Value argv[]);
+static Scheme_Value write (int argc, Scheme_Value argv[]);
+static Scheme_Value display (int argc, Scheme_Value argv[]);
+static Scheme_Value newline (int argc, Scheme_Value argv[]);
+static Scheme_Value write_char (int argc, Scheme_Value argv[]);
+static Scheme_Value load (int argc, Scheme_Value argv[]);
 /* non-standard */
-static Scheme_Object *flush_output (int argc, Scheme_Object *argv[]);
-static Scheme_Object *with_input_from_string (int argc, Scheme_Object *argv[]);
-static Scheme_Object *open_input_string (int argc, Scheme_Object *argv[]);
+static Scheme_Value flush_output (int argc, Scheme_Value argv[]);
+static Scheme_Value with_input_from_string (int argc, Scheme_Value argv[]);
+static Scheme_Value open_input_string (int argc, Scheme_Value argv[]);
 
 void
 scheme_init_port (Scheme_Env *env)
@@ -127,21 +128,21 @@ scheme_init_port (Scheme_Env *env)
   scheme_add_global ("display-to-string", scheme_make_prim (display), env);
 }
 
-static Scheme_Object *
+static Scheme_Value
 scheme_make_eof (void)
 {
   return scheme_alloc_object(scheme_eof_type, 0);
 }
 
-Scheme_Object *
-scheme_make_input_port (Scheme_Object *subtype,
+Scheme_Value
+scheme_make_input_port (Scheme_Value subtype,
 			void *data,
 			int (*getc_fun) (Scheme_Input_Port*),
 			void (*ungetc_fun) (int, Scheme_Input_Port*),
 			int (*char_ready_fun) (Scheme_Input_Port*),
 			void (*close_fun) (Scheme_Input_Port*))
 {
-  Scheme_Object *obj;
+  Scheme_Value obj;
   Scheme_Input_Port *ip;
 
   obj = scheme_alloc_object(scheme_input_port_type, sizeof(Scheme_Input_Port));
@@ -155,13 +156,13 @@ scheme_make_input_port (Scheme_Object *subtype,
   return (obj);
 }
 
-Scheme_Object *
-scheme_make_output_port (Scheme_Object *subtype,
+Scheme_Value
+scheme_make_output_port (Scheme_Value subtype,
 			 void *data,
 			 void (*write_string_fun) (char *str, Scheme_Output_Port*),
 			 void (*close_fun) (Scheme_Output_Port*))
 {
-  Scheme_Object *obj;
+  Scheme_Value obj;
   Scheme_Output_Port *op;
 
   obj = scheme_alloc_object(scheme_output_port_type, sizeof(Scheme_Output_Port));
@@ -174,7 +175,7 @@ scheme_make_output_port (Scheme_Object *subtype,
 }
 
 int
-scheme_getc (Scheme_Object *port)
+scheme_getc (Scheme_Value port)
 {
   Scheme_Input_Port *ip;
 
@@ -183,7 +184,7 @@ scheme_getc (Scheme_Object *port)
 }
 
 void
-scheme_ungetc (int ch, Scheme_Object *port)
+scheme_ungetc (int ch, Scheme_Value port)
 {
   Scheme_Input_Port *ip;
 
@@ -192,7 +193,7 @@ scheme_ungetc (int ch, Scheme_Object *port)
 }
 
 int
-scheme_char_ready (Scheme_Object *port)
+scheme_char_ready (Scheme_Value port)
 {
   Scheme_Input_Port *ip;
 
@@ -201,7 +202,7 @@ scheme_char_ready (Scheme_Object *port)
 }
 
 void
-scheme_close_input_port (Scheme_Object *port)
+scheme_close_input_port (Scheme_Value port)
 {
   Scheme_Input_Port *ip;
 
@@ -210,7 +211,7 @@ scheme_close_input_port (Scheme_Object *port)
 }
 
 void
-scheme_close_output_port (Scheme_Object *port)
+scheme_close_output_port (Scheme_Value port)
 {
   Scheme_Output_Port *op;
 
@@ -258,7 +259,7 @@ file_close_input (Scheme_Input_Port *port)
 	}
 }
 
-Scheme_Object *
+Scheme_Value
 scheme_make_file_input_port (FILE *fp)
 {
   return scheme_make_input_port (scheme_file_input_port_type,
@@ -326,7 +327,7 @@ scheme_make_indexed_string (char *str)
   return (is);
 }
 
-Scheme_Object *
+Scheme_Value
 scheme_make_string_input_port (char *str)
 {
   return scheme_make_input_port (scheme_string_input_port_type,
@@ -353,7 +354,7 @@ file_close_output (Scheme_Output_Port *port)
   fclose (fp);
 }
 
-Scheme_Object *
+Scheme_Value
 scheme_make_file_output_port (FILE *fp)
 {
   return scheme_make_output_port (scheme_file_output_port_type,
@@ -362,12 +363,12 @@ scheme_make_file_output_port (FILE *fp)
 			     file_close_output);
 }
 
-static Scheme_Object *
-call_with_input_file (int argc, Scheme_Object *argv[])
+static Scheme_Value
+call_with_input_file (int argc, Scheme_Value argv[])
 {
   FILE *fp;
   char *filename;
-  Scheme_Object *ret, *port;
+  Scheme_Value ret, port;
 
   SCHEME_ASSERT ((argc == 2), "call-with-input-file: wrong number of args");
   SCHEME_ASSERT (SCHEME_STRINGP (argv[0]),
@@ -386,12 +387,12 @@ call_with_input_file (int argc, Scheme_Object *argv[])
   return (ret);
 }
 
-static Scheme_Object *
-call_with_output_file (int argc, Scheme_Object *argv[])
+static Scheme_Value
+call_with_output_file (int argc, Scheme_Value argv[])
 {
   FILE *fp;
   char *filename;
-  Scheme_Object *ret, *port;
+  Scheme_Value ret, port;
 
   SCHEME_ASSERT ((argc == 2), "call-with-output-file: wrong number of args");
   SCHEME_ASSERT (SCHEME_STRINGP (argv[0]),
@@ -410,40 +411,40 @@ call_with_output_file (int argc, Scheme_Object *argv[])
   return (ret);
 }
 
-static Scheme_Object *
-input_port_p (int argc, Scheme_Object *argv[])
+static Scheme_Value
+input_port_p (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "input-port?: wrong number of args");
   return (SCHEME_INPORTP(argv[0]) ? scheme_true : scheme_false);
 }
 
-static Scheme_Object *
-output_port_p (int argc, Scheme_Object *argv[])
+static Scheme_Value
+output_port_p (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "output-port?: wrong number of args");
   return (SCHEME_OUTPORTP(argv[0]) ? scheme_true : scheme_false);
 }
 
-static Scheme_Object *
-current_input_port (int argc, Scheme_Object *argv[])
+static Scheme_Value
+current_input_port (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 0), "current-input-port: wrong number of args");
   return (cur_in_port);
 }
 
-static Scheme_Object *
-current_output_port (int argc, Scheme_Object *argv[])
+static Scheme_Value
+current_output_port (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 0), "current-output-port: wrong number of args");
   return (cur_out_port);
 }
 
-static Scheme_Object *
-with_input_from_file (int argc, Scheme_Object *argv[])
+static Scheme_Value
+with_input_from_file (int argc, Scheme_Value argv[])
 {
   FILE *fp;
   char *filename;
-  Scheme_Object *ret, *old_port, *new_port;
+  Scheme_Value ret, old_port, new_port;
 
   SCHEME_ASSERT ((argc == 2), "with-input-from-file: wrong number of args");
   SCHEME_ASSERT (SCHEME_STRINGP (argv[0]),
@@ -465,11 +466,11 @@ with_input_from_file (int argc, Scheme_Object *argv[])
   return (ret);
 }
 
-static Scheme_Object *
-with_input_from_string (int argc, Scheme_Object *argv[])
+static Scheme_Value
+with_input_from_string (int argc, Scheme_Value argv[])
 {
   char *str;
-  Scheme_Object *ret, *old_port, *new_port;
+  Scheme_Value ret, old_port, new_port;
 
   SCHEME_ASSERT ((argc == 2), "with-input-from-string: wrong number of args");
   SCHEME_ASSERT (SCHEME_STRINGP (argv[0]),
@@ -486,12 +487,12 @@ with_input_from_string (int argc, Scheme_Object *argv[])
   return (ret);
 }
 
-static Scheme_Object *
-with_output_to_file (int argc, Scheme_Object *argv[])
+static Scheme_Value
+with_output_to_file (int argc, Scheme_Value argv[])
 {
   FILE *fp, *old;
   char *filename;
-  Scheme_Object *ret;
+  Scheme_Value ret;
 
   SCHEME_ASSERT ((argc == 2), "with-output-to-file: wrong number of args");
   SCHEME_ASSERT (SCHEME_STRINGP (argv[0]),
@@ -512,8 +513,8 @@ with_output_to_file (int argc, Scheme_Object *argv[])
   return (ret);
 }
 
-static Scheme_Object *
-open_input_file (int argc, Scheme_Object *argv[])
+static Scheme_Value
+open_input_file (int argc, Scheme_Value argv[])
 {
   FILE *fp;
 
@@ -527,8 +528,8 @@ open_input_file (int argc, Scheme_Object *argv[])
   return (scheme_make_file_input_port (fp));
 }
 
-static Scheme_Object *
-open_input_string (int argc, Scheme_Object *argv[])
+static Scheme_Value
+open_input_string (int argc, Scheme_Value argv[])
 {
   char *str;
 
@@ -538,8 +539,8 @@ open_input_string (int argc, Scheme_Object *argv[])
   return (scheme_make_string_input_port (str));
 }
 
-static Scheme_Object *
-open_output_file (int argc, Scheme_Object *argv[])
+static Scheme_Value
+open_output_file (int argc, Scheme_Value argv[])
 {
   FILE *fp;
 
@@ -553,8 +554,8 @@ open_output_file (int argc, Scheme_Object *argv[])
   return (scheme_make_file_output_port (fp));
 }
 
-static Scheme_Object *
-close_input_port (int argc, Scheme_Object *argv[])
+static Scheme_Value
+close_input_port (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "close-input-port: wrong number of args");
   SCHEME_ASSERT (SCHEME_INPORTP(argv[0]), "close-input-port: arg must be an input port");
@@ -562,8 +563,8 @@ close_input_port (int argc, Scheme_Object *argv[])
   return (scheme_true);
 }
 
-static Scheme_Object *
-close_output_port (int argc, Scheme_Object *argv[])
+static Scheme_Value
+close_output_port (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "close-output-port: wrong number of args");
   SCHEME_ASSERT (SCHEME_OUTPORTP(argv[0]), "close-output-port: arg must be an output port");
@@ -571,8 +572,8 @@ close_output_port (int argc, Scheme_Object *argv[])
   return (scheme_true);
 }
 
-static Scheme_Object *
-read (int argc, Scheme_Object *argv[])
+static Scheme_Value
+read (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc==0 || argc==1), "read: wrong number of args");
   if (argc == 1)
@@ -586,8 +587,8 @@ read (int argc, Scheme_Object *argv[])
     }
 }
 
-static Scheme_Object *
-read_char (int argc, Scheme_Object *argv[])
+static Scheme_Value
+read_char (int argc, Scheme_Value argv[])
 {
   int ch;
 
@@ -611,10 +612,10 @@ read_char (int argc, Scheme_Object *argv[])
     }
 }
 
-static Scheme_Object *
-peek_char (int argc, Scheme_Object *argv[])
+static Scheme_Value
+peek_char (int argc, Scheme_Value argv[])
 {
-  Scheme_Object *port;
+  Scheme_Value port;
   int ch;
 
   SCHEME_ASSERT ((argc==0 || argc==1), "peek-char: wrong number of args");
@@ -639,17 +640,17 @@ peek_char (int argc, Scheme_Object *argv[])
     }
 }
 
-static Scheme_Object *
-eof_object_p (int argc, Scheme_Object *argv[])
+static Scheme_Value
+eof_object_p (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "eof-object?: wrong number of args");
   return (SCHEME_EOFP(argv[0]) ? scheme_true : scheme_false);
 }
 
-static Scheme_Object *
-char_ready_p (int argc, Scheme_Object *argv[])
+static Scheme_Value
+char_ready_p (int argc, Scheme_Value argv[])
 {
-  Scheme_Object *port;
+  Scheme_Value port;
 
   SCHEME_ASSERT ((argc==0 || argc==1), "char-ready?: wrong number of args");
   if (argc == 1)
@@ -671,10 +672,10 @@ char_ready_p (int argc, Scheme_Object *argv[])
     }
 }
 
-static Scheme_Object *
-write (int argc, Scheme_Object *argv[])
+static Scheme_Value
+write (int argc, Scheme_Value argv[])
 {
-  Scheme_Object *port;
+  Scheme_Value port;
 
   SCHEME_ASSERT ((argc==1 || argc==2), "write: wrong number of args");
   if (argc == 2)
@@ -690,10 +691,10 @@ write (int argc, Scheme_Object *argv[])
   return (scheme_true);
 }
 
-static Scheme_Object *
-display (int argc, Scheme_Object *argv[])
+static Scheme_Value
+display (int argc, Scheme_Value argv[])
 {
-  Scheme_Object *port;
+  Scheme_Value port;
 
   SCHEME_ASSERT ((argc==1 || argc==2), "display: wrong number of args");
   if (argc == 2)
@@ -709,10 +710,10 @@ display (int argc, Scheme_Object *argv[])
   return (scheme_true);
 }
 
-static Scheme_Object *
-newline (int argc, Scheme_Object *argv[])
+static Scheme_Value
+newline (int argc, Scheme_Value argv[])
 {
-  Scheme_Object *port;
+  Scheme_Value port;
 
   SCHEME_ASSERT ((argc==0 || argc==1), "newline: wrong number of args");
   if (argc == 1)
@@ -728,10 +729,10 @@ newline (int argc, Scheme_Object *argv[])
   return (scheme_true);
 }
 
-static Scheme_Object *
-write_char (int argc, Scheme_Object *argv[])
+static Scheme_Value
+write_char (int argc, Scheme_Value argv[])
 {
-  Scheme_Object *port;
+  Scheme_Value port;
   char buf[256];
 
   SCHEME_ASSERT ((argc==1 || argc==2), "write-char: wrong number of args");
@@ -750,10 +751,10 @@ write_char (int argc, Scheme_Object *argv[])
   return (scheme_true);
 }
 
-static Scheme_Object *
-load (int argc, Scheme_Object *argv[])
+static Scheme_Value
+load (int argc, Scheme_Value argv[])
 {
-  Scheme_Object *obj, *ret = scheme_null, *port;
+  Scheme_Value obj, ret = scheme_null, port;
   char *filename;
   FILE *fp;
 
@@ -779,8 +780,8 @@ load (int argc, Scheme_Object *argv[])
   return (ret);
 }
 
-static Scheme_Object *
-flush_output (int argc, Scheme_Object *argv[])
+static Scheme_Value
+flush_output (int argc, Scheme_Value argv[])
 {
 #if 0
   SCHEME_ASSERT ((argc == 1), "flush-output: wrong number of args");
@@ -791,8 +792,8 @@ flush_output (int argc, Scheme_Object *argv[])
   return (scheme_true);
 }
 
-static Scheme_Object *
-write_to_string (int argc, Scheme_Object *argv[])
+static Scheme_Value
+write_to_string (int argc, Scheme_Value argv[])
 {
   char *str;
 
@@ -801,8 +802,8 @@ write_to_string (int argc, Scheme_Object *argv[])
   return (scheme_make_string (str));
 }
 
-static Scheme_Object *
-display_to_string (int argc, Scheme_Object *argv[])
+static Scheme_Value
+display_to_string (int argc, Scheme_Value argv[])
 {
   char *str;
 

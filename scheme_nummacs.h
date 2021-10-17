@@ -23,11 +23,11 @@
 */
 
 #define GEN_BIN_COMP_PROT(name) \
-static int name (Scheme_Object *n1, Scheme_Object *n2)
+static int name (Scheme_Value n1, Scheme_Value n2)
 
 #define GEN_BIN_COMP(name, scheme_name, op) \
 static int \
-name (Scheme_Object *n1, Scheme_Object *n2) \
+name (Scheme_Value n1, Scheme_Value n2) \
 { \
   SCHEME_ASSERT (SCHEME_NUMBERP(n1) && SCHEME_NUMBERP(n2), \
                  #scheme_name ": args must be numbers"); \
@@ -48,8 +48,8 @@ name (Scheme_Object *n1, Scheme_Object *n2) \
 }
 
 #define GEN_NARY_COMP(name, scheme_name, bin_name) \
-static Scheme_Object * \
-name (int argc, Scheme_Object *argv[]) \
+static Scheme_Value  \
+name (int argc, Scheme_Value argv[]) \
 { \
   int i; \
   SCHEME_ASSERT ((argc > 1), #scheme_name ": wrong number of args"); \
@@ -64,11 +64,11 @@ name (int argc, Scheme_Object *argv[]) \
 }
 
 #define GEN_BIN_PROT(name) \
-static Scheme_Object *name (Scheme_Object *n1, Scheme_Object *n2)
+static Scheme_Value name (Scheme_Value n1, Scheme_Value n2)
 
 #define GEN_BIN_OP(name, scheme_name, op) \
-static Scheme_Object * \
-name (Scheme_Object *n1, Scheme_Object *n2) \
+static Scheme_Value  \
+name (Scheme_Value n1, Scheme_Value n2) \
 { \
   SCHEME_ASSERT (SCHEME_NUMBERP(n1) && SCHEME_NUMBERP(n2), \
                  #scheme_name ": args must be numbers"); \
@@ -89,10 +89,10 @@ name (Scheme_Object *n1, Scheme_Object *n2) \
 }
 
 #define GEN_NARY_OP(name, scheme_name, bin_name, ident) \
-static Scheme_Object * \
-name (int argc, Scheme_Object *argv[]) \
+static Scheme_Value  \
+name (int argc, Scheme_Value argv[]) \
 { \
-  Scheme_Object *ret; \
+  Scheme_Value ret; \
   int i; \
   ret = scheme_make_integer (ident); \
   for ( i=0 ; i<argc ; ++i ) \
@@ -103,10 +103,10 @@ name (int argc, Scheme_Object *argv[]) \
 }
 
 #define GEN_TWOARY_OP(name, scheme_name, bin_name) \
-static Scheme_Object * \
-name (int argc, Scheme_Object *argv[]) \
+static Scheme_Value  \
+name (int argc, Scheme_Value argv[]) \
 { \
-  Scheme_Object *ret; \
+  Scheme_Value ret; \
   int i; \
   SCHEME_ASSERT ((argc > 1), #scheme_name ": wrong number of args"); \
   ret = argv[0]; \
@@ -118,8 +118,8 @@ name (int argc, Scheme_Object *argv[]) \
 }
 
 #define GEN_UNARY_OP(name, scheme_name, c_name) \
-static Scheme_Object * \
-name (int argc, Scheme_Object *argv[]) \
+static Scheme_Value  \
+name (int argc, Scheme_Value argv[]) \
 { \
   SCHEME_ASSERT ((argc == 1), #scheme_name ": wrong number of args"); \
   if (SCHEME_INTP (argv[0])) \
@@ -133,10 +133,10 @@ name (int argc, Scheme_Object *argv[]) \
 }
 
 #define GEN_BIN_FUN(name, scheme_name, c_name) \
-static Scheme_Object * \
-name (int argc, Scheme_Object *argv[]) \
+static Scheme_Value  \
+name (int argc, Scheme_Value argv[]) \
 { \
-  Scheme_Object *n1, *n2; \
+  Scheme_Value n1, n2; \
   SCHEME_ASSERT ((argc == 2), #scheme_name ": wrong number of args"); \
   SCHEME_ASSERT (SCHEME_NUMBERP(argv[0]) && SCHEME_NUMBERP(argv[1]), \
                  #scheme_name ": both args must be numbers"); \

@@ -29,8 +29,8 @@
 jmp_buf scheme_error_buf;
 
 /* locals */
-static Scheme_Object *error (int argc, Scheme_Object *argv[]);
-static Scheme_Object *scheme_exit (int argc, Scheme_Object *argv[]);
+static Scheme_Value error (int argc, Scheme_Value argv[]);
+static Scheme_Value scheme_exit (int argc, Scheme_Value argv[]);
 
 void
 scheme_init_error (Scheme_Env *env)
@@ -62,8 +62,8 @@ scheme_warning (char *msg, ...)
   va_end (args);
 }
 
-static Scheme_Object *
-error (int argc, Scheme_Object *argv[])
+static Scheme_Value
+error (int argc, Scheme_Value argv[])
 {
   int i;
 
@@ -87,8 +87,8 @@ scheme_default_handler (void)
     }
 }
 
-static Scheme_Object *
-scheme_exit (int argc, Scheme_Object *argv[])
+static Scheme_Value
+scheme_exit (int argc, Scheme_Value argv[])
 {
   int status;
 

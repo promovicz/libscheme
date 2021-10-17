@@ -3,20 +3,20 @@
 #include <ffi.h>
 
 /* variables */
-static Scheme_Object *libffi_cif_type;
-static Scheme_Object *libffi_type_type;
+static Scheme_Value libffi_cif_type;
+static Scheme_Value libffi_type_type;
 
 /* utilities */
-static Scheme_Object *libffi_make_cif_object(ffi_cif *cif, Scheme_Object *ai);
-static Scheme_Object *libffi_make_type_object(ffi_type *typ);
+static Scheme_Value libffi_make_cif_object(ffi_cif *cif, Scheme_Value ai);
+static Scheme_Value libffi_make_type_object(ffi_type *typ);
 
 /* functions */
-static Scheme_Object *libffi_call (int argc, Scheme_Object *argv[]);
-static Scheme_Object *libffi_prep (int argc, Scheme_Object *argv[]);
+static Scheme_Value libffi_call (int argc, Scheme_Value argv[]);
+static Scheme_Value libffi_prep (int argc, Scheme_Value argv[]);
 
 /* accessors */
-static Scheme_Object *libffi_type_size (int argc, Scheme_Object *argv[]);
-static Scheme_Object *libffi_type_alignment (int argc, Scheme_Object *argv[]);
+static Scheme_Value libffi_type_size (int argc, Scheme_Value argv[]);
+static Scheme_Value libffi_type_alignment (int argc, Scheme_Value argv[]);
 
 /* macros */
 #define LIBFFI_CIFP(obj)   (SCHEME_TYPE(obj) == libffi_cif_type)
@@ -76,20 +76,20 @@ scheme_init_libffi (Scheme_Env *env)
 
 /* utilities */
 
-static Scheme_Object *
-libffi_make_cif_object (ffi_cif *cif, Scheme_Object *ai)
+static Scheme_Value
+libffi_make_cif_object (ffi_cif *cif, Scheme_Value ai)
 {
-  Scheme_Object *cif_obj;
+  Scheme_Value cif_obj;
   cif_obj = scheme_alloc_object (libffi_cif_type, 0);
   SCHEME_PTR1_VAL (cif_obj) = cif;
   SCHEME_PTR2_VAL (cif_obj) = ai;
   return (cif_obj);
 }
 
-static Scheme_Object *
+static Scheme_Value
 libffi_make_type_object (ffi_type *typ)
 {
-  Scheme_Object *typ_obj;
+  Scheme_Value typ_obj;
   typ_obj = scheme_alloc_object (libffi_type_type, 0);
   SCHEME_PTR_VAL (typ_obj) = typ;
   return (typ_obj);
@@ -97,14 +97,14 @@ libffi_make_type_object (ffi_type *typ)
 
 /* functions */
 
-static Scheme_Object *
-libffi_call (int argc, Scheme_Object *argv[])
+static Scheme_Value
+libffi_call (int argc, Scheme_Value argv[])
 {
   int i, num_av;
   ffi_cif *cif;
   void *fun;
   void **av;
-  Scheme_Object *rv;
+  Scheme_Value rv;
 
   /* check arguments */
   SCHEME_ASSERT((argc >= 2), "ffi-call: wrong number of args");
@@ -128,14 +128,14 @@ libffi_call (int argc, Scheme_Object *argv[])
   return rv;
 }
 
-static Scheme_Object *
-libffi_prep (int argc, Scheme_Object *argv[])
+static Scheme_Value
+libffi_prep (int argc, Scheme_Value argv[])
 {
   int i, num_at;
   ffi_status s;
   ffi_cif *cif;
   ffi_type *rt, **at;
-  Scheme_Object *r, *al, *a, *ai, **aiv;
+  Scheme_Value r, al, a, ai, *aiv;
 
   /* check arguments */
   SCHEME_ASSERT ((argc == 2), "ffi-prep: wrong number of args");
@@ -175,8 +175,8 @@ libffi_prep (int argc, Scheme_Object *argv[])
 
 /* accessors */
 
-static Scheme_Object *
-libffi_type_size (int argc, Scheme_Object *argv[])
+static Scheme_Value
+libffi_type_size (int argc, Scheme_Value argv[])
 {
   ffi_type *t;
 
@@ -189,8 +189,8 @@ libffi_type_size (int argc, Scheme_Object *argv[])
   return (scheme_make_integer(t->size));
 }
 
-static Scheme_Object *
-libffi_type_alignment (int argc, Scheme_Object *argv[])
+static Scheme_Value
+libffi_type_alignment (int argc, Scheme_Value argv[])
 {
   ffi_type *t;
 

@@ -30,16 +30,16 @@
 static Scheme_Hash_Table *symbol_table;
 
 /* globals */
-Scheme_Object *scheme_symbol_type;
-Scheme_Object *scheme_quote_symbol;
-Scheme_Object *scheme_quasiquote_symbol;
-Scheme_Object *scheme_unquote_symbol;
-Scheme_Object *scheme_unquote_splicing_symbol;
+Scheme_Value scheme_symbol_type;
+Scheme_Value scheme_quote_symbol;
+Scheme_Value scheme_quasiquote_symbol;
+Scheme_Value scheme_unquote_symbol;
+Scheme_Value scheme_unquote_splicing_symbol;
 
 /* locals */
-static Scheme_Object *symbol_p_prim (int argc, Scheme_Object *argv[]);
-static Scheme_Object *string_to_symbol_prim (int argc, Scheme_Object *argv[]);
-static Scheme_Object *symbol_to_string_prim (int argc, Scheme_Object *argv[]);
+static Scheme_Value symbol_p_prim (int argc, Scheme_Value argv[]);
+static Scheme_Value string_to_symbol_prim (int argc, Scheme_Value argv[]);
+static Scheme_Value symbol_to_string_prim (int argc, Scheme_Value argv[]);
 static char *downcase (char *str);
 
 void
@@ -57,10 +57,10 @@ scheme_init_symbol (Scheme_Env *env)
   scheme_add_global ("symbol->string", scheme_make_prim (symbol_to_string_prim), env);
 }
 
-Scheme_Object *
+Scheme_Value
 scheme_make_symbol (char *name)
 {
-  Scheme_Object *sym;
+  Scheme_Value sym;
   size_t len = strlen(name);
   char *new;
 
@@ -74,13 +74,13 @@ scheme_make_symbol (char *name)
   return (sym);
 }
 
-Scheme_Object *
+Scheme_Value
 scheme_intern_symbol (char *name)
 {
-  Scheme_Object *sym;
+  Scheme_Value sym;
 
   name = downcase (name);
-  sym = (Scheme_Object *)scheme_lookup_in_table (symbol_table, name);
+  sym = (Scheme_Value)scheme_lookup_in_table (symbol_table, name);
   if (sym)
     {
       return (sym);
@@ -95,23 +95,23 @@ scheme_intern_symbol (char *name)
 
 /* locals */
 
-static Scheme_Object *
-symbol_p_prim (int argc, Scheme_Object *argv[])
+static Scheme_Value
+symbol_p_prim (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "symbol?: wrong number of args");
   return (SCHEME_SYMBOLP(argv[0]) ? scheme_true : scheme_false);
 }
 
-static Scheme_Object *
-string_to_symbol_prim (int argc, Scheme_Object *argv[])
+static Scheme_Value
+string_to_symbol_prim (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "string->symbol: wrong number of args");
   SCHEME_ASSERT (SCHEME_STRINGP(argv[0]), "string->symbol: arg must be string");
   return (scheme_make_symbol (SCHEME_STR_VAL(argv[0])));
 }
 
-static Scheme_Object *
-symbol_to_string_prim (int argc, Scheme_Object *argv[])
+static Scheme_Value
+symbol_to_string_prim (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "symbol->string: wrong number of args");
   SCHEME_ASSERT (SCHEME_SYMBOLP(argv[0]), "symbol->string: arg must be symbol");

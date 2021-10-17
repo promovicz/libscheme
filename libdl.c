@@ -10,26 +10,26 @@
 #include <dlfcn.h>
 
 /* variables */
-static Scheme_Object *libdl_handle_type;
+static Scheme_Value libdl_handle_type;
 #ifdef LIBDL_HAS_INFO
-static Scheme_Object *libdl_info_type;
+static Scheme_Value libdl_info_type;
 #endif
 
 /* utilities */
-static Scheme_Object *libdl_make_handle_object(void *handle);
+static Scheme_Value libdl_make_handle_object(void *handle);
 
 /* functions */
-static Scheme_Object *libdl_open (int argc, Scheme_Object *argv[]);
-static Scheme_Object *libdl_close (int argc, Scheme_Object *argv[]);
-static Scheme_Object *libdl_symbol (int argc, Scheme_Object *argv[]);
-static Scheme_Object *libdl_address (int argc, Scheme_Object *argv[]);
+static Scheme_Value libdl_open (int argc, Scheme_Value argv[]);
+static Scheme_Value libdl_close (int argc, Scheme_Value argv[]);
+static Scheme_Value libdl_symbol (int argc, Scheme_Value argv[]);
+static Scheme_Value libdl_address (int argc, Scheme_Value argv[]);
 
 /* accessors */
 #ifdef LIBDL_HAS_INFO
-static Scheme_Object *libdl_info_file_name (int argc, Scheme_Object *argv[]);
-static Scheme_Object *libdl_info_file_address (int argc, Scheme_Object *argv[]);
-static Scheme_Object *libdl_info_symbol_name (int argc, Scheme_Object *argv[]);
-static Scheme_Object *libdl_info_symbol_address (int argc, Scheme_Object *argv[]);
+static Scheme_Value libdl_info_file_name (int argc, Scheme_Value argv[]);
+static Scheme_Value libdl_info_file_address (int argc, Scheme_Value argv[]);
+static Scheme_Value libdl_info_symbol_name (int argc, Scheme_Value argv[]);
+static Scheme_Value libdl_info_symbol_address (int argc, Scheme_Value argv[]);
 #endif
 
 /* macros */
@@ -83,10 +83,10 @@ scheme_init_libdl (Scheme_Env *env)
 
 /* utilities */
 
-static Scheme_Object *
+static Scheme_Value
 libdl_make_handle_object (void *handle)
 {
-  Scheme_Object *handle_obj;
+  Scheme_Value handle_obj;
   handle_obj = scheme_alloc_object (libdl_handle_type, 0);
   SCHEME_PTR_VAL (handle_obj) = handle;
   return (handle_obj);
@@ -94,8 +94,8 @@ libdl_make_handle_object (void *handle)
 
 /* functions */
 
-static Scheme_Object *
-libdl_open (int argc, Scheme_Object *argv[])
+static Scheme_Value
+libdl_open (int argc, Scheme_Value argv[])
 {
   char *filename;
   int flags;
@@ -120,8 +120,8 @@ libdl_open (int argc, Scheme_Object *argv[])
   return libdl_make_handle_object(handle);
 }
 
-static Scheme_Object *
-libdl_close (int argc, Scheme_Object *argv[])
+static Scheme_Value
+libdl_close (int argc, Scheme_Value argv[])
 {
   int res;
   void *handle;
@@ -139,8 +139,8 @@ libdl_close (int argc, Scheme_Object *argv[])
   return scheme_null;
 }
 
-static Scheme_Object *
-libdl_symbol (int argc, Scheme_Object *argv[])
+static Scheme_Value
+libdl_symbol (int argc, Scheme_Value argv[])
 {
   void *handle;
   char *symbol;
@@ -162,13 +162,13 @@ libdl_symbol (int argc, Scheme_Object *argv[])
 }
 
 #ifdef LIBDL_HAS_INFO
-static Scheme_Object *
-libdl_address (int argc, Scheme_Object *argv[])
+static Scheme_Value
+libdl_address (int argc, Scheme_Value argv[])
 {
   int res;
   void *address;
   Dl_info *info;
-  Scheme_Object *info_obj;
+  Scheme_Value info_obj;
 
   /* check arguments */
   SCHEME_ASSERT ((argc == 1), "dl-address: wrong number of args");
@@ -191,8 +191,8 @@ libdl_address (int argc, Scheme_Object *argv[])
 
 #ifdef LIBDL_HAS_INFO
 
-static Scheme_Object *
-libdl_info_file_name (int argc, Scheme_Object *argv[])
+static Scheme_Value
+libdl_info_file_name (int argc, Scheme_Value argv[])
 {
   Dl_info *info;
 
@@ -205,8 +205,8 @@ libdl_info_file_name (int argc, Scheme_Object *argv[])
   return (scheme_make_string(info->dli_fname));
 }
 
-static Scheme_Object *
-libdl_info_file_address (int argc, Scheme_Object *argv[])
+static Scheme_Value
+libdl_info_file_address (int argc, Scheme_Value argv[])
 {
   Dl_info *info;
 
@@ -219,8 +219,8 @@ libdl_info_file_address (int argc, Scheme_Object *argv[])
   return (scheme_make_pointer(info->dli_fbase));
 }
 
-static Scheme_Object *
-libdl_info_symbol_name (int argc, Scheme_Object *argv[])
+static Scheme_Value
+libdl_info_symbol_name (int argc, Scheme_Value argv[])
 {
   Dl_info *info;
 
@@ -233,8 +233,8 @@ libdl_info_symbol_name (int argc, Scheme_Object *argv[])
   return (scheme_make_string(info->dli_sname));
 }
 
-static Scheme_Object *
-libdl_info_symbol_address (int argc, Scheme_Object *argv[])
+static Scheme_Value
+libdl_info_symbol_address (int argc, Scheme_Value argv[])
 {
   Dl_info *info;
 

@@ -26,17 +26,17 @@
 #include <setjmp.h>
 
 /* globals */
-Scheme_Object *scheme_prim_type;
-Scheme_Object *scheme_closure_type;
-Scheme_Object *scheme_cont_type;
+Scheme_Value scheme_prim_type;
+Scheme_Value scheme_closure_type;
+Scheme_Value scheme_cont_type;
 
 /* locals */
-static Scheme_Object *scheme_collect_rest (int num_rest, Scheme_Object **rest);
-static Scheme_Object *procedure_p (int argc, Scheme_Object *argv[]);
-static Scheme_Object *apply (int argc, Scheme_Object *argv[]);
-static Scheme_Object *map (int argc, Scheme_Object *argv[]);
-static Scheme_Object *for_each (int argc, Scheme_Object *argv[]);
-static Scheme_Object *call_cc (int argc, Scheme_Object *argv[]);
+static Scheme_Value scheme_collect_rest (int num_rest, Scheme_Value *rest);
+static Scheme_Value procedure_p (int argc, Scheme_Value argv[]);
+static Scheme_Value apply (int argc, Scheme_Value argv[]);
+static Scheme_Value map (int argc, Scheme_Value argv[]);
+static Scheme_Value for_each (int argc, Scheme_Value argv[]);
+static Scheme_Value call_cc (int argc, Scheme_Value argv[]);
 
 #define CONS(a,b) scheme_make_pair(a,b)
 
@@ -57,20 +57,20 @@ scheme_init_fun (Scheme_Env *env)
   scheme_add_global ("call/cc", scheme_make_prim (call_cc), env);
 }
 
-Scheme_Object *
+Scheme_Value
 scheme_make_prim (Scheme_Prim *fun)
 {
-  Scheme_Object *prim;
+  Scheme_Value prim;
 
   prim = scheme_alloc_object (scheme_prim_type, 0);
   SCHEME_PRIM (prim) = fun;
   return (prim);
 }
 
-Scheme_Object *
-scheme_make_closure (Scheme_Env *env, Scheme_Object *code)
+Scheme_Value
+scheme_make_closure (Scheme_Env *env, Scheme_Value code)
 {
-  Scheme_Object *closure;
+  Scheme_Value closure;
 
   closure = scheme_alloc_object (scheme_closure_type, 0);
   SCHEME_CLOS_ENV (closure) = env;
@@ -78,10 +78,10 @@ scheme_make_closure (Scheme_Env *env, Scheme_Object *code)
   return (closure);
 }
 
-Scheme_Object *
+Scheme_Value
 scheme_make_cont ()
 {
-  Scheme_Object *obj;
+  Scheme_Value obj;
   Scheme_Cont *cont;
 
   obj = scheme_alloc_object (scheme_cont_type, sizeof(Scheme_Cont));
@@ -92,17 +92,17 @@ scheme_make_cont ()
   return (obj);
 }
 
-Scheme_Object *
-scheme_apply (Scheme_Object *rator, int num_rands, Scheme_Object **rands)
+Scheme_Value
+scheme_apply (Scheme_Value rator, int num_rands, Scheme_Value *rands)
 {
-  Scheme_Object *fun_type;
+  Scheme_Value fun_type;
 
   fun_type = SCHEME_TYPE (rator);
   if (fun_type == scheme_closure_type)
     {
       Scheme_Env *env, *frame;
-      Scheme_Object *params, *forms, *ret = scheme_null;
-      Scheme_Object *vars, *vals, *vars_last, *vals_last, *pair, *aform;
+      Scheme_Value params, forms, ret = scheme_null;
+      Scheme_Value vars, vals, vars_last, vals_last, pair, aform;
       int num_int_defs, num_params, i, has_rest;
 
       env = SCHEME_CLOS_ENV (rator);
@@ -114,7 +114,7 @@ scheme_apply (Scheme_Object *rator, int num_rands, Scheme_Object **rands)
 	{
 	  if (! SCHEME_PAIRP (params))
 	    {
-	      Scheme_Object *rest_vals;
+	      Scheme_Value rest_vals;
 
 	      rest_vals = scheme_collect_rest ((num_rands - i), (rands + i));
 	      scheme_add_binding (i, params, rest_vals, frame);
@@ -242,11 +242,11 @@ scheme_apply (Scheme_Object *rator, int num_rands, Scheme_Object **rands)
     }
 }
 
-Scheme_Object *
-scheme_apply_to_list (Scheme_Object *rator, Scheme_Object *rands)
+Scheme_Value
+scheme_apply_to_list (Scheme_Value rator, Scheme_Value rands)
 {
   int num_rands, i;
-  Scheme_Object *rands_vec[SCHEME_MAX_ARGS];
+  Scheme_Value rands_vec[SCHEME_MAX_ARGS];
 
   num_rands = scheme_list_length (rands);
   for ( i=0 ; i<num_rands ; ++i )
@@ -259,10 +259,10 @@ scheme_apply_to_list (Scheme_Object *rator, Scheme_Object *rands)
 
 /* locals */
 
-static Scheme_Object *
-scheme_collect_rest (int num_rest, Scheme_Object **rest)
+static Scheme_Value
+scheme_collect_rest (int num_rest, Scheme_Value *rest)
 {
-  Scheme_Object *rest_list, *last, *pair;
+  Scheme_Value rest_list, last, pair;
   int i;
 
   rest_list = last = scheme_null;
@@ -282,18 +282,18 @@ scheme_collect_rest (int num_rest, Scheme_Object **rest)
   return (rest_list);
 }
 
-static Scheme_Object *
-procedure_p (int argc, Scheme_Object *argv[])
+static Scheme_Value
+procedure_p (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "procedure?: wrong number of args");
   return (SCHEME_PROCP (argv[0]) ? scheme_true : scheme_false);
 }
 
-static Scheme_Object *
-apply (int argc, Scheme_Object *argv[])
+static Scheme_Value
+apply (int argc, Scheme_Value argv[])
 {
-  Scheme_Object *rands, *rands_last, *pair;
-  Scheme_Object *rand_vec[SCHEME_MAX_ARGS];
+  Scheme_Value rands, rands_last, pair;
+  Scheme_Value rand_vec[SCHEME_MAX_ARGS];
   int i, num_rands;
 
   SCHEME_ASSERT ((argc >= 2), "apply: two argument version only");
@@ -330,14 +330,14 @@ apply (int argc, Scheme_Object *argv[])
   return (scheme_apply (argv[0], num_rands, rand_vec));
 }
 
-static Scheme_Object *map_help (Scheme_Object *fun, Scheme_Object *list);
+static Scheme_Value map_help (Scheme_Value fun, Scheme_Value list);
 
-static Scheme_Object *
-map (int argc, Scheme_Object *argv[])
+static Scheme_Value
+map (int argc, Scheme_Value argv[])
 {
   int i, size;
-  Scheme_Object *first, *last, *pair;
-  Scheme_Object *retfirst, *retlast;
+  Scheme_Value first, last, pair;
+  Scheme_Value retfirst, retlast;
 
   SCHEME_ASSERT ((argc > 1), "map: wrong number of args");
   SCHEME_ASSERT (SCHEME_PROCP (argv[0]), "map: first arg must be a procedure");
@@ -390,8 +390,8 @@ map (int argc, Scheme_Object *argv[])
   return (retfirst);
 }
 
-static Scheme_Object *
-map_help (Scheme_Object *fun, Scheme_Object *list)
+static Scheme_Value
+map_help (Scheme_Value fun, Scheme_Value list)
 {
   if (SCHEME_NULLP (list))
     {
@@ -405,10 +405,10 @@ map_help (Scheme_Object *fun, Scheme_Object *list)
     }
 }
 
-static Scheme_Object *
-for_each (int argc, Scheme_Object *argv[])
+static Scheme_Value
+for_each (int argc, Scheme_Value argv[])
 {
-  Scheme_Object *ret = scheme_null, *list, *fun;
+  Scheme_Value ret = scheme_null, list, fun;
 
   SCHEME_ASSERT ((argc == 2), "for-each: two argument version only");
   SCHEME_ASSERT (SCHEME_PROCP (argv[0]), "for-each: first arg must be a procedure");
@@ -423,11 +423,11 @@ for_each (int argc, Scheme_Object *argv[])
   return (ret);
 }
 
-static Scheme_Object *
-call_cc (int argc, Scheme_Object *argv[])
+static Scheme_Value
+call_cc (int argc, Scheme_Value argv[])
 {
   Scheme_Cont *cont;
-  Scheme_Object *ret = scheme_null, *obj;
+  Scheme_Value ret = scheme_null, obj;
 
   SCHEME_ASSERT ((argc == 1), "call-with-current-continuation: wrong number of args");
   SCHEME_ASSERT (SCHEME_PROCP (argv[0]),

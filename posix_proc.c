@@ -32,12 +32,12 @@
 #include <unistd.h>
 
 /* static function declarations */
-static Scheme_Object *posix_fork (int argc, Scheme_Object *argv[]);
-static Scheme_Object *posix_exit (int argc, Scheme_Object *argv[]);
-static Scheme_Object *posix_wait (int argc, Scheme_Object *argv[]);
-static Scheme_Object *posix_waitpid (int argc, Scheme_Object *argv[]);
-static Scheme_Object *posix_execl (int argc, Scheme_Object *argv[]);
-static Scheme_Object *posix_execv (int argc, Scheme_Object *argv[]);
+static Scheme_Value posix_fork (int argc, Scheme_Value argv[]);
+static Scheme_Value posix_exit (int argc, Scheme_Value argv[]);
+static Scheme_Value posix_wait (int argc, Scheme_Value argv[]);
+static Scheme_Value posix_waitpid (int argc, Scheme_Value argv[]);
+static Scheme_Value posix_execl (int argc, Scheme_Value argv[]);
+static Scheme_Value posix_execv (int argc, Scheme_Value argv[]);
 
 /* exported functions */
 
@@ -54,8 +54,8 @@ scheme_init_posix_proc (Scheme_Env *env)
 
 /* static functions */
 
-static Scheme_Object *
-posix_fork (int argc, Scheme_Object *argv[])
+static Scheme_Value
+posix_fork (int argc, Scheme_Value argv[])
 {
   int ret;
 
@@ -72,8 +72,8 @@ posix_fork (int argc, Scheme_Object *argv[])
     }
 }
 
-static Scheme_Object *
-posix_exit (int argc, Scheme_Object *argv[])
+static Scheme_Value
+posix_exit (int argc, Scheme_Value argv[])
 {
   int status;
 
@@ -83,8 +83,8 @@ posix_exit (int argc, Scheme_Object *argv[])
   exit (status);
 }
 
-static Scheme_Object *
-posix_wait (int argc, Scheme_Object *argv[])
+static Scheme_Value
+posix_wait (int argc, Scheme_Value argv[])
 {
   int ret;
 
@@ -94,8 +94,8 @@ posix_wait (int argc, Scheme_Object *argv[])
   return (scheme_make_integer (ret));
 }
 
-static Scheme_Object *
-posix_waitpid (int argc, Scheme_Object *argv[])
+static Scheme_Value
+posix_waitpid (int argc, Scheme_Value argv[])
 {
   int ret;
   int pid;
@@ -108,8 +108,8 @@ posix_waitpid (int argc, Scheme_Object *argv[])
   return (scheme_make_integer (ret));
 }
 
-static Scheme_Object *
-posix_execl (int argc, Scheme_Object *argv[])
+static Scheme_Value
+posix_execl (int argc, Scheme_Value argv[])
 {
   char *path;
   char **exec_argv;
@@ -130,13 +130,13 @@ posix_execl (int argc, Scheme_Object *argv[])
   scheme_signal_error ("posix-execl: could not exec `%s'", path);
 }
 
-static Scheme_Object *
-posix_execv (int argc, Scheme_Object *argv[])
+static Scheme_Value
+posix_execv (int argc, Scheme_Value argv[])
 {
   char *path;
   char **exec_argv;
   int i, num_extra_args;
-  Scheme_Object *arg_list, *arg;
+  Scheme_Value arg_list, arg;
 
   SCHEME_ASSERT ((argc == 2), "posix-execv: wrong number of args");
   SCHEME_ASSERT (SCHEME_STRINGP (argv[0]), "posix-execv: first arg must be a string");

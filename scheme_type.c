@@ -25,7 +25,7 @@
 #include "scheme.h"
 #include <string.h>
 
-Scheme_Object *scheme_type_type;
+Scheme_Value scheme_type_type;
 
 void
 scheme_init_type (Scheme_Env *env)
@@ -35,10 +35,10 @@ scheme_init_type (Scheme_Env *env)
   scheme_add_global ("<type>", scheme_type_type, env);
 }
 
-Scheme_Object *
+Scheme_Value
 scheme_make_type (const char *name)
 {
-  Scheme_Object *type;
+  Scheme_Value type;
   size_t len = strlen(name);
   char *new;
 

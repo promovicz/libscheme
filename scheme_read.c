@@ -32,27 +32,27 @@
 
 /* local function prototypes */
 
-static Scheme_Object *read_char (Scheme_Object *port);
-static Scheme_Object *read_list (Scheme_Object *port);
-static Scheme_Object *read_string (Scheme_Object *port);
-static Scheme_Object *read_quote (Scheme_Object *port);
-static Scheme_Object *read_vector (Scheme_Object *port);
-static Scheme_Object *read_number (Scheme_Object *port);
-static Scheme_Object *read_hex_number (Scheme_Object *port);
-static Scheme_Object *read_binary_number (Scheme_Object *port);
-static Scheme_Object *read_octal_number (Scheme_Object *port);
-static Scheme_Object *read_symbol (Scheme_Object *port);
-static Scheme_Object *read_character (Scheme_Object *port);
-static Scheme_Object *read_quasiquote (Scheme_Object *port);
-static Scheme_Object *read_unquote (Scheme_Object *port);
-static Scheme_Object *read_unquote_splicing (Scheme_Object *port);
-static void skip_whitespace_comments (Scheme_Object *port);
-static int peek_char (Scheme_Object *port);
-static int double_peek_char (Scheme_Object *port);
-static int match_chars (Scheme_Object *port, char *str);
+static Scheme_Value read_char (Scheme_Value port);
+static Scheme_Value read_list (Scheme_Value port);
+static Scheme_Value read_string (Scheme_Value port);
+static Scheme_Value read_quote (Scheme_Value port);
+static Scheme_Value read_vector (Scheme_Value port);
+static Scheme_Value read_number (Scheme_Value port);
+static Scheme_Value read_hex_number (Scheme_Value port);
+static Scheme_Value read_binary_number (Scheme_Value port);
+static Scheme_Value read_octal_number (Scheme_Value port);
+static Scheme_Value read_symbol (Scheme_Value port);
+static Scheme_Value read_character (Scheme_Value port);
+static Scheme_Value read_quasiquote (Scheme_Value port);
+static Scheme_Value read_unquote (Scheme_Value port);
+static Scheme_Value read_unquote_splicing (Scheme_Value port);
+static void skip_whitespace_comments (Scheme_Value port);
+static int peek_char (Scheme_Value port);
+static int double_peek_char (Scheme_Value port);
+static int match_chars (Scheme_Value port, char *str);
 
-Scheme_Object *
-scheme_read (Scheme_Object *port)
+Scheme_Value
+scheme_read (Scheme_Value port)
 {
   int ch;
 
@@ -145,8 +145,8 @@ scheme_read (Scheme_Object *port)
     }
 }
 
-static Scheme_Object *
-read_char (Scheme_Object *port)
+static Scheme_Value
+read_char (Scheme_Value port)
 {
   int ch;
 
@@ -162,10 +162,10 @@ read_char (Scheme_Object *port)
 }
 
 /* "(" has already been read */
-static Scheme_Object *
-read_list (Scheme_Object *port)
+static Scheme_Value
+read_list (Scheme_Value port)
 {
-  Scheme_Object *car, *cdr;
+  Scheme_Value car, cdr;
 
   skip_whitespace_comments (port);
   if (peek_char(port) == ')')
@@ -199,8 +199,8 @@ read_list (Scheme_Object *port)
 }
 
 /* '"' has already been read */
-static Scheme_Object *
-read_string (Scheme_Object *port)
+static Scheme_Value
+read_string (Scheme_Value port)
 {
   char ch, buf[MAX_STRING_SIZE];
   int i;
@@ -223,10 +223,10 @@ read_string (Scheme_Object *port)
 }
 
 /* "'" has been read */
-static Scheme_Object *
-read_quote (Scheme_Object *port)
+static Scheme_Value
+read_quote (Scheme_Value port)
 {
-  Scheme_Object *obj;
+  Scheme_Value obj;
 
   obj = scheme_read (port);
   return (scheme_make_pair (scheme_quote_symbol,
@@ -234,10 +234,10 @@ read_quote (Scheme_Object *port)
 }
 
 /* "#(" has been read */
-static Scheme_Object *
-read_vector (Scheme_Object *port)
+static Scheme_Value
+read_vector (Scheme_Value port)
 {
-  Scheme_Object *obj, *vec;
+  Scheme_Value obj, vec;
   int len, i;
 
   obj = read_list (port);
@@ -253,7 +253,7 @@ read_vector (Scheme_Object *port)
 
 /* nothing has been read */
 static Scheme_Object  *
-read_number (Scheme_Object *port)
+read_number (Scheme_Value port)
 {
   char buf[MAX_NUMBER_SIZE];
   int i, is_float, is_negative, ch;
@@ -308,8 +308,8 @@ read_number (Scheme_Object *port)
     }
 }
 
-static Scheme_Object *
-read_hex_number (Scheme_Object *port)
+static Scheme_Value
+read_hex_number (Scheme_Value port)
 {
   int ch, i;
 
@@ -338,8 +338,8 @@ read_hex_number (Scheme_Object *port)
     }
 }
 
-static Scheme_Object *
-read_binary_number (Scheme_Object *port)
+static Scheme_Value
+read_binary_number (Scheme_Value port)
 {
   int ch, i;
 
@@ -360,8 +360,8 @@ read_binary_number (Scheme_Object *port)
     }
 }
 
-static Scheme_Object *
-read_octal_number (Scheme_Object *port)
+static Scheme_Value
+read_octal_number (Scheme_Value port)
 {
   int ch, i;
 
@@ -383,8 +383,8 @@ read_octal_number (Scheme_Object *port)
 }
 
 /* nothing has been read */
-static Scheme_Object *
-read_symbol (Scheme_Object *port)
+static Scheme_Value
+read_symbol (Scheme_Value port)
 {
   char buf[MAX_SYMBOL_SIZE];
   int i, ch;
@@ -408,8 +408,8 @@ read_symbol (Scheme_Object *port)
 }
 
 /* "#\" has been read */
-static Scheme_Object *
-read_character (Scheme_Object *port)
+static Scheme_Value
+read_character (Scheme_Value port)
 {
   int ch;
 
@@ -552,10 +552,10 @@ read_character (Scheme_Object *port)
 }
 
 /* "`" has been read */
-static Scheme_Object *
-read_quasiquote (Scheme_Object *port)
+static Scheme_Value
+read_quasiquote (Scheme_Value port)
 {
-  Scheme_Object *quoted_obj, *ret;
+  Scheme_Value quoted_obj, ret;
 
   quoted_obj = scheme_read (port);
   ret = scheme_make_pair (scheme_quasiquote_symbol,
@@ -564,10 +564,10 @@ read_quasiquote (Scheme_Object *port)
 }
 
 /* "," has been read */
-static Scheme_Object *
-read_unquote (Scheme_Object *port)
+static Scheme_Value
+read_unquote (Scheme_Value port)
 {
-  Scheme_Object *obj, *ret;
+  Scheme_Value obj, ret;
 
   obj = scheme_read (port);
   ret = scheme_make_pair (scheme_unquote_symbol,
@@ -576,10 +576,10 @@ read_unquote (Scheme_Object *port)
 }
 
 /* ",@" has been read */
-static Scheme_Object *
-read_unquote_splicing (Scheme_Object *port)
+static Scheme_Value
+read_unquote_splicing (Scheme_Value port)
 {
-  Scheme_Object *obj, *ret;
+  Scheme_Value obj, ret;
 
   obj = scheme_read (port);
   ret = scheme_make_pair (scheme_unquote_splicing_symbol,
@@ -590,7 +590,7 @@ read_unquote_splicing (Scheme_Object *port)
 /* utilities */
 
 static void
-skip_whitespace_comments (Scheme_Object *port)
+skip_whitespace_comments (Scheme_Value port)
 {
   int ch;
 
@@ -605,7 +605,7 @@ skip_whitespace_comments (Scheme_Object *port)
 }
 
 static int
-peek_char (Scheme_Object *port)
+peek_char (Scheme_Value port)
 {
   int ch;
 
@@ -615,7 +615,7 @@ peek_char (Scheme_Object *port)
 }
 
 static int
-double_peek_char (Scheme_Object *port)
+double_peek_char (Scheme_Value port)
 {
   int ch1, ch2;
 
@@ -627,7 +627,7 @@ double_peek_char (Scheme_Object *port)
 }
 
 static int
-match_chars (Scheme_Object *port, char *str)
+match_chars (Scheme_Value port, char *str)
 {
   int i;
   int ch;

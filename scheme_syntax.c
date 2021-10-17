@@ -25,35 +25,35 @@
 #include "scheme.h"
 
 /* globals */
-Scheme_Object *scheme_syntax_type;
-Scheme_Object *scheme_macro_type;
+Scheme_Value scheme_syntax_type;
+Scheme_Value scheme_macro_type;
 
 /* locals */
-static Scheme_Object *lambda_syntax (Scheme_Object *form, Scheme_Env *env);
-static Scheme_Object *define_syntax (Scheme_Object *form, Scheme_Env *env);
-static Scheme_Object *quote_syntax (Scheme_Object *form, Scheme_Env *env);
-static Scheme_Object *if_syntax (Scheme_Object *form, Scheme_Env *env);
-static Scheme_Object *set_syntax (Scheme_Object *form, Scheme_Env *env);
-static Scheme_Object *cond_syntax (Scheme_Object *form, Scheme_Env *env);
-static Scheme_Object *case_syntax (Scheme_Object *form, Scheme_Env *env);
-static Scheme_Object *and_syntax (Scheme_Object *form, Scheme_Env *env);
-static Scheme_Object *or_syntax (Scheme_Object *form, Scheme_Env *env);
-static Scheme_Object *let_syntax (Scheme_Object *form, Scheme_Env *env);
-static Scheme_Object *let_star_syntax (Scheme_Object *form, Scheme_Env *env);
-static Scheme_Object *letrec_syntax (Scheme_Object *form, Scheme_Env *env);
-static Scheme_Object *begin_syntax (Scheme_Object *form, Scheme_Env *env);
-static Scheme_Object *do_syntax (Scheme_Object *form, Scheme_Env *env);
-static Scheme_Object *delay_syntax (Scheme_Object *form, Scheme_Env *env);
-static Scheme_Object *quasiquote_syntax (Scheme_Object *form, Scheme_Env *env);
+static Scheme_Value lambda_syntax (Scheme_Value form, Scheme_Env *env);
+static Scheme_Value define_syntax (Scheme_Value form, Scheme_Env *env);
+static Scheme_Value quote_syntax (Scheme_Value form, Scheme_Env *env);
+static Scheme_Value if_syntax (Scheme_Value form, Scheme_Env *env);
+static Scheme_Value set_syntax (Scheme_Value form, Scheme_Env *env);
+static Scheme_Value cond_syntax (Scheme_Value form, Scheme_Env *env);
+static Scheme_Value case_syntax (Scheme_Value form, Scheme_Env *env);
+static Scheme_Value and_syntax (Scheme_Value form, Scheme_Env *env);
+static Scheme_Value or_syntax (Scheme_Value form, Scheme_Env *env);
+static Scheme_Value let_syntax (Scheme_Value form, Scheme_Env *env);
+static Scheme_Value let_star_syntax (Scheme_Value form, Scheme_Env *env);
+static Scheme_Value letrec_syntax (Scheme_Value form, Scheme_Env *env);
+static Scheme_Value begin_syntax (Scheme_Value form, Scheme_Env *env);
+static Scheme_Value do_syntax (Scheme_Value form, Scheme_Env *env);
+static Scheme_Value delay_syntax (Scheme_Value form, Scheme_Env *env);
+static Scheme_Value quasiquote_syntax (Scheme_Value form, Scheme_Env *env);
 /* non-standard */
-static Scheme_Object *defmacro_syntax (Scheme_Object *form, Scheme_Env *env);
+static Scheme_Value defmacro_syntax (Scheme_Value form, Scheme_Env *env);
 
 /* symbols */
-static Scheme_Object *scheme_quasiquote;
-static Scheme_Object *scheme_unquote;
-static Scheme_Object *scheme_unquote_splicing;
-static Scheme_Object *scheme_define;
-static Scheme_Object *scheme_lambda;
+static Scheme_Value scheme_quasiquote;
+static Scheme_Value scheme_unquote;
+static Scheme_Value scheme_unquote_splicing;
+static Scheme_Value scheme_define;
+static Scheme_Value scheme_lambda;
 
 #define CONS(a,b) scheme_make_pair(a,b)
 
@@ -88,10 +88,10 @@ scheme_init_syntax (Scheme_Env *env)
   scheme_add_global ("defmacro", scheme_make_syntax (defmacro_syntax), env);
 }
 
-Scheme_Object *
+Scheme_Value
 scheme_make_syntax (Scheme_Syntax *proc)
 {
-  Scheme_Object *syntax;
+  Scheme_Value syntax;
 
   syntax = scheme_alloc_object (scheme_syntax_type, 0);
   SCHEME_SYNTAX (syntax) = proc;
@@ -100,19 +100,19 @@ scheme_make_syntax (Scheme_Syntax *proc)
 
 /* builtin syntax */
 
-static Scheme_Object *
-lambda_syntax (Scheme_Object *form, Scheme_Env *env)
+static Scheme_Value
+lambda_syntax (Scheme_Value form, Scheme_Env *env)
 {
   SCHEME_ASSERT (SCHEME_PAIRP(form), "badly formed lambda");
   SCHEME_ASSERT (SCHEME_PAIRP(SCHEME_CDR(form)), "badly formed lambda");
   return (scheme_make_closure (env, SCHEME_CDR(form)));
 }
 
-static Scheme_Object *
-define_syntax (Scheme_Object *form, Scheme_Env *env)
+static Scheme_Value
+define_syntax (Scheme_Value form, Scheme_Env *env)
 {
-  Scheme_Object *var = scheme_null, *val = scheme_null;
-  Scheme_Object *sec, *params, *forms;
+  Scheme_Value var = scheme_null, val = scheme_null;
+  Scheme_Value sec, params, forms;
 
   sec = SCHEME_CAR (SCHEME_CDR (form));
 
@@ -137,18 +137,18 @@ define_syntax (Scheme_Object *form, Scheme_Env *env)
   return (var);
 }
 
-static Scheme_Object *
-quote_syntax (Scheme_Object *form, Scheme_Env *env)
+static Scheme_Value
+quote_syntax (Scheme_Value form, Scheme_Env *env)
 {
   SCHEME_ASSERT ((scheme_list_length (form) == 2), "quote: wrong number of args");
   return (SCHEME_CAR (SCHEME_CDR (form)));
 }
 
-static Scheme_Object *
-if_syntax (Scheme_Object *form, Scheme_Env *env)
+static Scheme_Value
+if_syntax (Scheme_Value form, Scheme_Env *env)
 {
   int len;
-  Scheme_Object *test, *thenp, *elsep;
+  Scheme_Value test, thenp, elsep;
 
   len = scheme_list_length (form);
   SCHEME_ASSERT (((len == 3) || (len == 4)), "badly formed if statement");
@@ -173,10 +173,10 @@ if_syntax (Scheme_Object *form, Scheme_Env *env)
     }
 }
 
-static Scheme_Object *
-set_syntax (Scheme_Object *form, Scheme_Env *env)
+static Scheme_Value
+set_syntax (Scheme_Value form, Scheme_Env *env)
 {
-  Scheme_Object *var, *val;
+  Scheme_Value var, val;
 
   SCHEME_ASSERT ((scheme_list_length (form) == 3), "bad set! form");
   var = SCHEME_CAR (SCHEME_CDR (form));
@@ -187,10 +187,10 @@ set_syntax (Scheme_Object *form, Scheme_Env *env)
   return (val);
 }
 
-static Scheme_Object *
-cond_syntax (Scheme_Object *form, Scheme_Env *env)
+static Scheme_Value
+cond_syntax (Scheme_Value form, Scheme_Env *env)
 {
-  Scheme_Object *clauses, *clause, *test, *forms, *ret;
+  Scheme_Value clauses, clause, test, forms, ret;
 
   clauses = SCHEME_CDR (form);
   ret = scheme_false;
@@ -212,7 +212,7 @@ cond_syntax (Scheme_Object *form, Scheme_Env *env)
 	  if (!SCHEME_NULLP (forms) &&
 	      (SCHEME_CAR(forms) == scheme_intern_symbol ("=>")))
 	    {
-	      Scheme_Object *proc;
+	      Scheme_Value proc;
 
 	      forms = SCHEME_CDR (forms);
 	      SCHEME_ASSERT (!SCHEME_NULLP(forms), "cond: bad `=>' clause");
@@ -235,11 +235,11 @@ cond_syntax (Scheme_Object *form, Scheme_Env *env)
   return (ret);
 }
 
-static Scheme_Object *
-case_syntax (Scheme_Object *form, Scheme_Env *env)
+static Scheme_Value
+case_syntax (Scheme_Value form, Scheme_Env *env)
 {
-  Scheme_Object *key, *clauses, *clause;
-  Scheme_Object *data, *exprs, *res = scheme_null;
+  Scheme_Value key, clauses, clause;
+  Scheme_Value data, exprs, res = scheme_null;
 
   key = SCHEME_CAR (SCHEME_CDR (form));
   clauses = SCHEME_CDR (SCHEME_CDR (form));
@@ -279,10 +279,10 @@ case_syntax (Scheme_Object *form, Scheme_Env *env)
   return (scheme_false);
 }
 
-static Scheme_Object *
-and_syntax (Scheme_Object *form, Scheme_Env *env)
+static Scheme_Value
+and_syntax (Scheme_Value form, Scheme_Env *env)
 {
-  Scheme_Object *forms, *ret;
+  Scheme_Value forms, ret;
 
   forms = SCHEME_CDR (form);
   ret = scheme_true;
@@ -298,10 +298,10 @@ and_syntax (Scheme_Object *form, Scheme_Env *env)
   return (ret);
 }
 
-static Scheme_Object *
-or_syntax (Scheme_Object *form, Scheme_Env *env)
+static Scheme_Value
+or_syntax (Scheme_Value form, Scheme_Env *env)
 {
-  Scheme_Object *forms, *ret;
+  Scheme_Value forms, ret;
 
   forms = SCHEME_CDR (form);
   ret = scheme_false;
@@ -317,14 +317,14 @@ or_syntax (Scheme_Object *form, Scheme_Env *env)
   return (ret);
 }
 
-static int internal_def_p (Scheme_Object *form);
-static Scheme_Object *named_let_syntax (Scheme_Object *form, Scheme_Env *env);
+static int internal_def_p (Scheme_Value form);
+static Scheme_Value named_let_syntax (Scheme_Value form, Scheme_Env *env);
 
-static Scheme_Object *
-let_syntax (Scheme_Object *form, Scheme_Env *env)
+static Scheme_Value
+let_syntax (Scheme_Value form, Scheme_Env *env)
 {
-  Scheme_Object *bindings, *binding, *vars, *vals, *forms;
-  Scheme_Object *vars_last, *vals_last, *pair, *aform, *ret = scheme_null;
+  Scheme_Value bindings, binding, vars, vals, forms;
+  Scheme_Value vars_last, vals_last, pair, aform, ret = scheme_null;
   int num_int_defs, num_bindings, i;
   Scheme_Env *frame;
 
@@ -421,16 +421,16 @@ let_syntax (Scheme_Object *form, Scheme_Env *env)
 }
 
 static int
-internal_def_p (Scheme_Object *form)
+internal_def_p (Scheme_Value form)
 {
   return (SCHEME_PAIRP(form) && (SCHEME_CAR(form) == scheme_define));
 }
 
-static Scheme_Object *
-named_let_syntax (Scheme_Object *form, Scheme_Env *env)
+static Scheme_Value
+named_let_syntax (Scheme_Value form, Scheme_Env *env)
 {
-  Scheme_Object *name, *bindings, *vars, *vals, *forms;
-  Scheme_Object *proc, *init, *ret;
+  Scheme_Value name, bindings, vars, vals, forms;
+  Scheme_Value proc, init, ret;
 
   name = SCHEME_CAR (SCHEME_CDR (form));
   bindings = SCHEME_CAR (SCHEME_CDR (SCHEME_CDR (form)));
@@ -449,11 +449,11 @@ named_let_syntax (Scheme_Object *form, Scheme_Env *env)
   return (ret);
 }
 
-static Scheme_Object *
-let_star_syntax (Scheme_Object *form, Scheme_Env *env)
+static Scheme_Value
+let_star_syntax (Scheme_Value form, Scheme_Env *env)
 {
-  Scheme_Object *bindings, *vars, *vals, *forms, *ret = scheme_null;
-  Scheme_Object *vars_last, *vals_last, *pair, *aform;
+  Scheme_Value bindings, vars, vals, forms, ret = scheme_null;
+  Scheme_Value vars_last, vals_last, pair, aform;
   Scheme_Env *frame;
   int num_int_defs, num_bindings, i;
 
@@ -554,11 +554,11 @@ let_star_syntax (Scheme_Object *form, Scheme_Env *env)
   return (ret);
 }
 
-static Scheme_Object *
-letrec_syntax (Scheme_Object *form, Scheme_Env *env)
+static Scheme_Value
+letrec_syntax (Scheme_Value form, Scheme_Env *env)
 {
-  Scheme_Object *bindings, *vars, *vals, *forms, *res = scheme_null;
-  Scheme_Object *vars_last, *vals_last, *pair, *aform;
+  Scheme_Value bindings, vars, vals, forms, res = scheme_null;
+  Scheme_Value vars_last, vals_last, pair, aform;
   int num_int_defs;
 
   bindings = SCHEME_CAR (SCHEME_CDR (form));
@@ -650,10 +650,10 @@ letrec_syntax (Scheme_Object *form, Scheme_Env *env)
   return (res);
 }
 
-static Scheme_Object *
-begin_syntax (Scheme_Object *form, Scheme_Env *env)
+static Scheme_Value
+begin_syntax (Scheme_Value form, Scheme_Env *env)
 {
-  Scheme_Object *forms, *ret;
+  Scheme_Value forms, ret;
 
   ret = scheme_false;
   forms = SCHEME_CDR (form);
@@ -665,14 +665,14 @@ begin_syntax (Scheme_Object *form, Scheme_Env *env)
   return (ret);
 }
 
-static Scheme_Object *
-do_syntax (Scheme_Object *form, Scheme_Env *env)
+static Scheme_Value
+do_syntax (Scheme_Value form, Scheme_Env *env)
 {
-  Scheme_Object *second, *third;
-  Scheme_Object *vars, *inits, *steps;
-  Scheme_Object *test, *finals, *forms;
-  Scheme_Object *ret, *temp;
-  Scheme_Object *step_first, *step_last, *clause, *pair;
+  Scheme_Value second, third;
+  Scheme_Value vars, inits, steps;
+  Scheme_Value test, finals, forms;
+  Scheme_Value ret, temp;
+  Scheme_Value step_first, step_last, clause, pair;
 
   second = SCHEME_CAR (SCHEME_CDR (form));
   vars = scheme_map_1 (scheme_car, second);
@@ -766,26 +766,26 @@ do_syntax (Scheme_Object *form, Scheme_Env *env)
   return (ret);
 }
 
-static Scheme_Object *
-delay_syntax (Scheme_Object *form, Scheme_Env *env)
+static Scheme_Value
+delay_syntax (Scheme_Value form, Scheme_Env *env)
 {
   SCHEME_ASSERT ((scheme_list_length(form) == 2), "delay: bad form");
   return (scheme_make_promise  (SCHEME_CAR (SCHEME_CDR (form)), env));
 }
 
-static Scheme_Object *quasi (Scheme_Object *x, int level, Scheme_Env *env);
+static Scheme_Value quasi (Scheme_Value x, int level, Scheme_Env *env);
 
-static Scheme_Object *
-quasiquote_syntax (Scheme_Object *form, Scheme_Env *env)
+static Scheme_Value
+quasiquote_syntax (Scheme_Value form, Scheme_Env *env)
 {
   SCHEME_ASSERT ((scheme_list_length (form) == 2), "quasiquote(`): wrong number of args");
   return (quasi (SCHEME_CAR (SCHEME_CDR (form)), 0, env));
 }
 
-static Scheme_Object *
-quasi (Scheme_Object *x, int level, Scheme_Env *env)
+static Scheme_Value
+quasi (Scheme_Value x, int level, Scheme_Env *env)
 {
-  Scheme_Object *form, *list, *tail, *cell, *qcar, *qcdr, *ret;
+  Scheme_Value form, list, tail, cell, qcar, qcdr, ret;
 
   if (SCHEME_VECTORP (x))
     {
@@ -859,11 +859,11 @@ quasi (Scheme_Object *x, int level, Scheme_Env *env)
     }
 }
 
-static Scheme_Object *
-defmacro_syntax (Scheme_Object *form, Scheme_Env *env)
+static Scheme_Value
+defmacro_syntax (Scheme_Value form, Scheme_Env *env)
 {
-  Scheme_Object *name, *code;
-  Scheme_Object *fun, *macro;
+  Scheme_Value name, code;
+  Scheme_Value fun, macro;
 
   SCHEME_ASSERT ((scheme_list_length (form) > 3), "badly formed defmacro");
   name = SCHEME_CAR (SCHEME_CDR (form));

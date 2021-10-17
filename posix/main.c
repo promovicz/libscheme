@@ -27,7 +27,7 @@
 main(int argc, char *argv[])
 {
   Scheme_Env *global_env;
-  Scheme_Object *obj, *in_port;
+  Scheme_Value obj, in_port;
   int i;
   FILE *fp;
 

@@ -62,57 +62,57 @@
 #include <stdio.h>
 
 /* static variables */
-static Scheme_Object *posix_stat_type;
-static Scheme_Object *posix_dir_type;
+static Scheme_Value posix_stat_type;
+static Scheme_Value posix_dir_type;
 
 /* macros */
 #define POSIX_STATP(obj)   (SCHEME_TYPE(obj) == posix_stat_type)
 #define POSIX_DIRP(obj)    (SCHEME_TYPE(obj) == posix_dir_type)
 
 /* static utility declarations */
-static Scheme_Object *make_stat_object (struct stat *s);
-static Scheme_Object *make_dir_object (DIR *dirp);
+static Scheme_Value make_stat_object (struct stat *s);
+static Scheme_Value make_dir_object (DIR *dirp);
 
 /* static function declarations */
-static Scheme_Object *posix_getcwd (int argc, Scheme_Object *argv[]);
-static Scheme_Object *posix_chdir (int argc, Scheme_Object *argv[]);
-static Scheme_Object *posix_mkdir (int argc, Scheme_Object *argv[]);
-static Scheme_Object *posix_rmdir (int argc, Scheme_Object *argv[]);
-static Scheme_Object *posix_link (int argc, Scheme_Object *argv[]);
-static Scheme_Object *posix_unlink (int argc, Scheme_Object *argv[]);
-static Scheme_Object *posix_rename (int argc, Scheme_Object *argv[]);
-static Scheme_Object *posix_stat (int argc, Scheme_Object *argv[]);
-static Scheme_Object *posix_chmod (int argc, Scheme_Object *argv[]);
-static Scheme_Object *posix_chown (int argc, Scheme_Object *argv[]);
-static Scheme_Object *posix_utime (int argc, Scheme_Object *argv[]);
-static Scheme_Object *posix_opendir (int argc, Scheme_Object *argv[]);
-static Scheme_Object *posix_readdir (int argc, Scheme_Object *argv[]);
-static Scheme_Object *posix_closedir (int argc, Scheme_Object *argv[]);
-static Scheme_Object *posix_rewinddir (int argc, Scheme_Object *argv[]);
-static Scheme_Object *posix_open (int argc, Scheme_Object *argv[]);
-static Scheme_Object *posix_read (int argc, Scheme_Object *argv[]);
-static Scheme_Object *posix_write (int argc, Scheme_Object *argv[]);
-static Scheme_Object *posix_fcntl (int argc, Scheme_Object *argv[]);
-static Scheme_Object *posix_lseek (int argc, Scheme_Object *argv[]);
-static Scheme_Object *posix_dup (int argc, Scheme_Object *argv[]);
-static Scheme_Object *posix_close (int argc, Scheme_Object *argv[]);
-static Scheme_Object *posix_pipe (int argc, Scheme_Object *argv[]);
-static Scheme_Object *posix_mkfifo (int argc, Scheme_Object *argv[]);
-static Scheme_Object *fildes_to_output_port (int argc, Scheme_Object *argv[]);
-static Scheme_Object *fildes_to_input_port (int argc, Scheme_Object *argv[]);
-static Scheme_Object *port_to_fildes (int argc, Scheme_Object *argv[]);
+static Scheme_Value posix_getcwd (int argc, Scheme_Value argv[]);
+static Scheme_Value posix_chdir (int argc, Scheme_Value argv[]);
+static Scheme_Value posix_mkdir (int argc, Scheme_Value argv[]);
+static Scheme_Value posix_rmdir (int argc, Scheme_Value argv[]);
+static Scheme_Value posix_link (int argc, Scheme_Value argv[]);
+static Scheme_Value posix_unlink (int argc, Scheme_Value argv[]);
+static Scheme_Value posix_rename (int argc, Scheme_Value argv[]);
+static Scheme_Value posix_stat (int argc, Scheme_Value argv[]);
+static Scheme_Value posix_chmod (int argc, Scheme_Value argv[]);
+static Scheme_Value posix_chown (int argc, Scheme_Value argv[]);
+static Scheme_Value posix_utime (int argc, Scheme_Value argv[]);
+static Scheme_Value posix_opendir (int argc, Scheme_Value argv[]);
+static Scheme_Value posix_readdir (int argc, Scheme_Value argv[]);
+static Scheme_Value posix_closedir (int argc, Scheme_Value argv[]);
+static Scheme_Value posix_rewinddir (int argc, Scheme_Value argv[]);
+static Scheme_Value posix_open (int argc, Scheme_Value argv[]);
+static Scheme_Value posix_read (int argc, Scheme_Value argv[]);
+static Scheme_Value posix_write (int argc, Scheme_Value argv[]);
+static Scheme_Value posix_fcntl (int argc, Scheme_Value argv[]);
+static Scheme_Value posix_lseek (int argc, Scheme_Value argv[]);
+static Scheme_Value posix_dup (int argc, Scheme_Value argv[]);
+static Scheme_Value posix_close (int argc, Scheme_Value argv[]);
+static Scheme_Value posix_pipe (int argc, Scheme_Value argv[]);
+static Scheme_Value posix_mkfifo (int argc, Scheme_Value argv[]);
+static Scheme_Value fildes_to_output_port (int argc, Scheme_Value argv[]);
+static Scheme_Value fildes_to_input_port (int argc, Scheme_Value argv[]);
+static Scheme_Value port_to_fildes (int argc, Scheme_Value argv[]);
 
 /* static accessor declarations */
-static Scheme_Object *stat_mode (int argc, Scheme_Object *argv[]);
-static Scheme_Object *stat_ino (int argc, Scheme_Object *argv[]);
-static Scheme_Object *stat_dev (int argc, Scheme_Object *argv[]);
-static Scheme_Object *stat_nlink (int argc, Scheme_Object *argv[]);
-static Scheme_Object *stat_uid (int argc, Scheme_Object *argv[]);
-static Scheme_Object *stat_gid (int argc, Scheme_Object *argv[]);
-static Scheme_Object *stat_size (int argc, Scheme_Object *argv[]);
-static Scheme_Object *stat_atime (int argc, Scheme_Object *argv[]);
-static Scheme_Object *stat_ctime (int argc, Scheme_Object *argv[]);
-static Scheme_Object *stat_mtime (int argc, Scheme_Object *argv[]);
+static Scheme_Value stat_mode (int argc, Scheme_Value argv[]);
+static Scheme_Value stat_ino (int argc, Scheme_Value argv[]);
+static Scheme_Value stat_dev (int argc, Scheme_Value argv[]);
+static Scheme_Value stat_nlink (int argc, Scheme_Value argv[]);
+static Scheme_Value stat_uid (int argc, Scheme_Value argv[]);
+static Scheme_Value stat_gid (int argc, Scheme_Value argv[]);
+static Scheme_Value stat_size (int argc, Scheme_Value argv[]);
+static Scheme_Value stat_atime (int argc, Scheme_Value argv[]);
+static Scheme_Value stat_ctime (int argc, Scheme_Value argv[]);
+static Scheme_Value stat_mtime (int argc, Scheme_Value argv[]);
 
 /* exported functions */
 
@@ -202,20 +202,20 @@ scheme_init_posix_file (Scheme_Env *env)
 
 /* static utilities */
 
-static Scheme_Object *
+static Scheme_Value
 make_stat_object (struct stat *s)
 {
-  Scheme_Object *stat_obj;
+  Scheme_Value stat_obj;
 
   stat_obj = scheme_alloc_object (posix_stat_type, 0);
   SCHEME_PTR_VAL (stat_obj) = s;
   return (stat_obj);
 }
 
-static Scheme_Object *
+static Scheme_Value
 make_dir_object (DIR *dirp)
 {
-  Scheme_Object *dir_obj;
+  Scheme_Value dir_obj;
 
   dir_obj = scheme_alloc_object (posix_dir_type, 0);
   SCHEME_PTR_VAL (dir_obj) = dirp;
@@ -224,8 +224,8 @@ make_dir_object (DIR *dirp)
 
 /* static functions */
 
-static Scheme_Object *
-posix_getcwd (int argc, Scheme_Object *argv[])
+static Scheme_Value
+posix_getcwd (int argc, Scheme_Value argv[])
 {
   char buf[PATH_MAX];
 
@@ -237,8 +237,8 @@ posix_getcwd (int argc, Scheme_Object *argv[])
   return (scheme_make_string (buf));
 }
 
-static Scheme_Object *
-posix_chdir (int argc, Scheme_Object *argv[])
+static Scheme_Value
+posix_chdir (int argc, Scheme_Value argv[])
 {
   char *path;
 
@@ -252,8 +252,8 @@ posix_chdir (int argc, Scheme_Object *argv[])
   return (scheme_true);
 }
 
-static Scheme_Object *
-posix_mkdir (int argc, Scheme_Object *argv[])
+static Scheme_Value
+posix_mkdir (int argc, Scheme_Value argv[])
 {
   char *path;
   int mode;
@@ -270,8 +270,8 @@ posix_mkdir (int argc, Scheme_Object *argv[])
   return (scheme_true);
 }
 
-static Scheme_Object *
-posix_rmdir (int argc, Scheme_Object *argv[])
+static Scheme_Value
+posix_rmdir (int argc, Scheme_Value argv[])
 {
   char *path;
 
@@ -285,8 +285,8 @@ posix_rmdir (int argc, Scheme_Object *argv[])
   return (scheme_true);
 }
 
-static Scheme_Object *
-posix_link (int argc, Scheme_Object *argv[])
+static Scheme_Value
+posix_link (int argc, Scheme_Value argv[])
 {
   char *old, *new;
 
@@ -302,8 +302,8 @@ posix_link (int argc, Scheme_Object *argv[])
   return (scheme_true);
 }
 
-static Scheme_Object *
-posix_unlink (int argc, Scheme_Object *argv[])
+static Scheme_Value
+posix_unlink (int argc, Scheme_Value argv[])
 {
   char *path;
 
@@ -317,8 +317,8 @@ posix_unlink (int argc, Scheme_Object *argv[])
   return (scheme_true);
 }
 
-static Scheme_Object *
-posix_rename (int argc, Scheme_Object *argv[])
+static Scheme_Value
+posix_rename (int argc, Scheme_Value argv[])
 {
   char *old, *new;
 
@@ -334,8 +334,8 @@ posix_rename (int argc, Scheme_Object *argv[])
   return (scheme_true);
 }
 
-static Scheme_Object *
-posix_stat (int argc, Scheme_Object *argv[])
+static Scheme_Value
+posix_stat (int argc, Scheme_Value argv[])
 {
   struct stat *s;
   char *path;
@@ -351,26 +351,26 @@ posix_stat (int argc, Scheme_Object *argv[])
   return (make_stat_object (s));
 }
 
-static Scheme_Object *
-posix_chmod (int argc, Scheme_Object *argv[])
+static Scheme_Value
+posix_chmod (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT (0, "undefined function");
 }
 
-static Scheme_Object *
-posix_chown (int argc, Scheme_Object *argv[])
+static Scheme_Value
+posix_chown (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT (0, "undefined function");
 }
 
-static Scheme_Object *
-posix_utime (int argc, Scheme_Object *argv[])
+static Scheme_Value
+posix_utime (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT (0, "undefined function");
 }
 
-static Scheme_Object *
-posix_opendir (int argc, Scheme_Object *argv[])
+static Scheme_Value
+posix_opendir (int argc, Scheme_Value argv[])
 {
   char *name;
   DIR *dirp;
@@ -385,8 +385,8 @@ posix_opendir (int argc, Scheme_Object *argv[])
   return (make_dir_object (dirp));
 }
 
-static Scheme_Object *
-posix_readdir (int argc, Scheme_Object *argv[])
+static Scheme_Value
+posix_readdir (int argc, Scheme_Value argv[])
 {
   DIR *dirp;
   struct dirent *direntp;
@@ -405,8 +405,8 @@ posix_readdir (int argc, Scheme_Object *argv[])
     }
 }
 
-static Scheme_Object *
-posix_closedir (int argc, Scheme_Object *argv[])
+static Scheme_Value
+posix_closedir (int argc, Scheme_Value argv[])
 {
   DIR *dirp;
 
@@ -417,8 +417,8 @@ posix_closedir (int argc, Scheme_Object *argv[])
   return (scheme_true);
 }
 
-static Scheme_Object *
-posix_rewinddir (int argc, Scheme_Object *argv[])
+static Scheme_Value
+posix_rewinddir (int argc, Scheme_Value argv[])
 {
   DIR *dirp;
 
@@ -429,8 +429,8 @@ posix_rewinddir (int argc, Scheme_Object *argv[])
   return (scheme_true);
 }
 
-static Scheme_Object *
-posix_open (int argc, Scheme_Object *argv[])
+static Scheme_Value
+posix_open (int argc, Scheme_Value argv[])
 {
   char *path;
   int oflag, fd;
@@ -448,11 +448,11 @@ posix_open (int argc, Scheme_Object *argv[])
   return (scheme_make_integer (fd));
 }
 
-static Scheme_Object *
-posix_read (int argc, Scheme_Object *argv[])
+static Scheme_Value
+posix_read (int argc, Scheme_Value argv[])
 {
   int fd, num_bytes;
-  Scheme_Object *str;
+  Scheme_Value str;
 
   SCHEME_ASSERT ((argc == 2), "posix-read: wrong number of args");
   SCHEME_ASSERT (SCHEME_INT_VAL(argv[0]), "posix-read: first arg must be an integer");
@@ -468,8 +468,8 @@ posix_read (int argc, Scheme_Object *argv[])
   return (str);
 }
 
-static Scheme_Object *
-posix_write (int argc, Scheme_Object *argv[])
+static Scheme_Value
+posix_write (int argc, Scheme_Value argv[])
 {
   int fd, len;
   char *str;
@@ -487,8 +487,8 @@ posix_write (int argc, Scheme_Object *argv[])
   return (scheme_true);
 }
 
-static Scheme_Object *
-posix_fcntl (int argc, Scheme_Object *argv[])
+static Scheme_Value
+posix_fcntl (int argc, Scheme_Value argv[])
 {
   int fd, cmd, arg, res;
 
@@ -511,8 +511,8 @@ posix_fcntl (int argc, Scheme_Object *argv[])
   return (scheme_make_integer (res));
 }
 
-static Scheme_Object *
-posix_lseek (int argc, Scheme_Object *argv[])
+static Scheme_Value
+posix_lseek (int argc, Scheme_Value argv[])
 {
   int fd, offset, whence, ret;
 
@@ -528,8 +528,8 @@ posix_lseek (int argc, Scheme_Object *argv[])
   return (scheme_make_integer (ret));
 }
 
-static Scheme_Object *
-posix_dup (int argc, Scheme_Object *argv[])
+static Scheme_Value
+posix_dup (int argc, Scheme_Value argv[])
 {
   int fd, res;
 
@@ -544,8 +544,8 @@ posix_dup (int argc, Scheme_Object *argv[])
   return (scheme_make_integer (res));
 }
 
-static Scheme_Object *
-posix_close (int argc, Scheme_Object *argv[])
+static Scheme_Value
+posix_close (int argc, Scheme_Value argv[])
 {
   int fd;
 
@@ -559,8 +559,8 @@ posix_close (int argc, Scheme_Object *argv[])
   return (scheme_true);
 }
 
-static Scheme_Object *
-posix_pipe (int argc, Scheme_Object *argv[])
+static Scheme_Value
+posix_pipe (int argc, Scheme_Value argv[])
 {
   int fd[2];
 
@@ -572,8 +572,8 @@ posix_pipe (int argc, Scheme_Object *argv[])
   return (scheme_make_pair (scheme_make_integer (fd[0]), scheme_make_integer (fd[1])));
 }
 
-static Scheme_Object *
-posix_mkfifo (int argc, Scheme_Object *argv[])
+static Scheme_Value
+posix_mkfifo (int argc, Scheme_Value argv[])
 {
   char *path;
   int mode, fd;
@@ -591,8 +591,8 @@ posix_mkfifo (int argc, Scheme_Object *argv[])
   return (scheme_make_integer (fd));
 }
 
-static Scheme_Object *
-fildes_to_output_port (int argc, Scheme_Object *argv[])
+static Scheme_Value
+fildes_to_output_port (int argc, Scheme_Value argv[])
 {
   int fd;
   FILE *fp;
@@ -604,8 +604,8 @@ fildes_to_output_port (int argc, Scheme_Object *argv[])
   return (scheme_make_file_output_port (fp));
 }
 
-static Scheme_Object *
-fildes_to_input_port (int argc, Scheme_Object *argv[])
+static Scheme_Value
+fildes_to_input_port (int argc, Scheme_Value argv[])
 {
   int fd;
   FILE *fp;
@@ -617,8 +617,8 @@ fildes_to_input_port (int argc, Scheme_Object *argv[])
   return (scheme_make_file_input_port (fp));
 }
 
-static Scheme_Object *
-port_to_fildes (int argc, Scheme_Object *argv[])
+static Scheme_Value
+port_to_fildes (int argc, Scheme_Value argv[])
 {
   FILE *fp;
   int fd;
@@ -632,80 +632,80 @@ port_to_fildes (int argc, Scheme_Object *argv[])
 
 /* static accessors */
 
-static Scheme_Object *
-stat_mode (int argc, Scheme_Object *argv[])
+static Scheme_Value
+stat_mode (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "stat-mode: wrong number of args");
   SCHEME_ASSERT (POSIX_STATP(argv[0]), "stat-mode: arg must be a stat object");
   return (scheme_make_integer (((struct stat *) SCHEME_PTR_VAL(argv[0]))->st_mode));
 }
 
-static Scheme_Object *
-stat_ino (int argc, Scheme_Object *argv[])
+static Scheme_Value
+stat_ino (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "stat-ino: wrong number of args");
   SCHEME_ASSERT (POSIX_STATP(argv[0]), "stat-ino: arg must be a stat object");
   return (scheme_make_integer (((struct stat *) SCHEME_PTR_VAL(argv[0]))->st_ino));
 }
 
-static Scheme_Object *
-stat_dev (int argc, Scheme_Object *argv[])
+static Scheme_Value
+stat_dev (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "stat-dev: wrong number of args");
   SCHEME_ASSERT (POSIX_STATP(argv[0]), "stat-dev: arg must be a stat object");
   return (scheme_make_integer (((struct stat *) SCHEME_PTR_VAL(argv[0]))->st_dev));
 }
 
-static Scheme_Object *
-stat_nlink (int argc, Scheme_Object *argv[])
+static Scheme_Value
+stat_nlink (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "stat-nlink: wrong number of args");
   SCHEME_ASSERT (POSIX_STATP(argv[0]), "stat-nlink: arg must be a stat object");
   return (scheme_make_integer (((struct stat *) SCHEME_PTR_VAL(argv[0]))->st_nlink));
 }
 
-static Scheme_Object *
-stat_uid (int argc, Scheme_Object *argv[])
+static Scheme_Value
+stat_uid (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "stat-uid: wrong number of args");
   SCHEME_ASSERT (POSIX_STATP(argv[0]), "stat-uid: arg must be a stat object");
   return (scheme_make_integer (((struct stat *) SCHEME_PTR_VAL(argv[0]))->st_uid));
 }
 
-static Scheme_Object *
-stat_gid (int argc, Scheme_Object *argv[])
+static Scheme_Value
+stat_gid (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "stat-gid: wrong number of args");
   SCHEME_ASSERT (POSIX_STATP(argv[0]), "stat-gid: arg must be a stat object");
   return (scheme_make_integer (((struct stat *) SCHEME_PTR_VAL(argv[0]))->st_gid));
 }
 
-static Scheme_Object *
-stat_size (int argc, Scheme_Object *argv[])
+static Scheme_Value
+stat_size (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "stat-size: wrong number of args");
   SCHEME_ASSERT (POSIX_STATP(argv[0]), "stat-size: arg must be a stat object");
   return (scheme_make_integer (((struct stat *) SCHEME_PTR_VAL(argv[0]))->st_size));
 }
 
-static Scheme_Object *
-stat_atime (int argc, Scheme_Object *argv[])
+static Scheme_Value
+stat_atime (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "stat-atime: wrong number of args");
   SCHEME_ASSERT (POSIX_STATP(argv[0]), "stat-atime: arg must be a stat object");
   return (scheme_make_integer (((struct stat *) SCHEME_PTR_VAL(argv[0]))->st_atime));
 }
 
-static Scheme_Object *
-stat_ctime (int argc, Scheme_Object *argv[])
+static Scheme_Value
+stat_ctime (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "stat-ctime: wrong number of args");
   SCHEME_ASSERT (POSIX_STATP(argv[0]), "stat-ctime: arg must be a stat object");
   return (scheme_make_integer (((struct stat *) SCHEME_PTR_VAL(argv[0]))->st_ctime));
 }
 
-static Scheme_Object *
-stat_mtime (int argc, Scheme_Object *argv[])
+static Scheme_Value
+stat_mtime (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "stat-mtime: wrong number of args");
   SCHEME_ASSERT (POSIX_STATP(argv[0]), "stat-mtime: arg must be a stat object");

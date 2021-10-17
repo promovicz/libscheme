@@ -25,8 +25,8 @@
 #include "scheme.h"
 
 /* locals */
-static Scheme_Object *scheme_eval_combination (Scheme_Object *comb, Scheme_Env *env);
-static Scheme_Object *eval (int argc, Scheme_Object *argv[]);
+static Scheme_Value scheme_eval_combination (Scheme_Value comb, Scheme_Env *env);
+static Scheme_Value eval (int argc, Scheme_Value argv[]);
 
 void
 scheme_init_eval (Scheme_Env *env)
@@ -34,15 +34,15 @@ scheme_init_eval (Scheme_Env *env)
   scheme_add_global ("eval", scheme_make_prim (eval), env);
 }
 
-Scheme_Object *
-scheme_eval (Scheme_Object *obj, Scheme_Env *env)
+Scheme_Value
+scheme_eval (Scheme_Value obj, Scheme_Env *env)
 {
-  Scheme_Object *type;
+  Scheme_Value type;
 
   type = SCHEME_TYPE (obj);
   if (type == scheme_symbol_type)
     {
-      Scheme_Object *val;
+      Scheme_Value val;
 
       val = scheme_lookup_value (obj, env);
       if (! val)
@@ -63,12 +63,12 @@ scheme_eval (Scheme_Object *obj, Scheme_Env *env)
 
 /* local functions */
 
-static Scheme_Object *
-scheme_eval_combination (Scheme_Object *comb, Scheme_Env *env)
+static Scheme_Value
+scheme_eval_combination (Scheme_Value comb, Scheme_Env *env)
 {
-  Scheme_Object *rator, *type, *rands;
-  Scheme_Object *evaled_rands[SCHEME_MAX_ARGS];
-  Scheme_Object *fun, *form;
+  Scheme_Value rator, type, rands;
+  Scheme_Value evaled_rands[SCHEME_MAX_ARGS];
+  Scheme_Value fun, form;
   int num_rands, i;
 
   rator = scheme_eval (SCHEME_CAR (comb), env);
@@ -79,7 +79,7 @@ scheme_eval_combination (Scheme_Object *comb, Scheme_Env *env)
     }
   else if (type == scheme_macro_type)
     {
-      fun = (Scheme_Object *) SCHEME_PTR_VAL (rator);
+      fun = (Scheme_Value) SCHEME_PTR_VAL (rator);
       rands = SCHEME_CDR (comb);
       form = scheme_apply_to_list (fun, rands);
       return (scheme_eval (form, env));
@@ -99,8 +99,8 @@ scheme_eval_combination (Scheme_Object *comb, Scheme_Env *env)
     }
 }
 
-static Scheme_Object *
-eval (int argc, Scheme_Object *argv[])
+static Scheme_Value
+eval (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "eval: wrong number of args");
   return (scheme_eval (argv[0], scheme_env));

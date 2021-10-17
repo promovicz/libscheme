@@ -27,16 +27,16 @@
 struct Scheme_Promise
 {
   int forced;
-  Scheme_Object *val;
+  Scheme_Value val;
   Scheme_Env *env;
 };
 typedef struct Scheme_Promise Scheme_Promise;
 
 /* globals */
-Scheme_Object *scheme_promise_type;
+Scheme_Value scheme_promise_type;
 
 /* locals */
-static Scheme_Object *force (int argc, Scheme_Object *argv[]);
+static Scheme_Value force (int argc, Scheme_Value argv[]);
 
 void
 scheme_init_promise (Scheme_Env *env)
@@ -46,10 +46,10 @@ scheme_init_promise (Scheme_Env *env)
   scheme_add_global ("force", scheme_make_prim (force), env);
 }
 
-Scheme_Object *
-scheme_make_promise (Scheme_Object *expr, Scheme_Env *env)
+Scheme_Value
+scheme_make_promise (Scheme_Value expr, Scheme_Env *env)
 {
-  Scheme_Object *obj;
+  Scheme_Value obj;
   Scheme_Promise *promise;
 
   obj = scheme_alloc_object (scheme_promise_type, sizeof(Scheme_Promise));
@@ -60,8 +60,8 @@ scheme_make_promise (Scheme_Object *expr, Scheme_Env *env)
   return (obj);
 }
 
-static Scheme_Object *
-force (int argc, Scheme_Object *argv[])
+static Scheme_Value
+force (int argc, Scheme_Value argv[])
 {
   Scheme_Promise *promise;
 

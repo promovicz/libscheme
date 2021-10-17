@@ -35,13 +35,13 @@
 #define CALLOC(n,s) GC_malloc(n*s)
 #endif
 
-Scheme_Object *
-scheme_alloc_object (Scheme_Object *type, size_t nbytes)
+Scheme_Value
+scheme_alloc_object (Scheme_Value type, size_t nbytes)
 {
-  Scheme_Object *object;
+  Scheme_Value object;
   size_t total = sizeof(Scheme_Object) + nbytes;
 
-  object = (Scheme_Object *) scheme_malloc (total);
+  object = (Scheme_Value) scheme_malloc (total);
   SCHEME_TYPE(object) = type;
   if(nbytes > 0) {
     SCHEME_PTR_VAL(object) = (void*)&object[1];

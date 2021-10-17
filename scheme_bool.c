@@ -26,23 +26,23 @@
 #include <string.h>
 
 /* globals */
-Scheme_Object *scheme_true;
-Scheme_Object *scheme_false;
-Scheme_Object *scheme_true_type;
-Scheme_Object *scheme_false_type;
+Scheme_Value scheme_true;
+Scheme_Value scheme_false;
+Scheme_Value scheme_true_type;
+Scheme_Value scheme_false_type;
 
 /* locals */
-static Scheme_Object *scheme_make_true (void);
-static Scheme_Object *scheme_make_false (void);
-static Scheme_Object *not_prim (int argc, Scheme_Object *argv[]);
-static Scheme_Object *boolean_p_prim (int argc, Scheme_Object *argv[]);
-static Scheme_Object *eq_prim (int argc, Scheme_Object *argv[]);
-static Scheme_Object *eqv_prim (int argc, Scheme_Object *argv[]);
-static Scheme_Object *equal_prim (int argc, Scheme_Object *argv[]);
+static Scheme_Value scheme_make_true (void);
+static Scheme_Value scheme_make_false (void);
+static Scheme_Value not_prim (int argc, Scheme_Value argv[]);
+static Scheme_Value boolean_p_prim (int argc, Scheme_Value argv[]);
+static Scheme_Value eq_prim (int argc, Scheme_Value argv[]);
+static Scheme_Value eqv_prim (int argc, Scheme_Value argv[]);
+static Scheme_Value equal_prim (int argc, Scheme_Value argv[]);
 
 /* internals */
-static int list_equal (Scheme_Object *lst1, Scheme_Object *lst2);
-static int vector_equal (Scheme_Object *vec1, Scheme_Object *vec2);
+static int list_equal (Scheme_Value lst1, Scheme_Value lst2);
+static int vector_equal (Scheme_Value vec1, Scheme_Value vec2);
 
 void
 scheme_init_bool (Scheme_Env *env)
@@ -60,20 +60,20 @@ scheme_init_bool (Scheme_Env *env)
   scheme_add_global ("equal?", scheme_make_prim (equal_prim), env);
 }
 
-static Scheme_Object *
+static Scheme_Value
 scheme_make_true (void)
 {
   return scheme_alloc_object(scheme_true_type, 0);
 }
 
-static Scheme_Object *
+static Scheme_Value
 scheme_make_false (void)
 {
   return scheme_alloc_object(scheme_false_type, 0);
 }
 
-static Scheme_Object *
-not_prim (int argc, Scheme_Object *argv[])
+static Scheme_Value
+not_prim (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT (argc == 1, "not: wrong number of args");
   if (argv[0] == scheme_false)
@@ -86,8 +86,8 @@ not_prim (int argc, Scheme_Object *argv[])
     }
 }
 
-static Scheme_Object *
-boolean_p_prim (int argc, Scheme_Object *argv[])
+static Scheme_Value
+boolean_p_prim (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "boolean?: wrong number of args");
   if ((argv[0] == scheme_false) || (argv[0] == scheme_true))
@@ -100,8 +100,8 @@ boolean_p_prim (int argc, Scheme_Object *argv[])
     }
 }
 
-static Scheme_Object *
-eq_prim (int argc, Scheme_Object *argv[])
+static Scheme_Value
+eq_prim (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 2), "eq?: wrong number of args");
   if (argv[0] == argv[1])
@@ -114,8 +114,8 @@ eq_prim (int argc, Scheme_Object *argv[])
     }
 }
 
-static Scheme_Object *
-eqv_prim (int argc, Scheme_Object *argv[])
+static Scheme_Value
+eqv_prim (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc==2), "eqv?: wrong number of args");
   if (scheme_eqv (argv[0], argv[1]))
@@ -128,8 +128,8 @@ eqv_prim (int argc, Scheme_Object *argv[])
     }
 }
 
-static Scheme_Object *
-equal_prim (int argc, Scheme_Object *argv[])
+static Scheme_Value
+equal_prim (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 2), "equal?: wrong number of args");
   if (scheme_equal (argv[0], argv[1]))
@@ -144,14 +144,14 @@ equal_prim (int argc, Scheme_Object *argv[])
 
 SCHEME_FUN_CONST
 int
-scheme_eq (Scheme_Object *obj1, Scheme_Object *obj2)
+scheme_eq (Scheme_Value obj1, Scheme_Value obj2)
 {
   return (obj1 == obj2);
 }
 
 SCHEME_FUN_PURE
 int
-scheme_eqv (Scheme_Object *obj1, Scheme_Object *obj2)
+scheme_eqv (Scheme_Value obj1, Scheme_Value obj2)
 {
   if (obj1 == obj2)
     {
@@ -196,7 +196,7 @@ scheme_eqv (Scheme_Object *obj1, Scheme_Object *obj2)
 
 SCHEME_FUN_PURE
 int
-scheme_equal (Scheme_Object *obj1, Scheme_Object *obj2)
+scheme_equal (Scheme_Value obj1, Scheme_Value obj2)
 {
   if (scheme_eqv (obj1, obj2))
     {
@@ -228,7 +228,7 @@ scheme_equal (Scheme_Object *obj1, Scheme_Object *obj2)
 }
 
 static int
-list_equal (Scheme_Object *lst1, Scheme_Object *lst2)
+list_equal (Scheme_Value lst1, Scheme_Value lst2)
 {
   if ((lst1 == scheme_null) && (lst2 == scheme_null))
     {
@@ -242,7 +242,7 @@ list_equal (Scheme_Object *lst1, Scheme_Object *lst2)
 }
 
 static int
-vector_equal (Scheme_Object *vec1, Scheme_Object *vec2)
+vector_equal (Scheme_Value vec1, Scheme_Value vec2)
 {
   int i;
 

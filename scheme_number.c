@@ -28,55 +28,56 @@
 #include <string.h>
 
 /* globals */
-Scheme_Object *scheme_integer_type, *scheme_double_type;
+Scheme_Value scheme_integer_type;
+Scheme_Value scheme_double_type;
 
 /* locals */
-static Scheme_Object *number_p (int argc, Scheme_Object *argv[]);
-static Scheme_Object *complex_p (int argc, Scheme_Object *argv[]);
-static Scheme_Object *real_p (int argc, Scheme_Object *argv[]);
-static Scheme_Object *rational_p (int argc, Scheme_Object *argv[]);
-static Scheme_Object *integer_p (int argc, Scheme_Object *argv[]);
-static Scheme_Object *exact_p (int argc, Scheme_Object *argv[]);
-static Scheme_Object *inexact_p (int argc, Scheme_Object *argv[]);
-static Scheme_Object *eq (int argc, Scheme_Object *argv[]);
-static Scheme_Object *lt (int argc, Scheme_Object *argv[]);
-static Scheme_Object *gt (int argc, Scheme_Object *argv[]);
-static Scheme_Object *lt_eq (int argc, Scheme_Object *argv[]);
-static Scheme_Object *gt_eq (int argc, Scheme_Object *argv[]);
-static Scheme_Object *zero_p (int argc, Scheme_Object *argv[]);
-static Scheme_Object *positive_p (int argc, Scheme_Object *argv[]);
-static Scheme_Object *negative_p (int argc, Scheme_Object *argv[]);
-static Scheme_Object *odd_p (int argc, Scheme_Object *argv[]);
-static Scheme_Object *even_p (int argc, Scheme_Object *argv[]);
-static Scheme_Object *max (int argc, Scheme_Object *argv[]);
-static Scheme_Object *min (int argc, Scheme_Object *argv[]);
-static Scheme_Object *plus (int argc, Scheme_Object *argv[]);
-static Scheme_Object *minus (int argc, Scheme_Object *argv[]);
-static Scheme_Object *mult (int argc, Scheme_Object *argv[]);
-static Scheme_Object *div_prim (int argc, Scheme_Object *argv[]);
-static Scheme_Object *abs_prim (int argc, Scheme_Object *argv[]);
-static Scheme_Object *quotient (int argc, Scheme_Object *argv[]);
-static Scheme_Object *rem_prim (int argc, Scheme_Object *argv[]);
-static Scheme_Object *modulo (int argc, Scheme_Object *argv[]);
-static Scheme_Object *gcd (int argc, Scheme_Object *argv[]);
-static Scheme_Object *lcm (int argc, Scheme_Object *argv[]);
-static Scheme_Object *floor_prim (int argc, Scheme_Object *argv[]);
-static Scheme_Object *ceiling (int argc, Scheme_Object *argv[]);
-static Scheme_Object *truncate (int argc, Scheme_Object *argv[]);
-static Scheme_Object *scheme_round (int argc, Scheme_Object *argv[]);
-static Scheme_Object *exp_prim (int argc, Scheme_Object *argv[]);
-static Scheme_Object *log_prim (int argc, Scheme_Object *argv[]);
-static Scheme_Object *sin_prim (int argc, Scheme_Object *argv[]);
-static Scheme_Object *cos_prim (int argc, Scheme_Object *argv[]);
-static Scheme_Object *asin_prim (int argc, Scheme_Object *argv[]);
-static Scheme_Object *acos_prim (int argc, Scheme_Object *argv[]);
-static Scheme_Object *atan_prim (int argc, Scheme_Object *argv[]);
-static Scheme_Object *sqrt_prim (int argc, Scheme_Object *argv[]);
-static Scheme_Object *expt (int argc, Scheme_Object *argv[]);
-static Scheme_Object *exact_to_inexact (int argc, Scheme_Object *argv[]);
-static Scheme_Object *inexact_to_exact (int argc, Scheme_Object *argv[]);
-static Scheme_Object *number_to_string (int argc, Scheme_Object *argv[]);
-static Scheme_Object *string_to_number (int argc, Scheme_Object *argv[]);
+static Scheme_Value number_p (int argc, Scheme_Value argv[]);
+static Scheme_Value complex_p (int argc, Scheme_Value argv[]);
+static Scheme_Value real_p (int argc, Scheme_Value argv[]);
+static Scheme_Value rational_p (int argc, Scheme_Value argv[]);
+static Scheme_Value integer_p (int argc, Scheme_Value argv[]);
+static Scheme_Value exact_p (int argc, Scheme_Value argv[]);
+static Scheme_Value inexact_p (int argc, Scheme_Value argv[]);
+static Scheme_Value eq (int argc, Scheme_Value argv[]);
+static Scheme_Value lt (int argc, Scheme_Value argv[]);
+static Scheme_Value gt (int argc, Scheme_Value argv[]);
+static Scheme_Value lt_eq (int argc, Scheme_Value argv[]);
+static Scheme_Value gt_eq (int argc, Scheme_Value argv[]);
+static Scheme_Value zero_p (int argc, Scheme_Value argv[]);
+static Scheme_Value positive_p (int argc, Scheme_Value argv[]);
+static Scheme_Value negative_p (int argc, Scheme_Value argv[]);
+static Scheme_Value odd_p (int argc, Scheme_Value argv[]);
+static Scheme_Value even_p (int argc, Scheme_Value argv[]);
+static Scheme_Value max (int argc, Scheme_Value argv[]);
+static Scheme_Value min (int argc, Scheme_Value argv[]);
+static Scheme_Value plus (int argc, Scheme_Value argv[]);
+static Scheme_Value minus (int argc, Scheme_Value argv[]);
+static Scheme_Value mult (int argc, Scheme_Value argv[]);
+static Scheme_Value div_prim (int argc, Scheme_Value argv[]);
+static Scheme_Value abs_prim (int argc, Scheme_Value argv[]);
+static Scheme_Value quotient (int argc, Scheme_Value argv[]);
+static Scheme_Value rem_prim (int argc, Scheme_Value argv[]);
+static Scheme_Value modulo (int argc, Scheme_Value argv[]);
+static Scheme_Value gcd (int argc, Scheme_Value argv[]);
+static Scheme_Value lcm (int argc, Scheme_Value argv[]);
+static Scheme_Value floor_prim (int argc, Scheme_Value argv[]);
+static Scheme_Value ceiling (int argc, Scheme_Value argv[]);
+static Scheme_Value truncate (int argc, Scheme_Value argv[]);
+static Scheme_Value scheme_round (int argc, Scheme_Value argv[]);
+static Scheme_Value exp_prim (int argc, Scheme_Value argv[]);
+static Scheme_Value log_prim (int argc, Scheme_Value argv[]);
+static Scheme_Value sin_prim (int argc, Scheme_Value argv[]);
+static Scheme_Value cos_prim (int argc, Scheme_Value argv[]);
+static Scheme_Value asin_prim (int argc, Scheme_Value argv[]);
+static Scheme_Value acos_prim (int argc, Scheme_Value argv[]);
+static Scheme_Value atan_prim (int argc, Scheme_Value argv[]);
+static Scheme_Value sqrt_prim (int argc, Scheme_Value argv[]);
+static Scheme_Value expt (int argc, Scheme_Value argv[]);
+static Scheme_Value exact_to_inexact (int argc, Scheme_Value argv[]);
+static Scheme_Value inexact_to_exact (int argc, Scheme_Value argv[]);
+static Scheme_Value number_to_string (int argc, Scheme_Value argv[]);
+static Scheme_Value string_to_number (int argc, Scheme_Value argv[]);
 
 void
 scheme_init_number (Scheme_Env *env)
@@ -134,20 +135,20 @@ scheme_init_number (Scheme_Env *env)
 }
 
 
-Scheme_Object *
+Scheme_Value
 scheme_make_integer (int i)
 {
-  Scheme_Object *si;
+  Scheme_Value si;
 
   si = scheme_alloc_object (scheme_integer_type, 0);
   SCHEME_INT_VAL (si) = i;
   return (si);
 }
 
-Scheme_Object *
+Scheme_Value
 scheme_make_double (double d)
 {
-  Scheme_Object *sd;
+  Scheme_Value sd;
 
   sd = scheme_alloc_object (scheme_double_type, 0);
   SCHEME_DBL_VAL (sd) = d;
@@ -156,50 +157,50 @@ scheme_make_double (double d)
 
 /* locals */
 
-static Scheme_Object *
-number_p (int argc, Scheme_Object *argv[])
+static Scheme_Value
+number_p (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "number?: wrong number of args");
   return (SCHEME_NUMBERP(argv[0]) ? scheme_true : scheme_false);
 }
 
-static Scheme_Object *
-complex_p (int argc, Scheme_Object *argv[])
+static Scheme_Value
+complex_p (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "complex?: wrong number of args");
   return (SCHEME_NUMBERP(argv[0]) ? scheme_true : scheme_false);
 }
 
-static Scheme_Object *
-real_p (int argc, Scheme_Object *argv[])
+static Scheme_Value
+real_p (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "real?: wrong number of args");
   return (SCHEME_NUMBERP(argv[0]) ? scheme_true : scheme_false);
 }
 
-static Scheme_Object *
-rational_p (int argc, Scheme_Object *argv[])
+static Scheme_Value
+rational_p (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "rational?: wrong number of args");
   return (SCHEME_INTP(argv[0]) ? scheme_true : scheme_false);
 }
 
-static Scheme_Object *
-integer_p (int argc, Scheme_Object *argv[])
+static Scheme_Value
+integer_p (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "integer?: wrong number of args");
   return (SCHEME_INTP(argv[0]) ? scheme_true : scheme_false);
 }
 
-static Scheme_Object *
-exact_p (int argc, Scheme_Object *argv[])
+static Scheme_Value
+exact_p (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "exact?: wrong number of args");
   return (SCHEME_INTP(argv[0]) ? scheme_true : scheme_false);
 }
 
-static Scheme_Object *
-inexact_p (int argc, Scheme_Object *argv[])
+static Scheme_Value
+inexact_p (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "inexact?: wrong number of args");
   return (SCHEME_DBLP(argv[0]) ? scheme_true : scheme_false);
@@ -223,8 +224,8 @@ GEN_BIN_COMP(bin_gt, ">", >)
 GEN_BIN_COMP(bin_lt_eq, "<=", <=)
 GEN_BIN_COMP(bin_gt_eq, ">=", >=)
 
-static Scheme_Object *
-zero_p (int argc, Scheme_Object *argv[])
+static Scheme_Value
+zero_p (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "zero?: wrong number of args");
   if (SCHEME_INTP(argv[0]))
@@ -241,8 +242,8 @@ zero_p (int argc, Scheme_Object *argv[])
     }
 }
 
-static Scheme_Object *
-positive_p (int argc, Scheme_Object *argv[])
+static Scheme_Value
+positive_p (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "positive?: wrong number of args");
   if (SCHEME_INTP(argv[0]))
@@ -259,8 +260,8 @@ positive_p (int argc, Scheme_Object *argv[])
     }
 }
 
-static Scheme_Object *
-negative_p (int argc, Scheme_Object *argv[])
+static Scheme_Value
+negative_p (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "negative?: wrong number of args");
   if (SCHEME_INTP(argv[0]))
@@ -277,8 +278,8 @@ negative_p (int argc, Scheme_Object *argv[])
     }
 }
 
-static Scheme_Object *
-odd_p (int argc, Scheme_Object *argv[])
+static Scheme_Value
+odd_p (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "odd?: wrong number of args");
   if (SCHEME_INTP(argv[0]))
@@ -295,8 +296,8 @@ odd_p (int argc, Scheme_Object *argv[])
     }
 }
 
-static Scheme_Object *
-even_p (int argc, Scheme_Object *argv[])
+static Scheme_Value
+even_p (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "even?: wrong number of args");
   if (SCHEME_INTP(argv[0]))
@@ -327,8 +328,8 @@ GEN_BIN_OP(bin_mult, "*", *)
 #define MAX(n1,n2) ((n1>n2) ? n1 : n2)
 #define MIN(n1,n2) ((n1<n2) ? n1 : n2)
 
-static Scheme_Object *
-bin_max (Scheme_Object *n1, Scheme_Object *n2)
+static Scheme_Value
+bin_max (Scheme_Value n1, Scheme_Value n2)
 {
   if (SCHEME_INTP(n1))
     {
@@ -346,8 +347,8 @@ bin_max (Scheme_Object *n1, Scheme_Object *n2)
     }
 }
 
-static Scheme_Object *
-bin_min (Scheme_Object *n1, Scheme_Object *n2)
+static Scheme_Value
+bin_min (Scheme_Value n1, Scheme_Value n2)
 {
   if (SCHEME_INTP(n1))
     {
@@ -365,8 +366,8 @@ bin_min (Scheme_Object *n1, Scheme_Object *n2)
     }
 }
 
-static Scheme_Object *
-bin_div (Scheme_Object *n1, Scheme_Object *n2)
+static Scheme_Value
+bin_div (Scheme_Value n1, Scheme_Value n2)
 {
   if (SCHEME_INTP(n1))
     {
@@ -389,10 +390,10 @@ GEN_TWOARY_OP(min, "min", bin_min)
 GEN_NARY_OP(plus, "+", bin_plus, 0)
 GEN_NARY_OP(mult, "*", bin_mult, 1)
 
-static Scheme_Object *
-minus (int argc, Scheme_Object *argv[])
+static Scheme_Value
+minus (int argc, Scheme_Value argv[])
 {
-  Scheme_Object *ret;
+  Scheme_Value ret;
   int i;
 
   SCHEME_ASSERT ((argc > 0), "-: need at least one arg");
@@ -408,10 +409,10 @@ minus (int argc, Scheme_Object *argv[])
   return (ret);
 }
 
-static Scheme_Object *
-div_prim (int argc, Scheme_Object *argv[])
+static Scheme_Value
+div_prim (int argc, Scheme_Value argv[])
 {
-  Scheme_Object *ret;
+  Scheme_Value ret;
   int i;
 
   SCHEME_ASSERT ((argc > 0), "/: need at least one arg");
@@ -429,8 +430,8 @@ div_prim (int argc, Scheme_Object *argv[])
 
 #define ABS(n)  ((n>0) ? n : -n)
 
-static Scheme_Object *
-abs_prim (int argc, Scheme_Object *argv[])
+static Scheme_Value
+abs_prim (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "abs: wrong number of args");
   if (SCHEME_INTP(argv[0]))
@@ -447,10 +448,10 @@ abs_prim (int argc, Scheme_Object *argv[])
 	}
 }
 
-static Scheme_Object *bin_quotient (Scheme_Object *n1, Scheme_Object *n2);
+static Scheme_Value bin_quotient (Scheme_Value n1, Scheme_Value n2);
 
-static Scheme_Object *
-bin_quotient (Scheme_Object *n1, Scheme_Object *n2)
+static Scheme_Value
+bin_quotient (Scheme_Value n1, Scheme_Value n2)
 {
   SCHEME_ASSERT ((SCHEME_NUMBERP(n1) && SCHEME_NUMBERP(n2)),
 		 "quotient: args must be numbers");
@@ -469,8 +470,8 @@ bin_quotient (Scheme_Object *n1, Scheme_Object *n2)
 	return (scheme_make_double ((int)SCHEME_DBL_VAL(n1) / (int)SCHEME_DBL_VAL(n2)));
     }
 }
-static Scheme_Object *
-quotient (int argc, Scheme_Object *argv[])
+static Scheme_Value
+quotient (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 2), "quotient: wrong number of args");
   SCHEME_ASSERT ((SCHEME_NUMBERP(argv[0]) && SCHEME_NUMBERP(argv[1])),
@@ -478,10 +479,10 @@ quotient (int argc, Scheme_Object *argv[])
   return (bin_quotient (argv[0], argv[1]));
 }
 
-static Scheme_Object *
-rem_prim (int argc, Scheme_Object *argv[])
+static Scheme_Value
+rem_prim (int argc, Scheme_Value argv[])
 {
-  Scheme_Object *n1, *n2;
+  Scheme_Value n1, n2;
 
   SCHEME_ASSERT ((argc == 2), "remainder: wrong number of args");
   n1 = argv[0];
@@ -504,10 +505,10 @@ rem_prim (int argc, Scheme_Object *argv[])
     }
 }
 
-static Scheme_Object *
-modulo (int argc, Scheme_Object *argv[])
+static Scheme_Value
+modulo (int argc, Scheme_Value argv[])
 {
-  Scheme_Object *n1, *n2;
+  Scheme_Value n1, n2;
 
   SCHEME_ASSERT ((argc == 2), "modulo: wrong number of args");
   n1 = argv[0];
@@ -558,14 +559,14 @@ modulo (int argc, Scheme_Object *argv[])
     }
 }
 
-static Scheme_Object *bin_gcd (Scheme_Object *n1, Scheme_Object *n2);
-static Scheme_Object *bin_lcm (Scheme_Object *n1, Scheme_Object *n2);
+static Scheme_Value bin_gcd (Scheme_Value n1, Scheme_Value n2);
+static Scheme_Value bin_lcm (Scheme_Value n1, Scheme_Value n2);
 
 GEN_NARY_OP(gcd, gcd, bin_gcd, 0)
 GEN_NARY_OP(lcm, lcm, bin_lcm, 1)
 
-static Scheme_Object *
-bin_gcd (Scheme_Object *n1, Scheme_Object *n2)
+static Scheme_Value
+bin_gcd (Scheme_Value n1, Scheme_Value n2)
 {
   int i1, i2, a, b, r;
 
@@ -594,10 +595,10 @@ bin_gcd (Scheme_Object *n1, Scheme_Object *n2)
     }
 }
 
-static Scheme_Object *
-bin_lcm (Scheme_Object *n1, Scheme_Object *n2)
+static Scheme_Value
+bin_lcm (Scheme_Value n1, Scheme_Value n2)
 {
-  Scheme_Object *d, *ret;
+  Scheme_Value d, ret;
 
   d = bin_gcd (n1, n2);
   if (SCHEME_DBLP (d) && SCHEME_DBL_VAL(d)==0)
@@ -620,8 +621,8 @@ bin_lcm (Scheme_Object *n1, Scheme_Object *n2)
   return (ret);
 }
 
-static Scheme_Object *
-floor_prim (int argc, Scheme_Object *argv[])
+static Scheme_Value
+floor_prim (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "floor: wrong number of args");
   if (SCHEME_INTP (argv[0]))
@@ -638,8 +639,8 @@ floor_prim (int argc, Scheme_Object *argv[])
     }
 }
 
-static Scheme_Object *
-ceiling (int argc, Scheme_Object *argv[])
+static Scheme_Value
+ceiling (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "ceiling: wrong number of args");
   if (SCHEME_INTP (argv[0]))
@@ -656,8 +657,8 @@ ceiling (int argc, Scheme_Object *argv[])
     }
 }
 
-static Scheme_Object *
-truncate (int argc, Scheme_Object *argv[])
+static Scheme_Value
+truncate (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "truncate: wrong number of args");
   if (SCHEME_INTP (argv[0]))
@@ -674,8 +675,8 @@ truncate (int argc, Scheme_Object *argv[])
     }
 }
 
-static Scheme_Object *
-scheme_round (int argc, Scheme_Object *argv[])
+static Scheme_Value
+scheme_round (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "round: wrong number of args");
   if (SCHEME_INTP (argv[0]))
@@ -712,15 +713,15 @@ GEN_UNARY_OP(cos_prim, cos, cos)
 GEN_UNARY_OP(asin_prim, asin, asin)
 GEN_UNARY_OP(acos_prim, acos, acos)
 
-static Scheme_Object *
-atan_prim (int argc, Scheme_Object *argv[])
+static Scheme_Value
+atan_prim (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc==1 || argc==2), "atan: wrong number of args");
   scheme_signal_error ("atan: unimplemented");
 }
 
-static Scheme_Object *
-sqrt_prim (int argc, Scheme_Object *argv[])
+static Scheme_Value
+sqrt_prim (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "sqrt: wrong number of args");
   if (SCHEME_INTP (argv[0]))
@@ -740,8 +741,8 @@ sqrt_prim (int argc, Scheme_Object *argv[])
 
 GEN_BIN_FUN(expt, expt, pow)
 
-static Scheme_Object *
-exact_to_inexact (int argc, Scheme_Object *argv[])
+static Scheme_Value
+exact_to_inexact (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "exact->inexact: wrong number of args");
   if (SCHEME_INTP (argv[0]))
@@ -758,8 +759,8 @@ exact_to_inexact (int argc, Scheme_Object *argv[])
     }
 }
 
-static Scheme_Object *
-inexact_to_exact (int argc, Scheme_Object *argv[])
+static Scheme_Value
+inexact_to_exact (int argc, Scheme_Value argv[])
 {
   SCHEME_ASSERT ((argc == 1), "inexact->exact: wrong number of args");
   if (SCHEME_INTP (argv[0]))
@@ -776,11 +777,11 @@ inexact_to_exact (int argc, Scheme_Object *argv[])
     }
 }
 
-static Scheme_Object *integer_to_string (int i, int radix);
-static Scheme_Object *double_to_string (double d);
+static Scheme_Value integer_to_string (int i, int radix);
+static Scheme_Value double_to_string (double d);
 
-static Scheme_Object *
-number_to_string (int argc, Scheme_Object *argv[])
+static Scheme_Value
+number_to_string (int argc, Scheme_Value argv[])
 {
   int radix;
 
@@ -808,7 +809,7 @@ number_to_string (int argc, Scheme_Object *argv[])
 	}
 }
 
-static Scheme_Object *
+static Scheme_Value
 integer_to_string (int i, int radix)
 {
   char buf[256];
@@ -833,7 +834,7 @@ integer_to_string (int i, int radix)
   return (scheme_make_string (buf));
 }
 
-static Scheme_Object *
+static Scheme_Value
 double_to_string (double d)
 {
   char buf[256];
@@ -842,8 +843,8 @@ double_to_string (double d)
   return (scheme_make_string (buf));
 }
 
-static Scheme_Object *
-string_to_number (int argc, Scheme_Object *argv[])
+static Scheme_Value
+string_to_number (int argc, Scheme_Value argv[])
 {
   int base, val, len, is_float, i;
   char *ptr, *str;
