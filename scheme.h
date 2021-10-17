@@ -182,7 +182,6 @@ extern Scheme_Value scheme_unquote_symbol;
 extern Scheme_Value scheme_unquote_splicing_symbol;
 
 /* constants */
-extern Scheme_Value scheme_eof;
 extern Scheme_Value scheme_null;
 extern Scheme_Value scheme_true;
 extern Scheme_Value scheme_false;
@@ -227,6 +226,7 @@ struct Scheme_Port
 };
 typedef struct Scheme_Port Scheme_Port;
 
+extern Scheme_Value scheme_eof;
 extern Scheme_Value scheme_stdin_port;
 extern Scheme_Value scheme_stdout_port;
 extern Scheme_Value scheme_stderr_port;
