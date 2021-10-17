@@ -186,12 +186,6 @@ scheme_ungetc (int ch, Scheme_Value port)
   ungetc(ch, ip->stream);
 }
 
-int
-scheme_char_ready (Scheme_Value port)
-{
-  scheme_signal_error("char-ready?: not implemented");
-}
-
 void
 scheme_puts (char *str, Scheme_Value port)
 {
@@ -470,14 +464,8 @@ char_ready_p (int argc, Scheme_Value argv[])
     {
       port = cur_in_port;
     }
-  if (scheme_char_ready (port))
-    {
-      return (scheme_true);
-    }
-  else
-    {
-      return (scheme_false);
-    }
+
+  scheme_signal_error("char-ready?: not implemented");
 }
 
 static Scheme_Value
