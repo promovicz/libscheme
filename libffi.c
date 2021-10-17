@@ -145,12 +145,13 @@ libffi_prep (int argc, Scheme_Value argv[])
   r = argv[0];
   rt = SCHEME_PTR_VAL(r);
   al = argv[1];
+  /* get number of argument types */
+  num_at = scheme_list_length(al);
   /* create info vector */
   ai = scheme_make_vector(1 + num_at, scheme_false);
   aiv = SCHEME_VEC_ELS(ai);
   aiv[0] = r;
   /* convert ffi argument types */
-  num_at = scheme_list_length(al);
   at = (ffi_type **) scheme_malloc(sizeof(ffi_type *) * num_at);
   for ( i=0 ; i<num_at ; ++i )
     {
