@@ -14,11 +14,6 @@ CCINCLUDE:=$(shell ./conf-includes $(CC))
 CCINCLUDEFLAGS:=$(CCINCLUDE:%=-I%)
 
 #
-# Use local includes.
-#
-CFLAGS?=-I.
-
-#
 # Optimization and debugging flags go here.
 #
 CFLAGS+=-O3 -g
@@ -26,7 +21,7 @@ CFLAGS+=-O3 -g
 #
 # We want lots of warnings.
 #
-CFLAGS+=-Wall -Wextra -Wno-unused-parameter -Wno-unused-function
+CFLAGS+=-Wall -Wextra -Wno-unused-function -Wno-unused-parameter
 
 #
 # GCC can suggest pure, const and noreturn candidate functions.
@@ -37,6 +32,11 @@ CFLAGS+=-Wall -Wextra -Wno-unused-parameter -Wno-unused-function
 #	-Wsuggest-attribute=malloc \
 #	-Wsuggest-attribute=noreturn \
 #	-Wsuggest-attribute=pure
+
+#
+# Use local includes.
+#
+CFLAGS+=-I.
 
 #
 # We are compiling library code.
