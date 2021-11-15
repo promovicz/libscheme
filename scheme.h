@@ -176,9 +176,9 @@ Scheme_Value scheme_make_pointer (void *ptr);
 
 /* alloc */
 Scheme_Value scheme_alloc_object (Scheme_Value type, size_t nbytes);
-void *scheme_malloc (size_t size);
-void *scheme_calloc (size_t num, size_t size);
-char *scheme_strdup (char *str);
+SCHEME_FUN_MALLOC void *scheme_malloc (size_t size);
+SCHEME_FUN_MALLOC void *scheme_calloc (size_t num, size_t size);
+SCHEME_FUN_MALLOC char *scheme_strdup (char *str);
 
 /* bool */
 SCHEME_FUN_CONST int scheme_eq (Scheme_Value obj1, Scheme_Value obj2);

@@ -49,6 +49,7 @@ scheme_alloc_object (Scheme_Value type, size_t nbytes)
   return (object);
 }
 
+SCHEME_FUN_MALLOC
 void *
 scheme_malloc (size_t size)
 {
@@ -59,6 +60,7 @@ scheme_malloc (size_t size)
   return (space);
 }
 
+SCHEME_FUN_MALLOC
 void *
 scheme_calloc (size_t num, size_t size)
 {
@@ -69,6 +71,7 @@ scheme_calloc (size_t num, size_t size)
   return (space);
 }
 
+SCHEME_FUN_MALLOC
 char *
 scheme_strdup (char *str)
 {
