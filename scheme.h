@@ -36,7 +36,7 @@ extern "C"
 #endif
 
 /* attribute macros */
-#if defined(__GNUC__)
+#if defined(__GNUC__) || defined(__clang__)
 #define SCHEME_FUN_CONST    __attribute__((const))
 #define SCHEME_FUN_PURE     __attribute__((pure))
 #define SCHEME_FUN_MALLOC   __attribute__((malloc))
