@@ -31,7 +31,12 @@ CFLAGS+=-Wall -Wextra -Wno-unused-parameter -Wno-unused-function
 #
 # GCC can suggest pure, const and noreturn candidate functions.
 #
-#CFLAGS+=-Wsuggest-attribute=pure -Wsuggest-attribute=const -Wsuggest-attribute=noreturn
+#CFLAGS+= \
+#	-Wsuggest-attribute=const \
+#	-Wsuggest-attribute=format \
+#	-Wsuggest-attribute=malloc \
+#	-Wsuggest-attribute=noreturn \
+#	-Wsuggest-attribute=pure
 
 #
 # We are compiling library code.
