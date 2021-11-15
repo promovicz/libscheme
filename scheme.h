@@ -36,14 +36,18 @@ extern "C"
 #endif
 
 /* attribute macros */
-#ifdef __GNUC__
+#if defined(__GNUC__)
 #define SCHEME_FUN_CONST    __attribute__((const))
 #define SCHEME_FUN_PURE     __attribute__((pure))
+#define SCHEME_FUN_MALLOC   __attribute__((malloc))
 #define SCHEME_FUN_NORETURN __attribute__((noreturn))
+#define SCHEME_FUN_NONNULL  __attribute__((nonnull))
 #else
 #define SCHEME_FUN_CONST
 #define SCHEME_FUN_PURE
+#define SCHEME_FUN_MALLOC
 #define SCHEME_FUN_NORETURN
+#define SCHEME_FUN_NONNULL
 #endif
 
 /* struct forward declarations */
