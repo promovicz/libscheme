@@ -79,10 +79,8 @@ struct Scheme_Object
       void *ptr_val;
       struct Scheme_Cont *cont_val;
       struct { void *ptr1, *ptr2; } two_ptr_val;
-      Scheme_Value (*prim_val)
-        (int argc, Scheme_Value argv[]);
-      Scheme_Value (*syntax_val)
-        (Scheme_Value form, struct Scheme_Env *env);
+      Scheme_Value (*prim_val) (int argc, Scheme_Value argv[]);
+      Scheme_Value (*syntax_val) (Scheme_Value form, struct Scheme_Env *env);
       struct { Scheme_Value car, cdr; } pair_val;
       struct { int size; Scheme_Value *els; } vector_val;
       struct { struct Scheme_Env *env; Scheme_Value code; } closure_val;
