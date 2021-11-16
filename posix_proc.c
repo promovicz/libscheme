@@ -9,7 +9,7 @@
   software and its documentation for any purpose, provided that the
   above copyright notice and the following two paragraphs appear in
   all copies of this software.
- 
+
   IN NO EVENT SHALL BRENT BENSON BE LIABLE TO ANY PARTY FOR DIRECT,
   INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT
   OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF BRENT
@@ -44,12 +44,12 @@ static Scheme_Value posix_execv (int argc, Scheme_Value argv[]);
 void
 scheme_init_posix_proc (Scheme_Env *env)
 {
-  scheme_add_global ("posix-fork", scheme_make_prim (posix_fork), env);
-  scheme_add_global ("posix-exit", scheme_make_prim (posix_exit), env);
-  scheme_add_global ("posix-wait", scheme_make_prim (posix_wait), env);
-  scheme_add_global ("posix-waitpid", scheme_make_prim (posix_waitpid), env);
-  scheme_add_global ("posix-execl", scheme_make_prim (posix_execl), env);
-  scheme_add_global ("posix-execv", scheme_make_prim (posix_execv), env);
+  scheme_add_prim ("posix-fork", posix_fork, env);
+  scheme_add_prim ("posix-exit", posix_exit, env);
+  scheme_add_prim ("posix-wait", posix_wait, env);
+  scheme_add_prim ("posix-waitpid", posix_waitpid, env);
+  scheme_add_prim ("posix-execl", posix_execl, env);
+  scheme_add_prim ("posix-execv", posix_execv, env);
 }
 
 /* static functions */
@@ -159,4 +159,3 @@ posix_execv (int argc, Scheme_Value argv[])
   /* execv only returns on error */
   scheme_signal_error ("posix-execv: could not exec `%s'", path);
 }
-

@@ -60,28 +60,28 @@ scheme_init_string (Scheme_Env *env)
 {
   scheme_string_type = scheme_make_type ("<string>");
   scheme_add_global ("<string>", scheme_string_type, env);
-  scheme_add_global ("string?", scheme_make_prim (string_p), env);
-  scheme_add_global ("make-string", scheme_make_prim (make_string), env);
-  scheme_add_global ("string", scheme_make_prim (string), env);
-  scheme_add_global ("string-length", scheme_make_prim (string_length), env);
-  scheme_add_global ("string-ref", scheme_make_prim (string_ref), env);
-  scheme_add_global ("string-set!", scheme_make_prim (string_set), env);
-  scheme_add_global ("string=?", scheme_make_prim (string_eq), env);
-  scheme_add_global ("string-ci=?", scheme_make_prim (string_ci_eq), env);
-  scheme_add_global ("string<?", scheme_make_prim (string_lt), env);
-  scheme_add_global ("string>?", scheme_make_prim (string_gt), env);
-  scheme_add_global ("string<=?", scheme_make_prim (string_lt_eq), env);
-  scheme_add_global ("string>=?", scheme_make_prim (string_gt_eq), env);
-  scheme_add_global ("string-ci<?", scheme_make_prim (string_ci_lt), env);
-  scheme_add_global ("string-ci>?", scheme_make_prim (string_ci_gt), env);
-  scheme_add_global ("string-ci<=?", scheme_make_prim (string_ci_lt_eq), env);
-  scheme_add_global ("string-ci>=?", scheme_make_prim (string_ci_gt_eq), env);
-  scheme_add_global ("substring", scheme_make_prim (substring), env);
-  scheme_add_global ("string-append", scheme_make_prim (string_append), env);
-  scheme_add_global ("string->list", scheme_make_prim (string_to_list), env);
-  scheme_add_global ("list->string", scheme_make_prim (list_to_string), env);
-  scheme_add_global ("string-copy", scheme_make_prim (string_copy), env);
-  scheme_add_global ("string-fill!", scheme_make_prim (string_fill), env);
+  scheme_add_prim ("string?", string_p, env);
+  scheme_add_prim ("make-string", make_string, env);
+  scheme_add_prim ("string", string, env);
+  scheme_add_prim ("string-length", string_length, env);
+  scheme_add_prim ("string-ref", string_ref, env);
+  scheme_add_prim ("string-set!", string_set, env);
+  scheme_add_prim ("string=?", string_eq, env);
+  scheme_add_prim ("string-ci=?", string_ci_eq, env);
+  scheme_add_prim ("string<?", string_lt, env);
+  scheme_add_prim ("string>?", string_gt, env);
+  scheme_add_prim ("string<=?", string_lt_eq, env);
+  scheme_add_prim ("string>=?", string_gt_eq, env);
+  scheme_add_prim ("string-ci<?", string_ci_lt, env);
+  scheme_add_prim ("string-ci>?", string_ci_gt, env);
+  scheme_add_prim ("string-ci<=?", string_ci_lt_eq, env);
+  scheme_add_prim ("string-ci>=?", string_ci_gt_eq, env);
+  scheme_add_prim ("substring", substring, env);
+  scheme_add_prim ("string-append", string_append, env);
+  scheme_add_prim ("string->list", string_to_list, env);
+  scheme_add_prim ("list->string", list_to_string, env);
+  scheme_add_prim ("string-copy", string_copy, env);
+  scheme_add_prim ("string-fill!", string_fill, env);
 }
 
 Scheme_Value

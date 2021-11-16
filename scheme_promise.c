@@ -43,7 +43,7 @@ scheme_init_promise (Scheme_Env *env)
 {
   scheme_promise_type = scheme_make_type ("<promise>");
   scheme_add_global ("<promise>", scheme_promise_type, env);
-  scheme_add_global ("force", scheme_make_prim (force), env);
+  scheme_add_prim ("force", force, env);
 }
 
 Scheme_Value

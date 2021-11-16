@@ -86,6 +86,12 @@ scheme_add_global (char *name, Scheme_Value obj, Scheme_Env *env)
   scheme_add_to_table (env->globals, lower_name, obj);
 }
 
+void
+scheme_add_prim (char *name, Scheme_Prim *prim, Scheme_Env *env)
+{
+  scheme_add_global(name, scheme_make_prim(prim), env);
+}
+
 Scheme_Env *
 scheme_new_frame (int num_bindings)
 {

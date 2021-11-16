@@ -53,11 +53,11 @@ scheme_init_bool (Scheme_Env *env)
   scheme_add_global ("<false>", scheme_false_type, env);
   scheme_true = scheme_alloc_object(scheme_true_type, 0);
   scheme_false = scheme_alloc_object(scheme_false_type, 0);
-  scheme_add_global ("not", scheme_make_prim (not_prim), env);
-  scheme_add_global ("boolean?", scheme_make_prim (boolean_p_prim), env);
-  scheme_add_global ("eq?", scheme_make_prim (eq_prim), env);
-  scheme_add_global ("eqv?", scheme_make_prim (eqv_prim), env);
-  scheme_add_global ("equal?", scheme_make_prim (equal_prim), env);
+  scheme_add_prim ("not", not_prim, env);
+  scheme_add_prim ("boolean?", boolean_p_prim, env);
+  scheme_add_prim ("eq?", eq_prim, env);
+  scheme_add_prim ("eqv?", eqv_prim, env);
+  scheme_add_prim ("equal?", equal_prim, env);
 }
 
 SCHEME_FUN_CONST

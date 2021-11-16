@@ -46,16 +46,16 @@ scheme_init_vector (Scheme_Env *env)
 {
   scheme_vector_type = scheme_make_type ("<vector>");
   scheme_add_global ("<vector>", scheme_vector_type, env);
-  scheme_add_global ("vector?", scheme_make_prim (vector_p), env);
-  scheme_add_global ("make-vector", scheme_make_prim (make_vector), env);
-  scheme_add_global ("vector", scheme_make_prim (vector), env);
-  scheme_add_global ("vector-length", scheme_make_prim (vector_length), env);
-  scheme_add_global ("vector-ref", scheme_make_prim (vector_ref), env);
-  scheme_add_global ("vector-set!", scheme_make_prim (vector_set), env);
-  scheme_add_global ("vector->list", scheme_make_prim (vector_to_list), env);
-  scheme_add_global ("list->vector", scheme_make_prim (list_to_vector), env);
-  scheme_add_global ("vector-fill!", scheme_make_prim (vector_fill), env);
-  scheme_add_global ("vector-append", scheme_make_prim (vector_append), env);
+  scheme_add_prim ("vector?", vector_p, env);
+  scheme_add_prim ("make-vector", make_vector, env);
+  scheme_add_prim ("vector", vector, env);
+  scheme_add_prim ("vector-length", vector_length, env);
+  scheme_add_prim ("vector-ref", vector_ref, env);
+  scheme_add_prim ("vector-set!", vector_set, env);
+  scheme_add_prim ("vector->list", vector_to_list, env);
+  scheme_add_prim ("list->vector", list_to_vector, env);
+  scheme_add_prim ("vector-fill!", vector_fill, env);
+  scheme_add_prim ("vector-append", vector_append, env);
 }
 
 Scheme_Value

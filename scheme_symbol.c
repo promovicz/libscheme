@@ -57,9 +57,9 @@ scheme_init_symbol (Scheme_Env *env)
   scheme_quasiquote_symbol = scheme_intern_symbol ("quasiquote");
   scheme_unquote_symbol = scheme_intern_symbol ("unquote");
   scheme_unquote_splicing_symbol = scheme_intern_symbol ("unquote-splicing");
-  scheme_add_global ("symbol?", scheme_make_prim (symbol_p_prim), env);
-  scheme_add_global ("string->symbol", scheme_make_prim (string_to_symbol_prim), env);
-  scheme_add_global ("symbol->string", scheme_make_prim (symbol_to_string_prim), env);
+  scheme_add_prim ("symbol?", symbol_p_prim, env);
+  scheme_add_prim ("string->symbol", string_to_symbol_prim, env);
+  scheme_add_prim ("symbol->string", symbol_to_string_prim, env);
 }
 
 Scheme_Value

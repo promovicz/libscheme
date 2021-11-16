@@ -32,12 +32,12 @@ scheme_init_libffi (Scheme_Env *env)
   libffi_type_type = scheme_make_type("<ffi-type>");
 
   /* functions */
-  scheme_add_global("ffi-call", scheme_make_prim(libffi_call), env);
-  scheme_add_global("ffi-prep", scheme_make_prim(libffi_prep), env);
+  scheme_add_prim("ffi-call", libffi_call, env);
+  scheme_add_prim("ffi-prep", libffi_prep, env);
 
   /* accessors */
-  scheme_add_global("ffi-type-size", scheme_make_prim(libffi_type_size), env);
-  scheme_add_global("ffi-type-alignment", scheme_make_prim(libffi_type_alignment), env);
+  scheme_add_prim("ffi-type-size", libffi_type_size, env);
+  scheme_add_prim("ffi-type-alignment", libffi_type_alignment, env);
 
   /* constants */
   scheme_add_global("ffi-void", libffi_make_type_object(&ffi_type_void), env);

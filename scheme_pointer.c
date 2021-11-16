@@ -36,8 +36,8 @@ scheme_init_pointer (Scheme_Env *env)
 {
   scheme_pointer_type = scheme_make_type ("<pointer>");
   scheme_add_global ("<pointer>", scheme_pointer_type, env);
-  scheme_add_global ("pointer?", scheme_make_prim (pointer_p), env);
-  scheme_add_global ("pointer=?", scheme_make_prim (pointer_eq), env);
+  scheme_add_prim ("pointer?", pointer_p, env);
+  scheme_add_prim ("pointer=?", pointer_eq, env);
 }
 
 Scheme_Value

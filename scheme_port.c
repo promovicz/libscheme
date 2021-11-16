@@ -85,55 +85,55 @@ scheme_init_port (Scheme_Env *env)
   /* end-of-file object */
   scheme_eof_type = scheme_make_type ("<eof>");
   scheme_add_global ("<eof>", scheme_eof_type, env);
-  scheme_add_global ("eof-object?", scheme_make_prim (eof_object_p), env);
+  scheme_add_prim ("eof-object?", eof_object_p, env);
   scheme_eof = scheme_alloc_object(scheme_eof_type, 0);
 
   /* port types */
   scheme_input_port_type = scheme_make_type ("<input-port>");
   scheme_output_port_type = scheme_make_type ("<output-port>");
   scheme_add_global ("<input-port>", scheme_input_port_type, env);
-  scheme_add_global ("input-port?", scheme_make_prim (input_port_p), env);
+  scheme_add_prim ("input-port?", input_port_p, env);
   scheme_add_global ("<output-port>", scheme_output_port_type, env);
-  scheme_add_global ("output-port?", scheme_make_prim (output_port_p), env);
+  scheme_add_prim ("output-port?", output_port_p, env);
 
   /* opening and closing */
-  scheme_add_global ("open-input-file", scheme_make_prim (open_input_file), env);
-  scheme_add_global ("open-output-file", scheme_make_prim (open_output_file), env);
-  scheme_add_global ("open-input-string", scheme_make_prim (open_input_string), env);
-  scheme_add_global ("open-output-string", scheme_make_prim (open_output_string), env);
-  scheme_add_global ("close-input-port", scheme_make_prim (close_input_port), env);
-  scheme_add_global ("close-output-port", scheme_make_prim (close_output_port), env);
+  scheme_add_prim ("open-input-file", open_input_file, env);
+  scheme_add_prim ("open-output-file", open_output_file, env);
+  scheme_add_prim ("open-input-string", open_input_string, env);
+  scheme_add_prim ("open-output-string", open_output_string, env);
+  scheme_add_prim ("close-input-port", close_input_port, env);
+  scheme_add_prim ("close-output-port", close_output_port, env);
 
   /* current port */
-  scheme_add_global ("current-input-port", scheme_make_prim (current_input_port), env);
-  scheme_add_global ("current-output-port", scheme_make_prim (current_output_port), env);
-  scheme_add_global ("call-with-input-file", scheme_make_prim (call_with_input_file), env);
-  scheme_add_global ("call-with-output-file", scheme_make_prim (call_with_output_file), env);
-  scheme_add_global ("with-input-from-file", scheme_make_prim (with_input_from_file), env);
-  scheme_add_global ("with-output-to-file", scheme_make_prim (with_output_to_file), env);
+  scheme_add_prim ("current-input-port", current_input_port, env);
+  scheme_add_prim ("current-output-port", current_output_port, env);
+  scheme_add_prim ("call-with-input-file", call_with_input_file, env);
+  scheme_add_prim ("call-with-output-file", call_with_output_file, env);
+  scheme_add_prim ("with-input-from-file", with_input_from_file, env);
+  scheme_add_prim ("with-output-to-file", with_output_to_file, env);
 
   /* port operations */
-  scheme_add_global ("read", scheme_make_prim (read), env);
-  scheme_add_global ("read-char", scheme_make_prim (read_char), env);
-  scheme_add_global ("peek-char", scheme_make_prim (peek_char), env);
-  scheme_add_global ("char-ready?", scheme_make_prim (char_ready_p), env);
-  scheme_add_global ("write", scheme_make_prim (write), env);
-  scheme_add_global ("display", scheme_make_prim (display), env);
-  scheme_add_global ("newline", scheme_make_prim (newline), env);
-  scheme_add_global ("write-char", scheme_make_prim (write_char), env);
-  scheme_add_global ("load", scheme_make_prim (load), env);
+  scheme_add_prim ("read", read, env);
+  scheme_add_prim ("read-char", read_char, env);
+  scheme_add_prim ("peek-char", peek_char, env);
+  scheme_add_prim ("char-ready?", char_ready_p, env);
+  scheme_add_prim ("write", write, env);
+  scheme_add_prim ("display", display, env);
+  scheme_add_prim ("newline", newline, env);
+  scheme_add_prim ("write-char", write_char, env);
+  scheme_add_prim ("load", load, env);
 
   /* reading to/from strings */
-  scheme_add_global ("read-from-string", scheme_make_prim (read_from_string), env);
-  scheme_add_global ("write-to-string", scheme_make_prim (write_to_string), env);
-  scheme_add_global ("display-to-string", scheme_make_prim (display_to_string), env);
+  scheme_add_prim ("read-from-string", read_from_string, env);
+  scheme_add_prim ("write-to-string", write_to_string, env);
+  scheme_add_prim ("display-to-string", display_to_string, env);
 
   /* buffering */
-  scheme_add_global ("drain-input", scheme_make_prim (drain_input), env);
-  scheme_add_global ("flush-output", scheme_make_prim (flush_output), env);
+  scheme_add_prim ("drain-input", drain_input, env);
+  scheme_add_prim ("flush-output", flush_output, env);
 
   /* string ports */
-  scheme_add_global ("port-string", scheme_make_prim (port_string), env);
+  scheme_add_prim ("port-string", port_string, env);
 
   /* standard ports */
   cur_in_port = scheme_stdin_port = scheme_make_input_port (stdin);

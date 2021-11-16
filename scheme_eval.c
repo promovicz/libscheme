@@ -31,7 +31,7 @@ static Scheme_Value eval (int argc, Scheme_Value argv[]);
 void
 scheme_init_eval (Scheme_Env *env)
 {
-  scheme_add_global ("eval", scheme_make_prim (eval), env);
+  scheme_add_prim ("eval", eval, env);
 }
 
 Scheme_Value

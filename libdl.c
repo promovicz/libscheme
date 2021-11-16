@@ -50,19 +50,19 @@ scheme_init_libdl (Scheme_Env *env)
 #endif
 
   /* functions */
-  scheme_add_global("dl-open", scheme_make_prim(libdl_open), env);
-  scheme_add_global("dl-close", scheme_make_prim(libdl_close), env);
-  scheme_add_global("dl-symbol", scheme_make_prim(libdl_symbol), env);
+  scheme_add_prim("dl-open", libdl_open, env);
+  scheme_add_prim("dl-close", libdl_close, env);
+  scheme_add_prim("dl-symbol", libdl_symbol, env);
 #ifdef LIBDL_HAS_INFO
-  scheme_add_global("dl-address", scheme_make_prim(libdl_address), env);
+  scheme_add_prim("dl-address", libdl_address, env);
 #endif
 
   /* accessors */
 #ifdef LIBDL_HAS_INFO
-  scheme_add_global("dl-info-file-name", scheme_make_prim(libdl_info_file_name), env);
-  scheme_add_global("dl-info-file-address", scheme_make_prim(libdl_info_file_address), env);
-  scheme_add_global("dl-info-symbol-name", scheme_make_prim(libdl_info_symbol_name), env);
-  scheme_add_global("dl-info-symbol-address", scheme_make_prim(libdl_info_symbol_address), env);
+  scheme_add_prim("dl-info-file-name", libdl_info_file_name, env);
+  scheme_add_prim("dl-info-file-address", libdl_info_file_address, env);
+  scheme_add_prim("dl-info-symbol-name", libdl_info_symbol_name, env);
+  scheme_add_prim("dl-info-symbol-address", libdl_info_symbol_address, env);
 #endif
 
   /* constants */

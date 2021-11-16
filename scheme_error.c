@@ -35,8 +35,8 @@ static Scheme_Value scheme_exit (int argc, Scheme_Value argv[]);
 void
 scheme_init_error (Scheme_Env *env)
 {
-  scheme_add_global ("error", scheme_make_prim (error), env);
-  scheme_add_global ("exit", scheme_make_prim (scheme_exit), env);
+  scheme_add_prim ("error", error, env);
+  scheme_add_prim ("exit", scheme_exit, env);
 }
 
 SCHEME_FUN_NORETURN

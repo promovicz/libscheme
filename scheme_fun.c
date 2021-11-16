@@ -49,12 +49,12 @@ scheme_init_fun (Scheme_Env *env)
   scheme_add_global ("<primitive>", scheme_prim_type, env);
   scheme_add_global ("<closure>", scheme_closure_type, env);
   scheme_add_global ("<continuation>", scheme_cont_type, env);
-  scheme_add_global ("procedure?", scheme_make_prim (procedure_p), env);
-  scheme_add_global ("apply", scheme_make_prim (apply), env);
-  scheme_add_global ("map", scheme_make_prim (map), env);
-  scheme_add_global ("for-each", scheme_make_prim (for_each), env);
-  scheme_add_global ("call-with-current-continuation", scheme_make_prim (call_cc), env);
-  scheme_add_global ("call/cc", scheme_make_prim (call_cc), env);
+  scheme_add_prim ("procedure?", procedure_p, env);
+  scheme_add_prim ("apply", apply, env);
+  scheme_add_prim ("map", map, env);
+  scheme_add_prim ("for-each", for_each, env);
+  scheme_add_prim ("call-with-current-continuation", call_cc, env);
+  scheme_add_prim ("call/cc", call_cc, env);
 }
 
 Scheme_Value

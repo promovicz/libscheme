@@ -62,26 +62,26 @@ scheme_init_char (Scheme_Env *env)
 {
   scheme_char_type = scheme_make_type ("<char>");
   scheme_add_global ("<char>", scheme_char_type, env);
-  scheme_add_global ("char?", scheme_make_prim (char_p), env);
-  scheme_add_global ("char=?", scheme_make_prim (char_eq), env);
-  scheme_add_global ("char<?", scheme_make_prim (char_lt), env);
-  scheme_add_global ("char>?", scheme_make_prim (char_gt), env);
-  scheme_add_global ("char<=?", scheme_make_prim (char_lt_eq), env);
-  scheme_add_global ("char>=?", scheme_make_prim (char_gt_eq), env);
-  scheme_add_global ("char-ci=?", scheme_make_prim (char_eq_ci), env);
-  scheme_add_global ("char-ci<?", scheme_make_prim (char_lt_ci), env);
-  scheme_add_global ("char-ci>?", scheme_make_prim (char_gt_ci), env);
-  scheme_add_global ("char-ci<=?", scheme_make_prim (char_lt_eq_ci), env);
-  scheme_add_global ("char-ci>=?", scheme_make_prim (char_gt_eq_ci), env);
-  scheme_add_global ("char-alphabetic?", scheme_make_prim (char_alphabetic), env);
-  scheme_add_global ("char-numeric?", scheme_make_prim (char_numeric), env);
-  scheme_add_global ("char-whitespace?", scheme_make_prim (char_whitespace), env);
-  scheme_add_global ("char-upper-case?", scheme_make_prim (char_upper_case), env);
-  scheme_add_global ("char-lower-case?", scheme_make_prim (char_lower_case), env);
-  scheme_add_global ("char->integer", scheme_make_prim (char_to_integer), env);
-  scheme_add_global ("integer->char", scheme_make_prim (integer_to_char), env);
-  scheme_add_global ("char-upcase", scheme_make_prim (char_upcase), env);
-  scheme_add_global ("char-downcase", scheme_make_prim (char_downcase), env);
+  scheme_add_prim ("char?", char_p, env);
+  scheme_add_prim ("char=?", char_eq, env);
+  scheme_add_prim ("char<?", char_lt, env);
+  scheme_add_prim ("char>?", char_gt, env);
+  scheme_add_prim ("char<=?", char_lt_eq, env);
+  scheme_add_prim ("char>=?", char_gt_eq, env);
+  scheme_add_prim ("char-ci=?", char_eq_ci, env);
+  scheme_add_prim ("char-ci<?", char_lt_ci, env);
+  scheme_add_prim ("char-ci>?", char_gt_ci, env);
+  scheme_add_prim ("char-ci<=?", char_lt_eq_ci, env);
+  scheme_add_prim ("char-ci>=?", char_gt_eq_ci, env);
+  scheme_add_prim ("char-alphabetic?", char_alphabetic, env);
+  scheme_add_prim ("char-numeric?", char_numeric, env);
+  scheme_add_prim ("char-whitespace?", char_whitespace, env);
+  scheme_add_prim ("char-upper-case?", char_upper_case, env);
+  scheme_add_prim ("char-lower-case?", char_lower_case, env);
+  scheme_add_prim ("char->integer", char_to_integer, env);
+  scheme_add_prim ("integer->char", integer_to_char, env);
+  scheme_add_prim ("char-upcase", char_upcase, env);
+  scheme_add_prim ("char-downcase", char_downcase, env);
 }
 
 Scheme_Value
