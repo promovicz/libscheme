@@ -27,9 +27,17 @@
 #include <math.h>
 #include <string.h>
 
+/* hold up to 4k objects in the cache */
+#define INTEGER_CACHE_SIZE  2048
+/* split off 1k for negative integers  */
+#define INTEGER_CACHE_SPLIT 1024
+
 /* globals */
 Scheme_Value scheme_integer_type;
 Scheme_Value scheme_double_type;
+
+/* internal variables */
+static Scheme_Value integer_cache[INTEGER_CACHE_SIZE];
 
 /* locals */
 static Scheme_Value number_p (int argc, Scheme_Value argv[]);
@@ -78,6 +86,8 @@ static Scheme_Value exact_to_inexact (int argc, Scheme_Value argv[]);
 static Scheme_Value inexact_to_exact (int argc, Scheme_Value argv[]);
 static Scheme_Value number_to_string (int argc, Scheme_Value argv[]);
 static Scheme_Value string_to_number (int argc, Scheme_Value argv[]);
+
+/* exported functions */
 
 void
 scheme_init_number (Scheme_Env *env)
@@ -134,14 +144,30 @@ scheme_init_number (Scheme_Env *env)
   scheme_add_global ("string->number", scheme_make_prim (string_to_number), env);
 }
 
-
 Scheme_Value
 scheme_make_integer (int i)
 {
+  int idx = i + INTEGER_CACHE_SPLIT;
   Scheme_Value si;
 
+  /* check if we have an object in the cache */
+  if(idx >= 0 && idx < INTEGER_CACHE_SIZE) {
+    si = integer_cache[idx];
+    if(si != NULL) {
+      return si;
+    }
+  }
+
+  /* allocate and initialize the object */
   si = scheme_alloc_object (scheme_integer_type, 0);
   SCHEME_INT_VAL (si) = i;
+
+  /* put the object in the cache */
+  if(idx >= 0 && idx < INTEGER_CACHE_SIZE) {
+    integer_cache[idx] = si;
+  }
+
+  /* done */
   return (si);
 }
 

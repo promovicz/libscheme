@@ -25,10 +25,15 @@
 #include "scheme.h"
 #include <ctype.h>
 
+#define CHAR_CACHE_SIZE 256
+
 /* globals */
 Scheme_Value scheme_char_type;
 
-/* locals */
+/* internal variables */
+static Scheme_Value char_cache[CHAR_CACHE_SIZE];
+
+/* primitive declarations */
 static Scheme_Value char_p (int argc, Scheme_Value argv[]);
 static Scheme_Value char_eq (int argc, Scheme_Value argv[]);
 static Scheme_Value char_lt (int argc, Scheme_Value argv[]);
@@ -49,6 +54,8 @@ static Scheme_Value char_to_integer (int argc, Scheme_Value argv[]);
 static Scheme_Value integer_to_char (int argc, Scheme_Value argv[]);
 static Scheme_Value char_upcase (int argc, Scheme_Value argv[]);
 static Scheme_Value char_downcase (int argc, Scheme_Value argv[]);
+
+/* exported functions */
 
 void
 scheme_init_char (Scheme_Env *env)
@@ -80,14 +87,31 @@ scheme_init_char (Scheme_Env *env)
 Scheme_Value
 scheme_make_char (char ch)
 {
+  unsigned idx = (unsigned)ch;
   Scheme_Value sc;
 
+  /* check if we have an object in the cache */
+  if(idx < CHAR_CACHE_SIZE) {
+    sc = char_cache[idx];
+    if(sc != NULL) {
+      return sc;
+    }
+  }
+
+  /* allocate and initialize the object */
   sc = scheme_alloc_object (scheme_char_type, 0);
   SCHEME_CHAR_VAL (sc) = ch;
+
+  /* put the object in the cache */
+  if(idx < CHAR_CACHE_SIZE) {
+    char_cache[idx] = sc;
+  }
+
+  /* done */
   return (sc);
 }
 
-/* locals */
+/* primitive functions */
 
 static Scheme_Value
 char_p (int argc, Scheme_Value argv[])
