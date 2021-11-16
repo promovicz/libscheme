@@ -195,7 +195,7 @@ Scheme_Value scheme_eval (Scheme_Value obj, Scheme_Env *env);
 /* fun */
 Scheme_Value scheme_make_prim (Scheme_Prim *prim);
 Scheme_Value scheme_make_closure (Scheme_Env *env, Scheme_Value code);
-Scheme_Value scheme_make_cont ();
+Scheme_Value scheme_make_cont (void);
 Scheme_Value scheme_apply (Scheme_Value rator, int num_rands, Scheme_Value *rands);
 Scheme_Value scheme_apply_to_list (Scheme_Value rator, Scheme_Value rands);
 Scheme_Value scheme_apply_struct_proc (Scheme_Value rator, Scheme_Value rands);
