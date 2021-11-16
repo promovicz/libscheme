@@ -57,6 +57,7 @@ static Scheme_Value with_input_from_file (int argc, Scheme_Value argv[]);
 static Scheme_Value with_output_to_file (int argc, Scheme_Value argv[]);
 static Scheme_Value read (int argc, Scheme_Value argv[]);
 static Scheme_Value read_char (int argc, Scheme_Value argv[]);
+static Scheme_Value read_line (int argc, Scheme_Value argv[]);
 static Scheme_Value peek_char (int argc, Scheme_Value argv[]);
 static Scheme_Value char_ready_p (int argc, Scheme_Value argv[]);
 static Scheme_Value write (int argc, Scheme_Value argv[]);
@@ -115,6 +116,7 @@ scheme_init_port (Scheme_Env *env)
   /* port operations */
   scheme_add_prim ("read", read, env);
   scheme_add_prim ("read-char", read_char, env);
+  scheme_add_prim ("read-line", read_line, env);
   scheme_add_prim ("peek-char", peek_char, env);
   scheme_add_prim ("char-ready?", char_ready_p, env);
   scheme_add_prim ("write", write, env);
@@ -490,6 +492,34 @@ read_char (int argc, Scheme_Value argv[])
 }
 
 static Scheme_Value
+read_line (int argc, Scheme_Value argv[])
+{
+  Scheme_Value port, res;
+  Scheme_Port *ip;
+  char *s = NULL;
+  size_t l = 0;
+
+  SCHEME_ASSERT ((argc==0 || argc==1), "read-line: wrong number of args");
+  if (argc == 1)
+    {
+      SCHEME_ASSERT (SCHEME_INPORTP(argv[0]), "read-line: arg must be an input port");
+      port = argv[0];
+    }
+  else
+    {
+      port = cur_in_port;
+    }
+
+  ip = (Scheme_Port *) SCHEME_PTR_VAL (port);
+  if(getline(&s, &l, ip->stream) == -1) {
+    scheme_signal_error("read-line: read error");
+  }
+  res = scheme_make_string(s);
+  free(s);
+  return res;
+}
+
+static Scheme_Value
 peek_char (int argc, Scheme_Value argv[])
 {
   Scheme_Value port;
@@ -757,4 +787,3 @@ get_port_string(Scheme_Value port)
   p = (Scheme_Port *) SCHEME_PTR_VAL (port);
   return scheme_make_string(p->buf);
 }
-
