@@ -14,6 +14,16 @@ CCINCLUDE:=$(shell ./conf-includes $(CC))
 CCINCLUDEFLAGS:=$(CCINCLUDE:%=-I%)
 
 #
+# We are compiling library code.
+#
+CFLAGS+=-DIN_LIBSCHEME
+
+#
+# Use local includes.
+#
+CFLAGS+=-I.
+
+#
 # Optimization and debugging flags go here.
 #
 CFLAGS+=-O3 -g
@@ -32,16 +42,6 @@ CFLAGS+=-Wall -Wextra -Wno-unused-function -Wno-unused-parameter
 #	-Wsuggest-attribute=malloc \
 #	-Wsuggest-attribute=noreturn \
 #	-Wsuggest-attribute=pure
-
-#
-# Use local includes.
-#
-CFLAGS+=-I.
-
-#
-# We are compiling library code.
-#
-CFLAGS+=-DIN_LIBSCHEME
 
 #
 # The math library is needed for the numeric functions
