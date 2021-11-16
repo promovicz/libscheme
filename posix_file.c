@@ -197,7 +197,7 @@ scheme_init_posix_file (Scheme_Env *env)
   scheme_add_global ("O_TRUNC", scheme_make_integer (O_TRUNC), env);
   scheme_add_global ("SEEK_SET", scheme_make_integer (SEEK_SET), env);
   scheme_add_global ("SEEK_CUR", scheme_make_integer (SEEK_CUR), env);
-  scheme_add_global ("SEEK_END  ", scheme_make_integer (SEEK_END  ), env);
+  scheme_add_global ("SEEK_END", scheme_make_integer (SEEK_END), env);
 }
 
 /* static utilities */
