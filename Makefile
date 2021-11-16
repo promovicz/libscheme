@@ -26,7 +26,7 @@ CFLAGS+=-I.
 #
 # Optimization and debugging flags go here.
 #
-CFLAGS+=-O3 -g
+CFLAGS+=-Os -g
 
 #
 # We want lots of warnings.
