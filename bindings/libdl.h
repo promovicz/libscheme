@@ -2,8 +2,8 @@
    libdl.h
 */
 
-#ifndef LIBDL_H
-#define LIBDL_H
+#ifndef SCHEME_LIBDL_H
+#define SCHEME_LIBDL_H
 
 #include <scheme.h>
 

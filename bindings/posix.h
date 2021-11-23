@@ -2,8 +2,8 @@
    posix.h
 */
 
-#ifndef POSIX_H
-#define POSIX_H
+#ifndef SCHEME_POSIX_H
+#define SCHEME_POSIX_H
 
 #include <scheme.h>
 

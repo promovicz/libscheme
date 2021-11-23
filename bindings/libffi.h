@@ -2,8 +2,8 @@
    libffi.h
 */
 
-#ifndef LIBFFI_H
-#define LIBFFI_H
+#ifndef SCHEME_LIBFFI_H
+#define SCHEME_LIBFFI_H
 
 #include <scheme.h>
 
