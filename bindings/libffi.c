@@ -1,5 +1,6 @@
 
-#include <scheme.h>
+#include "libffi.h"
+
 #include <ffi.h>
 
 /* variables */

@@ -6,7 +6,8 @@
 #define _GNU_SOURCE
 #endif
 
-#include <scheme.h>
+#include "libdl.h"
+
 #include <dlfcn.h>
 
 /* variables */
