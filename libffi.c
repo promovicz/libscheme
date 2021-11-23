@@ -10,6 +10,9 @@ static Scheme_Value libffi_type_type;
 static Scheme_Value libffi_make_cif_object(ffi_cif *cif, Scheme_Value ai);
 static Scheme_Value libffi_make_type_object(ffi_type *typ);
 
+static Scheme_Value libffi_value_get(Scheme_Value type, void *ptr);
+static void         libffi_value_put(Scheme_Value type, void *ptr);
+
 /* functions */
 static Scheme_Value libffi_call (int argc, Scheme_Value argv[]);
 static Scheme_Value libffi_prep (int argc, Scheme_Value argv[]);
@@ -104,7 +107,7 @@ libffi_call (int argc, Scheme_Value argv[])
   ffi_cif *cif;
   void *fun;
   void **av;
-  Scheme_Value rv;
+  Scheme_Value rv, ai, *aiv;
 
   /* check arguments */
   SCHEME_ASSERT((argc >= 2), "ffi-call: wrong number of args");
@@ -113,13 +116,17 @@ libffi_call (int argc, Scheme_Value argv[])
   /* get main arguments */
   cif = SCHEME_PTR_VAL(argv[0]);
   fun = SCHEME_PTR_VAL(argv[1]);
-  /* convert arguments */
+  /* get number of arguments provided  */
   num_av = (argc - 2);
+  /* get argument info */
+  ai = SCHEME_PTR2_VAL(cif);
+  aiv = SCHEME_VEC_ELS(ai);
+  /* convert arguments */
   av = (void **) scheme_malloc(sizeof(void *) * num_av);
   for ( i=0 ; i<num_av ; ++i )
     {
-	  av[i] = &argv[2 + i]->u;
-	}
+      av[i] = &argv[2 + i]->u;
+    }
   /* allocate return value */
   rv = scheme_malloc(sizeof(Scheme_Object));
   /* call the function */
