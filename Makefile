@@ -21,7 +21,7 @@ CFLAGS+=-DIN_LIBSCHEME
 #
 # Use local includes.
 #
-CFLAGS+=-I.
+CFLAGS+=-I. -Ibindings
 
 #
 # Optimization and debugging flags go here.
@@ -106,12 +106,12 @@ SCHEME_SRCS = \
 	scheme_type.c \
 	scheme_vector.c
 POSIX_SRCS = \
-	posix_file.c \
-	posix_proc.c
+	bindings/posix_file.c \
+	bindings/posix_proc.c
 LIBDL_SRCS = \
-	libdl.c
+	bindings/libdl.c
 LIBFFI_SRCS = \
-	libffi.c
+	bindings/libffi.c
 
 #
 # Object files
