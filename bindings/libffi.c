@@ -120,7 +120,7 @@ libffi_call (int argc, Scheme_Value argv[])
   /* get number of arguments provided  */
   num_av = (argc - 2);
   /* get argument info */
-  ai = SCHEME_PTR2_VAL(cif);
+  ai = SCHEME_PTR2_VAL(argv[0]);
   aiv = SCHEME_VEC_ELS(ai);
   /* convert arguments */
   av = (void **) scheme_malloc(sizeof(void *) * num_av);
