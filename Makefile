@@ -129,7 +129,7 @@ OBJS = $(SCHEME_OBJS) $(POSIX_OBJS) $(LIBDL_OBJS) $(LIBFFI_OBJS)
 
 # Build main executable
 scheme: libscheme.a main.o
-	$(CC) $(CFLAGS) $(LIBS) -o scheme main.o libscheme.a
+	$(CC) $(CFLAGS) -o scheme main.o libscheme.a $(LIBS)
 	$(SIZE) scheme
 
 # Build static library
