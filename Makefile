@@ -167,5 +167,5 @@ clean:
 	$(RM) -f \
 		Makedepends $(OBJS) scheme main.o \
 		libscheme.a libscheme.aux libscheme.dvi libscheme.log \
-		tmp1 tmp2 tmp3
+		tmp1 tmp2 tmp3 cscope.out
 .PHONY: clean
